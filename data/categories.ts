@@ -17,6 +17,7 @@ export const types = [
 
 export interface Category {
   image: string;
+  color: string;
   name: string;
   types: {
     name: string;
@@ -28,12 +29,14 @@ export interface Category {
 export const categories: Category[] = [
   {
     image: 'https://loremflickr.com/320/240?random=1',
+    color: '#ff2200',
     name: '퍼스널컬러',
     seasons,
     types,
   },
   {
     image: 'https://loremflickr.com/320/240?random=2',
+    color: '#ff00ff',
     name: '신제품',
     types,
   },
