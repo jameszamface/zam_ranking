@@ -8,11 +8,16 @@
  * @format
  */
 
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {View} from 'react-native';
+import BottomTabs from './navigations/BottomTabs';
 
 const App = () => {
-  return <View />;
+  return (
+    <NavigationContainer>
+      <BottomTabs />
+    </NavigationContainer>
+  );
 };
 
 export default App;
