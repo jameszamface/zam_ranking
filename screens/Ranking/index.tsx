@@ -21,7 +21,8 @@ function Ranking() {
                 image=""
                 color={category1.cdEtc1}
                 selected={
-                  selectedCategory?.category1 && category1.cdId === selectedCategory.category1.cdId
+                  selectedCategory?.category1 &&
+                  category1.cdId === selectedCategory.category1.cdId
                 }
               />
             ))}
@@ -30,6 +31,7 @@ function Ranking() {
             {categories?.categories2?.map(category2 => (
               <TappableText
                 key={`@category_2_${category2.cdId}`}
+                showIndicator
                 selected={
                   selectedCategory?.category2 &&
                   category2.cdId === selectedCategory.category2.cdId
