@@ -1,25 +1,14 @@
 import React from 'react';
 import {ScrollView} from 'react-native';
 import styled from 'styled-components/native';
-import {Category} from '../../api/category';
+import {Categories, Category} from '../../api/category';
+import {SelectedCategory} from '../../hooks/useCategories';
 import CategoryButton from './CetegoryButton';
 import TappableText from './TappableText';
 
 interface Props {
-  categories:
-    | {
-        categories1: Category[];
-        categories2: Category[];
-        categories3: Category[];
-      }
-    | undefined;
-  selectedCategory:
-    | {
-        category1: Category;
-        category2: Category;
-        category3: Category;
-      }
-    | undefined;
+  categories: Categories;
+  selectedCategory: SelectedCategory;
   changeCategory: (category: Category) => void;
 }
 

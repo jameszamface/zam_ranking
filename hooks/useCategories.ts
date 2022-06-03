@@ -1,21 +1,19 @@
 import {useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
-import {Category, fetchCategories} from '../api/category';
+import {Categories, Category, fetchCategories} from '../api/category';
+
+export interface SelectedCategory {
+  category1: Category;
+  category2: Category;
+  category3: Category;
+}
 
 function useCategories() {
   const {data: allCategories} = useQuery('categories', fetchCategories);
 
-  const [categories, setCategories] = useState<{
-    categories1: Category[];
-    categories2: Category[];
-    categories3: Category[];
-  }>();
+  const [categories, setCategories] = useState<Categories>();
 
-  const [selectedCategory, setSelectedCategory] = useState<{
-    category1: Category;
-    category2: Category;
-    category3: Category;
-  }>();
+  const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>();
 
   useEffect(() => {
     if (!allCategories) {

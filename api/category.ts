@@ -13,7 +13,13 @@ export interface Category {
   useYn: string; // 'Y',
 }
 
-export const fetchCategories = async () => {
+export interface Categories {
+  categories1: Category[];
+  categories2: Category[];
+  categories3: Category[];
+}
+
+export const fetchCategories = async (): Promise<Categories> => {
   return {
     categories1: categories.filter(category => category.cdEtc2 === '0'),
     categories2: categories.filter(category => category.cdEtc2 === '1'),
