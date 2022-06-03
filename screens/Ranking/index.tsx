@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
-import TappableText from '../../components/TappableText';
+import TappableText from './TappableText';
 import useCategories, {Category} from '../../hooks/useCategories';
 import CategoryButton from './CetegoryButton';
 

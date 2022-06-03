@@ -6,7 +6,7 @@ import {
   ViewProps,
 } from 'react-native';
 import styled from 'styled-components/native';
-import {Category} from '../hooks/useCategories';
+import {Category} from '../../hooks/useCategories';
 
 interface Props {
   category: Category;
