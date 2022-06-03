@@ -1,4 +1,5 @@
 import categories from '../data/categories';
+import _ from 'lodash';
 
 export interface Category {
   cdDitc: number;
@@ -19,10 +20,17 @@ export interface Categories {
   categories3: Category[];
 }
 
-export const fetchCategories = async (): Promise<Categories> => {
-  return {
-    categories1: categories.filter(category => category.cdEtc2 === '0'),
-    categories2: categories.filter(category => category.cdEtc2 === '1'),
-    categories3: categories.filter(category => category.cdEtc2 === '2'),
-  };
+export const fetchCategories = async () => {
+  const depthGroupedCategories = _.groupBy(categories, 'cdEtc2');
+  const categoryMap = _.mapValues(depthGroupedCategories, depthCategories =>
+    _.groupBy(depthCategories, 'cdNote'),
+  );
+  const depths = Object.keys(depthGroupedCategories)
+    .map(depth => Number(depth))
+    // 숫자가 아닌 depth 제거
+    .filter(depth => !Number.isNaN(depth))
+    // 오름차순 정렬
+    .sort((a, b) => Number(a) - Number(b));
+
+  return {categoryMap, depths};
 };

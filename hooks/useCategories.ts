@@ -1,162 +1,112 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
-import {Categories, Category, fetchCategories} from '../api/category';
-
-export interface SelectedCategory {
-  category1: Category;
-  category2: Category;
-  category3: Category;
-}
+import {Category, fetchCategories} from '../api/category';
+import {Dictionary} from '../constants/types';
 
 function useCategories() {
-  const {data: allCategories} = useQuery('categories', fetchCategories);
+  const {data: categoryData} = useQuery('categories', fetchCategories);
 
-  const [categories, setCategories] = useState<Categories>();
+  interface CategoryInfo {
+    categories: Dictionary<Category[]>;
+    selectedCategories: Dictionary<Category>;
+  }
 
-  const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>();
+  const [categoryInfo, setCategoryInfo] = useState<CategoryInfo>({
+    categories: {},
+    selectedCategories: {},
+  });
 
-  useEffect(() => {
-    if (!allCategories) {
-      return;
-    }
-    const categories1 = allCategories.categories1;
-    const selectedCategory1 = allCategories?.categories1[0];
-
-    const categories2 = allCategories.categories2?.filter(
-      category => category.cdNote === selectedCategory1?.cdId,
-    );
-    const selectedCategory2 = categories2[0];
-
-    const categories3 = allCategories.categories3?.filter(
-      category => category.cdNote === selectedCategory2?.cdId,
-    );
-    const selectedCategory3 = categories3[0];
-
-    setCategories({
-      categories1,
-      categories2,
-      categories3,
-    });
-
-    setSelectedCategory({
-      category1: selectedCategory1,
-      category2: selectedCategory2,
-      category3: selectedCategory3,
-    });
-  }, [allCategories]);
-
-  const changeCategory = (category: Category) => {
-    if (!allCategories) {
-      return;
-    }
-    setCategories(prev => {
-      if (!prev) {
+  const changeCategory = useCallback(
+    (category: Category) => {
+      const depthProp = Number(category.cdEtc2);
+      if (!categoryData || Number.isNaN(depthProp)) {
         return;
       }
-      if (category.cdEtc2 === '0') {
-        const restoredCategory2 = restoreCategory2(category.cdId);
-        const restoredCategory3 = restoreCategory3(restoredCategory2?.cdId);
 
-        const categories2 = allCategories.categories2.filter(
-          c => c.cdNote === category.cdId,
-        );
-        const category2 = restoredCategory2 || categories2[0];
+      const {depths, categoryMap} = categoryData;
 
-        const categories3 = allCategories.categories3.filter(
-          c => c.cdNote === category2.cdId,
-        );
-        const category3 = restoredCategory3 || categories3[0];
+      let parentId = category.cdNote;
+      saveCategory(parentId, category);
 
-        setSelectedCategory({
-          category1: category,
-          category2,
-          category3,
-        });
+      setCategoryInfo(prev => {
+        const {
+          categories: oldCategories,
+          selectedCategories: oldSelectedCategories,
+        } = prev;
 
-        return {
-          ...prev,
-          categories2,
-          categories3,
+        const newCategoryInfo: CategoryInfo = {
+          categories: {},
+          selectedCategories: {},
         };
-      } else if (category.cdEtc2 === '1') {
-        const restoredCategory3 = restoreCategory3(category.cdId);
-        const categories3 = allCategories.categories3.filter(
-          c => c.cdNote === category.cdId,
-        );
-        const category3 = restoredCategory3 || categories3[0];
 
-        setSelectedCategory(prevSelected => {
-          if (!prevSelected) {
-            return;
-          }
-          const {category1} = prevSelected;
+        let index = 0;
+        let depth = 0;
+        let depthCategories: Category[] | undefined;
 
-          saveCategory2(category1.cdId, category);
+        // 각 depth의 카테고리마다 최대 depth가 변하는 유동적인 상황을 가정했다.
+        // depth가 어디서 끝나는지 모르기 때문에, 마지막 depth까지 반복하는 while 문을 사용한다.
+        while (index < depths.length) {
+          depth = depths[index];
 
-          return {
-            category1,
-            category2: category,
-            category3,
-          };
-        });
+          // 이전 depth는 과거 정보를 그대로 사용하기 위한 플래그이다.
+          const useOld = depth < depthProp;
 
-        return {
-          ...prev,
-          categories3,
-        };
-      } else if (category.cdEtc2 === '2') {
-        setSelectedCategory(prevSelected => {
-          if (!prevSelected) {
-            return;
+          // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, 마지막 depth인 것이다.
+          depthCategories = useOld
+            ? oldCategories[depth]
+            : categoryMap[depth][parentId];
+
+          if (!depthCategories) {
+            break;
           }
 
-          const {category2} = prevSelected;
-          saveCategory3(category2.cdId, category);
+          const selectedCategory = useOld
+            ? oldSelectedCategories[depth]
+            : restoreCategory(parentId) || depthCategories[0];
 
-          return {
-            ...prevSelected,
-            category3: category,
-          };
-        });
-      }
-      return prev;
-    });
-  };
+          index++;
+          parentId = selectedCategory.cdId;
+
+          newCategoryInfo.categories[depth] = depthCategories;
+          newCategoryInfo.selectedCategories[depth] = selectedCategory;
+        }
+
+        return newCategoryInfo;
+      });
+    },
+    [categoryData],
+  );
+
+  useEffect(() => {
+    if (!categoryData) {
+      return;
+    }
+
+    const {categoryMap, depths} = categoryData;
+    const firstDepth = depths[0];
+    const rootParentId = ''; // 최상단 카테고리의 depth 값이다. (전체 데이터를 매핑하면서 root로 변경해도 될 것 같다.)
+
+    // 전체 카테고리에서 가장 낮은 depth의 첫 번째 아이템을 선택했다고 가정한다.
+    const category = categoryMap[firstDepth][rootParentId][0];
+    changeCategory(category);
+  }, [categoryData, changeCategory]);
 
   return {
-    categories,
-    selectedCategory,
+    depths: categoryData?.depths || [],
+    categoryInfo,
     changeCategory,
   };
 }
 
-interface Dictionary<T> {
-  [Key: string]: T;
-}
+// 선택된 카테고리에서 다시 선택된 자식 카테고리를 저장하고 가져오기 위해 사용된다.
+const storedCategories: Dictionary<Category | undefined> = {};
 
-const storedCategories2: Dictionary<Category | undefined> = {};
-const storedCategories3: Dictionary<Category | undefined> = {};
-
-const saveCategory2 = (category1Id: string, category2: Category) => {
-  storedCategories2[category1Id] = category2;
+const saveCategory = (parentId: string, category: Category) => {
+  storedCategories[parentId] = category;
 };
 
-const restoreCategory2 = (category1Id?: string) => {
-  if (!category1Id) {
-    return;
-  }
-  return storedCategories2[category1Id];
-};
-
-const saveCategory3 = (category2Id: string, category3: Category) => {
-  storedCategories3[category2Id] = category3;
-};
-
-const restoreCategory3 = (category2Id?: string) => {
-  if (!category2Id) {
-    return;
-  }
-  return storedCategories3[category2Id];
+const restoreCategory = (parentId?: string) => {
+  return storedCategories[parentId || ''];
 };
 
 export default useCategories;

@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableWithoutFeedback} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
-import {Category} from '../../hooks/useCategories';
+import {Category} from '../../api/category';
 
 interface Props {
   category: Category;

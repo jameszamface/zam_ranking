@@ -5,7 +5,7 @@ import useCategories from '../../hooks/useCategories';
 import Header from './Header';
 
 function Ranking() {
-  const {categories, selectedCategory, changeCategory} = useCategories();
+  const {categoryInfo, changeCategory, depths} = useCategories();
 
   return (
     <Container>
@@ -16,8 +16,9 @@ function Ranking() {
         renderItem={() => <View style={{width: '100%', height: 300}} />}
       />
       <Header
-        categories={categories}
-        selectedCategory={selectedCategory}
+        depths={depths}
+        categories={categoryInfo.categories}
+        selectedCategory={categoryInfo.selectedCategories}
         changeCategory={changeCategory}
       />
     </Container>
