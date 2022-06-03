@@ -68,18 +68,17 @@ function useCategories() {
       if (!prev) {
         return;
       }
-
       if (category.cdEtc2 === '0') {
         const restoredCategory2 = restoreCategory2(category.cdId);
         const restoredCategory3 = restoreCategory3(restoredCategory2?.cdId);
 
         const categories2 = allCategories.categories2.filter(
-          c => c.cdEtc2 === category.cdId,
+          c => c.cdNote === category.cdId,
         );
         const category2 = restoredCategory2 || categories2[0];
 
         const categories3 = allCategories.categories3.filter(
-          c => c.cdEtc2 === category2.cdId,
+          c => c.cdNote === category2.cdId,
         );
         const category3 = restoredCategory3 || categories3[0];
 
@@ -97,7 +96,7 @@ function useCategories() {
       } else if (category.cdEtc2 === '1') {
         const restoredCategory3 = restoreCategory3(category.cdId);
         const categories3 = allCategories.categories3.filter(
-          c => c.cdEtc2 === category.cdId,
+          c => c.cdNote === category.cdId,
         );
         const category3 = restoredCategory3 || categories3[0];
 

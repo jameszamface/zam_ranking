@@ -1,26 +1,47 @@
 import React from 'react';
-import {StyleProp, TextStyle, ViewProps} from 'react-native';
+import {
+  StyleProp,
+  TextStyle,
+  TouchableWithoutFeedback,
+  ViewProps,
+} from 'react-native';
 import styled from 'styled-components/native';
+import {Category} from '../hooks/useCategories';
 
 interface Props {
+  category: Category;
   children?: string;
   selected?: boolean;
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
   showIndicator?: boolean;
+  onPress?: (category: Category) => void;
 }
 
 function TappableText({
+  category,
   children,
   selected,
   style,
   textStyle,
   showIndicator,
+  onPress: _onPress,
 }: Props) {
+  const onPress = () => {
+    _onPress && _onPress(category);
+  };
+
   return (
-    <Container style={style} selected={selected} showIndicator={showIndicator}>
-      <Text style={textStyle}>{children}</Text>
-    </Container>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <Container
+        style={style}
+        selected={selected}
+        showIndicator={showIndicator}>
+        <Text selected={selected} style={textStyle}>
+          {children}
+        </Text>
+      </Container>
+    </TouchableWithoutFeedback>
   );
 }
 

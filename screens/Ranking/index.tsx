@@ -2,11 +2,15 @@ import React from 'react';
 import {FlatList, ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
 import TappableText from '../../components/TappableText';
-import useCategories from '../../hooks/useCategories';
+import useCategories, {Category} from '../../hooks/useCategories';
 import CategoryButton from './CetegoryButton';
 
 function Ranking() {
   const {categories, selectedCategory, changeCategory} = useCategories();
+
+  const onPress = (category: Category) => {
+    changeCategory(category);
+  };
 
   return (
     <List
@@ -19,6 +23,7 @@ function Ranking() {
                 category={category1}
                 name={category1.cdNm}
                 image=""
+                onPress={onPress}
                 color={category1.cdEtc1}
                 selected={
                   selectedCategory?.category1 &&
@@ -30,6 +35,8 @@ function Ranking() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {categories?.categories2?.map(category2 => (
               <TappableText
+                category={category2}
+                onPress={onPress}
                 key={`@category_2_${category2.cdId}`}
                 showIndicator
                 selected={
@@ -43,6 +50,8 @@ function Ranking() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {categories?.categories3?.map(category3 => (
               <TappableText
+                category={category3}
+                onPress={onPress}
                 key={`@category_3_${category3.cdId}`}
                 selected={
                   selectedCategory?.category3 &&
