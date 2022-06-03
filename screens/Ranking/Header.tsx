@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 import {Category} from '../../api/category';
@@ -6,8 +6,23 @@ import useCategories from '../../hooks/useCategories';
 import CategoryButton from './CetegoryButton';
 import TappableText from './TappableText';
 
-function Header() {
+interface Props {
+  onCategoriesChanged: (categories: {
+    category1: Category;
+    category2: Category;
+    category3: Category;
+  }) => void;
+}
+
+function Header({onCategoriesChanged}: Props) {
   const {categories, selectedCategory, changeCategory} = useCategories();
+
+  useEffect(() => {
+    if (!selectedCategory) {
+      return;
+    }
+    onCategoriesChanged && onCategoriesChanged(selectedCategory);
+  }, [onCategoriesChanged, selectedCategory]);
 
   const onPress = (category: Category) => {
     changeCategory(category);
