@@ -1,22 +1,39 @@
 import React from 'react';
+import {TouchableWithoutFeedback} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
+import {Category} from '../../hooks/useCategories';
 
 interface Props {
+  category: Category;
   name: string;
   image: string;
   color: string;
   selected?: boolean;
+  onPress?: (category: Category) => void;
 }
 
-function CategoryButton({name, image, color, selected}: Props) {
+function CategoryButton({
+  category,
+  name,
+  image,
+  color,
+  selected,
+  onPress: _onPress,
+}: Props) {
+  const onPress = () => {
+    _onPress && _onPress(category);
+  };
+
   return (
-    <Container backgroundColor={color} selected={selected}>
-      <Image source={{uri: image}} />
-      <NameContainer>
-        <Name selected={selected}>{name}</Name>
-      </NameContainer>
-    </Container>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <Container backgroundColor={color} selected={selected}>
+        <Image source={{uri: image}} />
+        <NameContainer>
+          <Name selected={selected}>{name}</Name>
+        </NameContainer>
+      </Container>
+    </TouchableWithoutFeedback>
   );
 }
 

@@ -6,52 +6,45 @@ import useCategories from '../../hooks/useCategories';
 import CategoryButton from './CetegoryButton';
 
 function Ranking() {
-  const {
-    categories1,
-    categories2,
-    categories3,
-    selectedCategory1,
-    selectedCategory2,
-    selectedCategory3,
-    setSelectedCategory1,
-    setSelectedCategory2,
-    setSelectedCategory3,
-  } = useCategories();
+  const {categories, selectedCategory, changeCategory} = useCategories();
 
   return (
     <List
       ListHeaderComponent={
         <>
-          <ScrollView horizontal>
-            {categories1?.map(category1 => (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories?.categories1?.map(category1 => (
               <CategoryButton
                 key={`@category_1_${category1.cdId}`}
+                category={category1}
                 name={category1.cdNm}
                 image=""
                 color={category1.cdEtc1}
                 selected={
-                  selectedCategory1 && category1.cdId === selectedCategory1.cdId
+                  selectedCategory?.category1 && category1.cdId === selectedCategory.category1.cdId
                 }
               />
             ))}
           </ScrollView>
-          <ScrollView horizontal>
-            {categories2?.map(category2 => (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories?.categories2?.map(category2 => (
               <TappableText
-                key={`@category_1_${category2.cdId}`}
+                key={`@category_2_${category2.cdId}`}
                 selected={
-                  selectedCategory2 && category2.cdId === selectedCategory2.cdId
+                  selectedCategory?.category2 &&
+                  category2.cdId === selectedCategory.category2.cdId
                 }>
                 {category2.cdNm}
               </TappableText>
             ))}
           </ScrollView>
-          <ScrollView horizontal>
-            {categories3?.map(category3 => (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories?.categories3?.map(category3 => (
               <TappableText
-                key={`@category_1_${category3.cdId}`}
+                key={`@category_3_${category3.cdId}`}
                 selected={
-                  selectedCategory3 && category3.cdId === selectedCategory3.cdId
+                  selectedCategory?.category3 &&
+                  category3.cdId === selectedCategory.category3.cdId
                 }>
                 {category3.cdNm}
               </TappableText>
