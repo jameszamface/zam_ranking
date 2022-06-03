@@ -1,18 +1,11 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
 import styled from 'styled-components/native';
-import {Category} from '../../api/category';
+import useCategories from '../../hooks/useCategories';
 import Header from './Header';
 
 function Ranking() {
-  const onCategoriesChanged = (categories: {
-    category1: Category;
-    category2: Category;
-    category3: Category;
-  }) => {
-    console.log(categories);
-    // TODO: 여기서 제품을 가져온다.
-  };
+  const {categories, selectedCategory, changeCategory} = useCategories();
 
   return (
     <Container>
@@ -22,7 +15,11 @@ function Ranking() {
         // eslint-disable-next-line react-native/no-inline-styles
         renderItem={() => <View style={{width: '100%', height: 300}} />}
       />
-      <Header onCategoriesChanged={onCategoriesChanged} />
+      <Header
+        categories={categories}
+        selectedCategory={selectedCategory}
+        changeCategory={changeCategory}
+      />
     </Container>
   );
 }
