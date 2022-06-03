@@ -1,19 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
-import {fetchCategories} from '../api/category';
-
-export interface Category {
-  cdDitc: number;
-  cdEtc1: string; //'#fcf4ef',
-  cdEtc2: string; // '0', // depth
-  cdEtc3: string; // 'D', // parentId
-  cdId: string; // 'D', // self Id
-  cdNm: string; // '퍼스널컬러', // self name
-  cdNote: string; // '',
-  loc: string; // 'ko',
-  ord: number; // 0,
-  useYn: string; // 'Y',
-}
+import {Category, fetchCategories} from '../api/category';
 
 function useCategories() {
   const {data: allCategories} = useQuery('categories', fetchCategories);
