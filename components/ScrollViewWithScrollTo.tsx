@@ -13,7 +13,7 @@ import Animated, {
 const ReanimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export type ScrollTo = (
-  offset: {x?: number; y?: number},
+  offset: {x: number} | {y: number},
   options?: {delay?: number; duration?: number},
 ) => void;
 
@@ -27,29 +27,20 @@ const ScrollViewWithScrollTo = ({
 
   useDerivedValue(() => {
     reanimatedScrollTo(ref, scrollX.value, scrollY.value, true);
-  }, []);
+  });
 
   const scrollTo: ScrollTo = useCallback(
     (offset, options?: {delay?: number; duration?: number}) => {
-      if (offset.x !== undefined) {
-        scrollX.value = withDelay(
-          options?.delay || 0,
-          withTiming(offset.x, {
-            duration: options?.duration,
-          }),
-        );
-      }
-      if (offset.y !== undefined) {
-        scrollY.value = withDelay(
-          options?.delay || 0,
-          withTiming(offset.y, {
-            duration: options?.duration,
-          }),
-        );
-      }
+      const scroll = 'x' in offset ? scrollX : scrollY;
+      const value = 'x' in offset ? offset.x : offset.y;
+      scroll.value = withDelay(
+        options?.delay || 0,
+        withTiming(value, {
+          duration: options?.duration,
+        }),
+      );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [scrollX, scrollY],
   );
 
   const childrenWithProps = React.Children.map(children, child => {
@@ -60,7 +51,9 @@ const ScrollViewWithScrollTo = ({
   });
 
   return (
-    <ReanimatedScrollView ref={ref} {...props}>
+    <ReanimatedScrollView
+      ref={ref}
+      {...props}>
       {childrenWithProps}
     </ReanimatedScrollView>
   );
