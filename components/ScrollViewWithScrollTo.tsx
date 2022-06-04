@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {ScrollViewProps} from 'react-native';
+import {ScrollView, ScrollViewProps} from 'react-native';
 import Animated, {
   useAnimatedRef,
   useDerivedValue,
@@ -9,6 +9,8 @@ import Animated, {
   withTiming,
   AnimateProps,
 } from 'react-native-reanimated';
+
+const ReanimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export type ScrollTo = (
   offset: {x?: number; y?: number},
@@ -24,8 +26,8 @@ const ScrollViewWithScrollTo = ({
   const scrollY = useSharedValue(0);
 
   useDerivedValue(() => {
-    reanimatedScrollTo(ref, scrollX.value, scrollY.value, false);
-  });
+    reanimatedScrollTo(ref, scrollX.value, scrollY.value, true);
+  }, []);
 
   const scrollTo: ScrollTo = useCallback(
     (offset, options?: {delay?: number; duration?: number}) => {
@@ -58,9 +60,9 @@ const ScrollViewWithScrollTo = ({
   });
 
   return (
-    <Animated.ScrollView ref={ref} {...props}>
+    <ReanimatedScrollView ref={ref} {...props}>
       {childrenWithProps}
-    </Animated.ScrollView>
+    </ReanimatedScrollView>
   );
 };
 

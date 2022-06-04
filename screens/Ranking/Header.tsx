@@ -70,13 +70,13 @@ const convertCategoriesToComponents = (
   onPress: (category: Category) => void,
   option?: Option,
 ) => {
-  return categories.map((category, index) => {
+  return categories.map(category => {
     const Component = option?.type === 'text' ? TappableText : TappableImage;
 
     return (
       <Component
         item={category}
-        key={`@category_${index}_${category.cdId}`}
+        key={category.cdId}
         image="" // only for TappableImage
         backgroundColor={category.cdEtc1} // only for TappableImage
         showIndicator={option?.showIndicator} // only for TappableText

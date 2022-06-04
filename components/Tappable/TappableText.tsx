@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
-  LayoutChangeEvent,
   StyleProp,
   TextStyle,
   TouchableWithoutFeedback,
   ViewProps,
 } from 'react-native';
 import styled from 'styled-components/native';
+import useLayout from '../../hooks/useLayout';
 import {TappableProps} from './types';
 
 interface Props<T> extends TappableProps<T> {
@@ -27,31 +27,18 @@ function TappableText<T>({
   onPress: _onPress,
   scrollTo,
 }: Props<T>) {
-  const [mounted, setMounted] = useState(false);
-  const offsetXRef = useRef<number>(0);
+  const {layout, onLayout} = useLayout();
 
   const onPress = () => {
     _onPress && _onPress(item);
   };
 
   useEffect(() => {
-    if (!selected || !mounted || !scrollTo) {
+    if (!selected || !layout || !scrollTo) {
       return;
     }
-    scrollTo({x: offsetXRef.current}, {delay: 500, duration: 500});
-  }, [selected, scrollTo, mounted]);
-
-  const onLayout = useCallback(
-    ({
-      nativeEvent: {
-        layout: {x},
-      },
-    }: LayoutChangeEvent) => {
-      offsetXRef.current = x;
-      setMounted(true);
-    },
-    [],
-  );
+    scrollTo({x: layout.x}, {delay: 500, duration: 500});
+  }, [selected, scrollTo, layout]);
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
