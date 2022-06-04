@@ -3,8 +3,8 @@ import styled from 'styled-components/native';
 import {Category} from '../../api/category';
 import {Dictionary} from '../../constants/types';
 import TappableImage from '../../components/Tappable/TappableImage';
-import HorizontalScrollView from '../../components/HorizontalScrollView';
 import TappableText from '../../components/Tappable/TappableText';
+import {ScrollView} from 'react-native';
 
 interface Option {
   type: 'image' | 'text';
@@ -50,14 +50,17 @@ function Header({
         const option = settings[index];
 
         return (
-          <HorizontalScrollView key={depth}>
+          <ScrollView
+            key={depth}
+            horizontal
+            showsHorizontalScrollIndicator={false}>
             {convertCategoriesToComponents(
               depthCategories,
               selectedCategory,
               onPress,
               option,
             )}
-          </HorizontalScrollView>
+          </ScrollView>
         );
       })}
     </Container>
