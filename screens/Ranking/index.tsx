@@ -16,9 +16,8 @@ function Ranking() {
         renderItem={() => <View style={{width: '100%', height: 300}} />}
       />
       <Header
-        depths={categoryInfo.depths}
         categories={categoryInfo.categories}
-        selectedCategories={categoryInfo.selectedCategories}
+        selectedCategoryIds={categoryInfo.selectedCategoryIds}
         changeCategory={changeCategory}
       />
     </Container>

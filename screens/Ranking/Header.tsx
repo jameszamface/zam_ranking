@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {Category} from '../../api/category';
-import {Dictionary} from '../../constants/types';
 import TappableImage from '../../components/Tappable/TappableImage';
 import TappableText from '../../components/Tappable/TappableText';
 import {ScrollView} from 'react-native';
@@ -26,37 +25,30 @@ const settings: Option[] = [
 ];
 
 interface Props {
-  depths: number[];
-  categories: Dictionary<Category[]>;
-  selectedCategories: Dictionary<Category>;
+  categories: Category[][];
+  selectedCategoryIds: string[];
   changeCategory: (category: Category) => void;
 }
 
-function Header({
-  depths,
-  categories,
-  selectedCategories,
-  changeCategory,
-}: Props) {
+function Header({categories, selectedCategoryIds, changeCategory}: Props) {
   const onPress = (category: Category) => {
     changeCategory(category);
   };
 
   return (
     <Container>
-      {depths.map((depth, index) => {
-        const depthCategories = categories[depth];
-        const selectedCategory = selectedCategories[depth];
+      {categories.map((depthCategories, index) => {
+        const selectedCategoryId = selectedCategoryIds[index];
         const option = settings[index];
 
         return (
           <ScrollView
-            key={depth}
+            key={index}
             horizontal
             showsHorizontalScrollIndicator={false}>
             {convertCategoriesToComponents(
               depthCategories,
-              selectedCategory,
+              selectedCategoryId,
               onPress,
               option,
             )}
@@ -74,7 +66,7 @@ const Container = styled.View`
 
 const convertCategoriesToComponents = (
   categories: Category[],
-  selectedCategory: Category,
+  selectedCategoryId: string,
   onPress: (category: Category) => void,
   option?: Option,
 ) => {
@@ -89,7 +81,7 @@ const convertCategoriesToComponents = (
         backgroundColor={category.cdEtc1} // only for TappableImage
         showIndicator={option?.showIndicator} // only for TappableText
         selectedColor="#000000"
-        selected={selectedCategory && selectedCategory.cdId === category.cdId}
+        selected={selectedCategoryId === category.cdId}
         onPress={onPress}>
         {category.cdNm}
       </Component>

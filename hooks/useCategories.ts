@@ -7,15 +7,13 @@ function useCategories() {
   const {data: categoryData} = useQuery('categories', fetchCategories);
 
   interface CategoryInfo {
-    categories: Dictionary<Category[]>;
-    selectedCategories: Dictionary<Category>;
-    depths: number[];
+    categories: Category[][];
+    selectedCategoryIds: string[];
   }
 
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo>({
-    categories: {},
-    selectedCategories: {},
-    depths: [],
+    categories: [],
+    selectedCategoryIds: [],
   });
 
   const changeCategory = useCallback(
@@ -33,13 +31,12 @@ function useCategories() {
       setCategoryInfo(prev => {
         const {
           categories: oldCategories,
-          selectedCategories: oldSelectedCategories,
+          selectedCategoryIds: oldSelectedCategoryIds,
         } = prev;
 
         const newCategoryInfo: CategoryInfo = {
-          categories: {},
-          selectedCategories: {},
-          depths: [],
+          categories: [],
+          selectedCategoryIds: [],
         };
 
         let depth = 0;
@@ -62,15 +59,14 @@ function useCategories() {
             break;
           }
 
-          const selectedCategory = useOld
-            ? oldSelectedCategories[depth]
-            : restoreCategory(parentId) || depthCategories[0];
+          const selectedCategoryId = useOld
+            ? oldSelectedCategoryIds[i]
+            : restoreCategory(parentId) || depthCategories[0].cdId;
 
-          parentId = selectedCategory.cdId;
+          parentId = selectedCategoryId || '';
 
-          newCategoryInfo.categories[depth] = depthCategories;
-          newCategoryInfo.selectedCategories[depth] = selectedCategory;
-          newCategoryInfo.depths.push(depth);
+          newCategoryInfo.categories.push(depthCategories);
+          newCategoryInfo.selectedCategoryIds.push(selectedCategoryId);
         }
 
         return newCategoryInfo;
@@ -100,10 +96,10 @@ function useCategories() {
 }
 
 // 선택된 카테고리에서 다시 선택된 자식 카테고리를 저장하고 가져오기 위해 사용된다.
-const storedCategories: Dictionary<Category | undefined> = {};
+const storedCategories: Dictionary<string | undefined> = {};
 
 const saveCategory = (parentId: string, category: Category) => {
-  storedCategories[parentId] = category;
+  storedCategories[parentId] = category.cdId;
 };
 
 const restoreCategory = (parentId?: string) => {
