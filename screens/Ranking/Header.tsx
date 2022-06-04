@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import {Category} from '../../api/category';
 import TappableImage from '../../components/Tappable/TappableImage';
 import TappableText from '../../components/Tappable/TappableText';
-import {ScrollView} from 'react-native';
+import ScrollViewWithScrollTo from '../../components/ScrollViewWithScrollTo';
 
 interface Option {
   type: 'image' | 'text';
@@ -42,7 +42,7 @@ function Header({categories, selectedCategoryIds, changeCategory}: Props) {
         const option = settings[index];
 
         return (
-          <ScrollView
+          <ScrollViewWithScrollTo
             key={index}
             horizontal
             showsHorizontalScrollIndicator={false}>
@@ -52,7 +52,7 @@ function Header({categories, selectedCategoryIds, changeCategory}: Props) {
               onPress,
               option,
             )}
-          </ScrollView>
+          </ScrollViewWithScrollTo>
         );
       })}
     </Container>

@@ -1,5 +1,5 @@
-import React from 'react';
-import {TouchableWithoutFeedback} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {LayoutChangeEvent, TouchableWithoutFeedback} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import {TappableProps} from './types';
@@ -18,14 +18,38 @@ function CategoryButton<T>({
   selected,
   children,
   onPress: _onPress,
+  scrollTo,
 }: Props<T>) {
+  const [mounted, setMounted] = useState(false);
+  const offsetXRef = useRef<number>(0);
+
   const onPress = () => {
     _onPress && _onPress(item);
   };
 
+  useEffect(() => {
+    if (!selected || !mounted || !scrollTo) {
+      return;
+    }
+    scrollTo({x: offsetXRef.current}, {delay: 500, duration: 500});
+  }, [selected, scrollTo, mounted]);
+
+  const onLayout = useCallback(
+    ({
+      nativeEvent: {
+        layout: {x},
+      },
+    }: LayoutChangeEvent) => {
+      offsetXRef.current = x;
+      setMounted(true);
+    },
+    [],
+  );
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Container
+        onLayout={onLayout}
         backgroundColor={backgroundColor}
         selectedColor={selectedColor}
         selected={selected}>
