@@ -9,11 +9,13 @@ function useCategories() {
   interface CategoryInfo {
     categories: Dictionary<Category[]>;
     selectedCategories: Dictionary<Category>;
+    depths: number[];
   }
 
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo>({
     categories: {},
     selectedCategories: {},
+    depths: [],
   });
 
   const changeCategory = useCallback(
@@ -37,6 +39,7 @@ function useCategories() {
         const newCategoryInfo: CategoryInfo = {
           categories: {},
           selectedCategories: {},
+          depths: [],
         };
 
         let depth = 0;
@@ -67,6 +70,7 @@ function useCategories() {
 
           newCategoryInfo.categories[depth] = depthCategories;
           newCategoryInfo.selectedCategories[depth] = selectedCategory;
+          newCategoryInfo.depths.push(depth);
         }
 
         return newCategoryInfo;
@@ -90,7 +94,6 @@ function useCategories() {
   }, [categoryData, changeCategory]);
 
   return {
-    depths: categoryData?.depths || [],
     categoryInfo,
     changeCategory,
   };

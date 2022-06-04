@@ -1,19 +1,43 @@
 import React from 'react';
-import {ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 import {Category} from '../../api/category';
 import {Dictionary} from '../../constants/types';
-import CategoryButton from './CetegoryButton';
-import TappableText from './TappableText';
+import TappableImage from '../../components/Tappable/TappableImage';
+import HorizontalScrollView from '../../components/HorizontalScrollView';
+import TappableText from '../../components/Tappable/TappableText';
+
+interface Option {
+  type: 'image' | 'text';
+  showIndicator?: boolean;
+}
+
+const settings: Option[] = [
+  {
+    type: 'image',
+  },
+  {
+    type: 'text',
+    showIndicator: true,
+  },
+  {
+    type: 'text',
+    showIndicator: false,
+  },
+];
 
 interface Props {
   depths: number[];
   categories: Dictionary<Category[]>;
-  selectedCategory: Dictionary<Category>;
+  selectedCategories: Dictionary<Category>;
   changeCategory: (category: Category) => void;
 }
 
-function Header({depths, categories, selectedCategory, changeCategory}: Props) {
+function Header({
+  depths,
+  categories,
+  selectedCategories,
+  changeCategory,
+}: Props) {
   const onPress = (category: Category) => {
     changeCategory(category);
   };
@@ -22,52 +46,18 @@ function Header({depths, categories, selectedCategory, changeCategory}: Props) {
     <Container>
       {depths.map((depth, index) => {
         const depthCategories = categories[depth];
-        if (!depthCategories) {
-          return;
-        }
+        const selectedCategory = selectedCategories[depth];
+        const option = settings[index];
 
-        if (index === 0) {
-          return (
-            <ScrollView
-              key={depth}
-              horizontal
-              showsHorizontalScrollIndicator={false}>
-              {depthCategories.map(category => (
-                <CategoryButton
-                  key={`@category_${index}_${category.cdId}`}
-                  category={category}
-                  name={category.cdNm}
-                  image=""
-                  onPress={onPress}
-                  color={category.cdEtc1}
-                  selected={
-                    selectedCategory[depth] &&
-                    category.cdId === selectedCategory[depth].cdId
-                  }
-                />
-              ))}
-            </ScrollView>
-          );
-        }
         return (
-          <ScrollView
-            key={depth}
-            horizontal
-            showsHorizontalScrollIndicator={false}>
-            {depthCategories.map(category => (
-              <TappableText
-                category={category}
-                onPress={onPress}
-                key={`@category_${index}_${category.cdId}`}
-                showIndicator={!!(index % 2)}
-                selected={
-                  selectedCategory[depth] &&
-                  category.cdId === selectedCategory[depth].cdId
-                }>
-                {category.cdNm}
-              </TappableText>
-            ))}
-          </ScrollView>
+          <HorizontalScrollView key={depth}>
+            {convertCategoriesToComponents(
+              depthCategories,
+              selectedCategory,
+              onPress,
+              option,
+            )}
+          </HorizontalScrollView>
         );
       })}
     </Container>
@@ -78,5 +68,30 @@ function Header({depths, categories, selectedCategory, changeCategory}: Props) {
 const Container = styled.View`
   position: absolute;
 `;
+
+const convertCategoriesToComponents = (
+  categories: Category[],
+  selectedCategory: Category,
+  onPress: (category: Category) => void,
+  option?: Option,
+) => {
+  return categories.map((category, index) => {
+    const Component = option?.type === 'text' ? TappableText : TappableImage;
+
+    return (
+      <Component
+        item={category}
+        key={`@category_${index}_${category.cdId}`}
+        image="" // only for TappableImage
+        backgroundColor={category.cdEtc1} // only for TappableImage
+        showIndicator={option?.showIndicator} // only for TappableText
+        selectedColor="#000000"
+        selected={selectedCategory && selectedCategory.cdId === category.cdId}
+        onPress={onPress}>
+        {category.cdNm}
+      </Component>
+    );
+  });
+};
 
 export default Header;

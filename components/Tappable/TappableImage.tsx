@@ -2,42 +2,47 @@ import React from 'react';
 import {TouchableWithoutFeedback} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
-import {Category} from '../../api/category';
+import {TappableProps} from './types';
 
-interface Props {
-  category: Category;
-  name: string;
-  image: string;
-  color: string;
-  selected?: boolean;
-  onPress?: (category: Category) => void;
+interface Props<T> extends TappableProps<T> {
+  item: T;
+  image?: string;
+  backgroundColor?: string;
 }
 
-function CategoryButton({
-  category,
-  name,
+function CategoryButton<T>({
+  item,
   image,
-  color,
+  backgroundColor = '#ffffff',
+  selectedColor = '#000000',
   selected,
+  children,
   onPress: _onPress,
-}: Props) {
+}: Props<T>) {
   const onPress = () => {
-    _onPress && _onPress(category);
+    _onPress && _onPress(item);
   };
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <Container backgroundColor={color} selected={selected}>
+      <Container
+        backgroundColor={backgroundColor}
+        selectedColor={selectedColor}
+        selected={selected}>
         <Image source={{uri: image}} />
         <NameContainer>
-          <Name selected={selected}>{name}</Name>
+          <Name selected={selected}>{children}</Name>
         </NameContainer>
       </Container>
     </TouchableWithoutFeedback>
   );
 }
 
-const Container = styled.View<{backgroundColor: string; selected?: boolean}>`
+const Container = styled.View<{
+  backgroundColor: string;
+  selectedColor: string;
+  selected?: boolean;
+}>`
   height: 100px;
   width: 75px;
   border-radius: 3px;
