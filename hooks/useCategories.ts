@@ -39,14 +39,13 @@ function useCategories() {
           selectedCategories: {},
         };
 
-        let index = 0;
         let depth = 0;
         let depthCategories: Category[] | undefined;
 
         // 각 depth의 카테고리마다 최대 depth가 변하는 유동적인 상황을 가정했다.
         // depth가 어디서 끝나는지 모르기 때문에, 마지막 depth까지 반복하는 while 문을 사용한다.
-        while (index < depths.length) {
-          depth = depths[index];
+        for (let i = 0; i < depths.length; i++) {
+          depth = depths[i];
 
           // 이전 depth는 과거 정보를 그대로 사용하기 위한 플래그이다.
           const useOld = depth < depthProp;
@@ -64,7 +63,6 @@ function useCategories() {
             ? oldSelectedCategories[depth]
             : restoreCategory(parentId) || depthCategories[0];
 
-          index++;
           parentId = selectedCategory.cdId;
 
           newCategoryInfo.categories[depth] = depthCategories;
