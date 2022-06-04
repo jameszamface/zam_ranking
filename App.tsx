@@ -12,6 +12,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import BottomTabs from './navigations/BottomTabs';
+import 'react-native-gesture-handler';
 
 const queryClient = new QueryClient();
 
