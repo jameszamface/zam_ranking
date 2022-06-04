@@ -1,5 +1,9 @@
 import React, {useCallback} from 'react';
-import {ScrollView, ScrollViewProps} from 'react-native';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollViewProps,
+} from 'react-native';
 import Animated, {
   useAnimatedRef,
   useDerivedValue,
@@ -9,8 +13,6 @@ import Animated, {
   withTiming,
   AnimateProps,
 } from 'react-native-reanimated';
-
-const ReanimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export type ScrollTo = (
   offset: {x: number} | {y: number},
@@ -26,7 +28,7 @@ const ScrollViewWithScrollTo = ({
   const scrollY = useSharedValue(0);
 
   useDerivedValue(() => {
-    reanimatedScrollTo(ref, scrollX.value, scrollY.value, true);
+    reanimatedScrollTo(ref, scrollX.value, scrollY.value, false);
   });
 
   const scrollTo: ScrollTo = useCallback(
@@ -50,12 +52,27 @@ const ScrollViewWithScrollTo = ({
     return child;
   });
 
+  const onMomentumScrollEnd = useCallback(
+    ({
+      nativeEvent: {
+        contentOffset: {x, y},
+      },
+    }: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollX.value = x;
+      scrollY.value = y;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   return (
-    <ReanimatedScrollView
+    <Animated.ScrollView
+      scrollEventThrottle={25}
+      onMomentumScrollEnd={onMomentumScrollEnd}
       ref={ref}
       {...props}>
       {childrenWithProps}
-    </ReanimatedScrollView>
+    </Animated.ScrollView>
   );
 };
 
