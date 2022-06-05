@@ -29,7 +29,7 @@ const ScrollViewWithScrollTo = ({
 
   useDerivedValue(() => {
     reanimatedScrollTo(ref, scrollX.value, scrollY.value, false);
-  });
+  }, [scrollX, scrollY]);
 
   const scrollTo: ScrollTo = useCallback(
     (offset, options?: {delay?: number; duration?: number}) => {
@@ -42,7 +42,8 @@ const ScrollViewWithScrollTo = ({
         }),
       );
     },
-    [scrollX, scrollY],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const childrenWithProps = React.Children.map(children, child => {
@@ -52,7 +53,7 @@ const ScrollViewWithScrollTo = ({
     return child;
   });
 
-  const onMomentumScrollEnd = useCallback(
+  const onScrollEnd = useCallback(
     ({
       nativeEvent: {
         contentOffset: {x, y},
@@ -68,7 +69,8 @@ const ScrollViewWithScrollTo = ({
   return (
     <Animated.ScrollView
       scrollEventThrottle={25}
-      onMomentumScrollEnd={onMomentumScrollEnd}
+      onScrollEndDrag={onScrollEnd}
+      onMomentumScrollEnd={onScrollEnd}
       ref={ref}
       {...props}>
       {childrenWithProps}
