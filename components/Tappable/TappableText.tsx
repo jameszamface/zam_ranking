@@ -19,6 +19,7 @@ interface Props<T> extends TappableProps<T> {
 function TappableText<T>({
   item,
   children,
+  gap,
   selected,
   style,
   textStyle,
@@ -44,6 +45,7 @@ function TappableText<T>({
     <TouchableWithoutFeedback onPress={onPress}>
       <Container
         onLayout={onLayout}
+        gap={gap}
         style={style}
         selected={selected}
         selectedColor={selectedColor}
@@ -63,9 +65,12 @@ const Container = styled.View<{
   selectedColor: string;
   selected?: boolean;
   showIndicator?: boolean;
+  gap?: number;
 }>`
   height: 30px;
   padding: 5px;
+  margin-right: ${props => props.gap || 0}px;
+  margin-bottom: ${props => props.gap || 0}px;
   justify-content: center;
   align-items: center;
   border-bottom-color: ${props => props.selectedColor};

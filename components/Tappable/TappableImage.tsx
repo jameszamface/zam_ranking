@@ -18,6 +18,7 @@ function CategoryButton<T>({
   selectedColor = '#000000',
   selected,
   children,
+  gap,
   onPress: _onPress,
   scrollTo,
 }: Props<T>) {
@@ -37,6 +38,7 @@ function CategoryButton<T>({
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Container
+        gap={gap}
         onLayout={onLayout}
         backgroundColor={backgroundColor}
         selectedColor={selectedColor}
@@ -54,9 +56,12 @@ const Container = styled.View<{
   backgroundColor: string;
   selectedColor: string;
   selected?: boolean;
+  gap?: number;
 }>`
   height: 100px;
   width: 75px;
+  margin-right: ${props => props.gap || 0}px;
+  margin-bottom: ${props => props.gap || 0}px;
   border-radius: 3px;
   background-color: ${props =>
     props.selected ? '#000000' : props.backgroundColor};

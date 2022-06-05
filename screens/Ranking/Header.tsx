@@ -4,23 +4,35 @@ import {Category} from '../../api/category';
 import TappableImage from '../../components/Tappable/TappableImage';
 import TappableText from '../../components/Tappable/TappableText';
 import ScrollViewWithScrollTo from '../../components/ScrollViewWithScrollTo';
+import {ViewStyle} from 'react-native';
 
 interface Option {
   type: 'image' | 'text';
   showIndicator?: boolean;
+  style?: ViewStyle;
 }
 
 const settings: Option[] = [
   {
     type: 'image',
+    style: {
+      paddingTop: 10,
+      paddingBottom: 5,
+    },
   },
   {
     type: 'text',
     showIndicator: true,
+    style: {
+      paddingHorizontal: 5,
+    },
   },
   {
     type: 'text',
     showIndicator: false,
+    style: {
+      paddingHorizontal: 5,
+    },
   },
 ];
 
@@ -45,6 +57,7 @@ function Header({categories, selectedCategoryIds, changeCategory}: Props) {
           <ScrollViewWithScrollTo
             key={index}
             horizontal
+            contentContainerStyle={option.style}
             showsHorizontalScrollIndicator={false}>
             {convertCategoriesToComponents(
               depthCategories,
@@ -61,6 +74,7 @@ function Header({categories, selectedCategoryIds, changeCategory}: Props) {
 
 // 나중에 Reanimated.View로 교체
 const Container = styled.View`
+  background-color: #ffffff;
   position: absolute;
 `;
 
@@ -71,12 +85,15 @@ const convertCategoriesToComponents = (
   option?: Option,
 ) => {
   return categories.map(category => {
-    const Component = option?.type === 'text' ? TappableText : TappableImage;
+    const isText = option?.type === 'text';
+    const Component = isText ? TappableText : TappableImage;
+    const gap = isText ? 10 : 5;
 
     return (
       <Component
         item={category}
         key={category.cdId}
+        gap={gap}
         image="" // only for TappableImage
         backgroundColor={category.cdEtc1} // only for TappableImage
         showIndicator={option?.showIndicator} // only for TappableText
