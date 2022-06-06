@@ -59,15 +59,6 @@ function Ranking() {
 
   return (
     <Container paddingTop={top}>
-      <List
-        ref={flatlistRef}
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-        numColumns={2}
-        onScroll={onScroll}
-        contentContainerStyle={{paddingTop: headerLayout?.height}}
-        // eslint-disable-next-line react-native/no-inline-styles
-        renderItem={() => <View style={{width: '100%', height: 300}} />}
-      />
       <Header
         top={top}
         translateY={headerTranslateY}
@@ -77,6 +68,15 @@ function Ranking() {
         categories={categoryInfo.categories}
         selectedCategoryIds={categoryInfo.selectedCategoryIds}
         onCategoryPressed={onCategoryPressed}
+      />
+      <List
+        ref={flatlistRef}
+        data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        numColumns={2}
+        onScroll={onScroll}
+        contentContainerStyle={{paddingTop: headerLayout?.height}}
+        // eslint-disable-next-line react-native/no-inline-styles
+        renderItem={() => <View style={{width: '100%', height: 300}} />}
       />
     </Container>
   );

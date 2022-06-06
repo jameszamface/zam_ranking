@@ -81,6 +81,7 @@ const Container = styled(Animated.View)<{top?: number}>`
   top: ${props => props.top || 0}px;
   background-color: #ffffff;
   position: absolute;
+  z-index: 1;
 `;
 
 const convertCategoriesToComponents = (
