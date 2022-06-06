@@ -53,7 +53,8 @@ function Ranking() {
     }: NativeSyntheticEvent<NativeScrollEvent>) => {
       headerTranslateY.value = Math.max(-y, -headerThresholdY.value);
     },
-    [headerThresholdY.value, headerTranslateY],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   return (
