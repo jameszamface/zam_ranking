@@ -25,12 +25,9 @@ export const fetchCategories = async () => {
   const categoryMap = _.mapValues(depthGroupedCategories, depthCategories =>
     _.groupBy(depthCategories, 'cdNote'),
   );
-  const depths = Object.keys(depthGroupedCategories)
-    .map(depth => Number(depth))
-    // 숫자가 아닌 depth 제거
-    .filter(depth => !Number.isNaN(depth))
+  const allDepths = Object.keys(depthGroupedCategories)
     // 오름차순 정렬
     .sort((a, b) => Number(a) - Number(b));
 
-  return {categoryMap, depths};
+  return {categoryMap, allDepths};
 };

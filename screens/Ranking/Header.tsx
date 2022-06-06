@@ -4,54 +4,19 @@ import {Category} from '../../api/category';
 import TappableImage from '../../components/Tappable/TappableImage';
 import TappableText from '../../components/Tappable/TappableText';
 import ScrollViewWithScrollTo from '../../components/ScrollViewWithScrollTo';
-import {ViewProps, ViewStyle} from 'react-native';
+import {ViewProps} from 'react-native';
 import Animated, {
   AnimateProps,
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-
-interface Option {
-  type: 'image' | 'text';
-  showIndicator?: boolean;
-  style?: ViewStyle;
-  scrollThreshold?: boolean; // 처음 나온 설정에서만
-}
-
-const settings: {
-  categories: Option[];
-  thresholdIndex: number;
-} = {
-  categories: [
-    {
-      type: 'image',
-      style: {
-        paddingTop: 10,
-        paddingBottom: 5,
-      },
-    },
-    {
-      type: 'text',
-      showIndicator: true,
-      style: {
-        paddingHorizontal: 5,
-      },
-      scrollThreshold: true,
-    },
-    {
-      type: 'text',
-      showIndicator: false,
-      style: {
-        paddingHorizontal: 5,
-      },
-    },
-  ],
-  thresholdIndex: 1,
-};
+import {Dictionary} from '../../constants/types';
+import {HeaderOption, headerOptions} from './config';
 
 interface Props {
-  categories: Category[][];
-  selectedCategoryIds: string[];
+  depths: string[];
+  categories: Dictionary<Category[]>;
+  selectedCategoryIds: Dictionary<string>;
   onCategoryPressed: (category: Category) => void;
   onThresholdY?: (thresholdY: number) => void;
   top?: number;
@@ -61,6 +26,7 @@ interface Props {
 function Header({
   top,
   translateY,
+  depths,
   categories,
   selectedCategoryIds,
   onCategoryPressed,
@@ -75,16 +41,17 @@ function Header({
 
   return (
     <Container style={style} top={top}>
-      {categories.map((depthCategories, index) => {
-        const selectedCategoryId = selectedCategoryIds[index];
-        const option = settings.categories[index];
+      {depths.map((depth, index) => {
+        const depthCategories = categories[depth];
+        const selectedCategoryId = selectedCategoryIds[depth];
+        const option = headerOptions.categories[index];
 
         return (
           <ScrollViewWithScrollTo
             key={index}
             horizontal
             onLayout={
-              settings.thresholdIndex === index
+              headerOptions.thresholdDepth === depth
                 ? ({
                     nativeEvent: {
                       layout: {y},
@@ -120,7 +87,7 @@ const convertCategoriesToComponents = (
   categories: Category[],
   selectedCategoryId: string,
   onPress: (category: Category) => void,
-  option?: Option,
+  option?: HeaderOption,
 ) => {
   return categories.map(category => {
     const isText = option?.type === 'text';

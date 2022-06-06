@@ -11,6 +11,7 @@ import styled from 'styled-components/native';
 import {Category} from '../../api/category';
 import useCategories from '../../hooks/useCategories';
 import useLayout from '../../hooks/useLayout';
+import {headerOptions} from './config';
 import Header from './Header';
 
 function Ranking() {
@@ -29,10 +30,14 @@ function Ranking() {
 
   const onCategoryPressed = useCallback(
     (category: Category) => {
-      // scrollTo(headerThresholdY.value)
+      const depth = category.cdEtc2;
+      scrollTo(
+        depth < headerOptions.thresholdDepth ? 0 : headerThresholdY.value,
+      );
       changeCategory(category);
     },
-    [changeCategory],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [changeCategory, scrollTo],
   );
 
   const onThresholdY = useCallback((thresholdY: number) => {
@@ -67,6 +72,7 @@ function Ranking() {
         translateY={headerTranslateY}
         onThresholdY={onThresholdY}
         onLayout={onLayout}
+        depths={categoryInfo.depths}
         categories={categoryInfo.categories}
         selectedCategoryIds={categoryInfo.selectedCategoryIds}
         onCategoryPressed={onCategoryPressed}
