@@ -1,4 +1,4 @@
-import {ViewStyle} from 'react-native';
+import {StyleProp, ViewStyle} from 'react-native';
 import {Dictionary} from '../../constants/types';
 
 export interface HeaderOption {
@@ -11,12 +11,16 @@ export interface HeaderOption {
 export const headerOptions: {
   categories: Dictionary<HeaderOption>;
   thresholdDepth: string;
+  sortLinkedDepth: string;
+  imageStyle: StyleProp<ViewStyle>;
+  textStyle: StyleProp<ViewStyle>;
 } = {
   categories: {
     '0': {
       type: 'image',
       style: {
-        paddingTop: 10,
+        paddingTop: 15,
+        paddingHorizontal: 15,
         paddingBottom: 5,
       },
     },
@@ -37,4 +41,24 @@ export const headerOptions: {
     },
   },
   thresholdDepth: '1',
+  sortLinkedDepth: '0',
+  imageStyle: {
+    width: 100,
+    height: 130,
+    marginRight: 15,
+  },
+  textStyle: {
+    height: 45,
+    marginRight: 15,
+  },
+};
+
+export const sorts = ['popular', 'youtubers'] as const;
+export type Sort = typeof sorts[number];
+
+export const sortLabels: {
+  [key in Sort]: string;
+} = {
+  popular: '인기순',
+  youtubers: '유튜버 리뷰순',
 };

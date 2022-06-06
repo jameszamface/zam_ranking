@@ -93,13 +93,12 @@ const convertCategoriesToComponents = (
   return categories.map(category => {
     const isText = option?.type === 'text';
     const Component = isText ? TappableText : TappableImage;
-    const gap = isText ? 10 : 5;
 
     return (
       <Component
         item={category}
         key={category.cdId}
-        gap={gap}
+        style={isText ? headerOptions.textStyle : headerOptions.imageStyle}
         image="" // only for TappableImage
         backgroundColor={category.cdEtc1} // only for TappableImage
         showIndicator={option?.showIndicator} // only for TappableText

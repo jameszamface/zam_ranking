@@ -11,7 +11,8 @@ import styled from 'styled-components/native';
 import {Category} from '../../api/category';
 import useCategories from '../../hooks/useCategories';
 import useLayout from '../../hooks/useLayout';
-import {headerOptions} from './config';
+import useSort from '../../hooks/useSort';
+import {headerOptions, Sort, sorts} from './config';
 import Header from './Header';
 
 function Ranking() {
@@ -20,6 +21,10 @@ function Ranking() {
   const {top} = useSafeAreaInsets();
   const {layout: headerLayout, onLayout} = useLayout();
   const {categoryInfo, changeCategory} = useCategories();
+  const [sort, setSort] = useSort<Sort>(
+    categoryInfo.selectedCategoryIds[headerOptions.sortLinkedDepth],
+    sorts[0],
+  );
 
   const headerTranslateY = useSharedValue(0);
   const headerThresholdY = useSharedValue(0);

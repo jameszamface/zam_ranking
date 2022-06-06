@@ -11,16 +11,16 @@ interface Props<T> extends TappableProps<T> {
   backgroundColor?: string;
 }
 
-function CategoryButton<T>({
+function TappableImage<T>({
   item,
   image,
   backgroundColor = '#ffffff',
   selectedColor = '#000000',
   selected,
   children,
-  gap,
   onPress: _onPress,
   scrollTo,
+  style,
 }: Props<T>) {
   const {layout, onLayout} = useLayout();
 
@@ -38,7 +38,7 @@ function CategoryButton<T>({
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Container
-        gap={gap}
+        style={style}
         onLayout={onLayout}
         backgroundColor={backgroundColor}
         selectedColor={selectedColor}
@@ -56,12 +56,13 @@ const Container = styled.View<{
   backgroundColor: string;
   selectedColor: string;
   selected?: boolean;
-  gap?: number;
+  horzontalGap?: number;
+  verticalGap?: number;
 }>`
   height: 100px;
   width: 75px;
-  margin-right: ${props => props.gap || 0}px;
-  margin-bottom: ${props => props.gap || 0}px;
+  margin-right: ${props => props.horzontalGap || 0}px;
+  margin-bottom: ${props => props.verticalGap || 0}px;
   border-radius: 3px;
   background-color: ${props =>
     props.selected ? '#000000' : props.backgroundColor};
@@ -84,4 +85,4 @@ const Name = styled.Text<{selected?: boolean}>`
   color: ${props => (props.selected ? '#ffffff' : '#000000')};
 `;
 
-export default CategoryButton;
+export default TappableImage;

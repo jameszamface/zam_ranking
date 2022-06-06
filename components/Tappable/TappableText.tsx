@@ -1,16 +1,10 @@
 import React, {useEffect} from 'react';
-import {
-  StyleProp,
-  TextStyle,
-  TouchableWithoutFeedback,
-  ViewProps,
-} from 'react-native';
+import {StyleProp, TextStyle, TouchableWithoutFeedback} from 'react-native';
 import styled from 'styled-components/native';
 import useLayout from '../../hooks/useLayout';
 import {TappableProps} from './types';
 
 interface Props<T> extends TappableProps<T> {
-  style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
   showIndicator?: boolean;
   onPress?: (category: T) => void;
@@ -19,7 +13,6 @@ interface Props<T> extends TappableProps<T> {
 function TappableText<T>({
   item,
   children,
-  gap,
   selected,
   style,
   textStyle,
@@ -45,7 +38,6 @@ function TappableText<T>({
     <TouchableWithoutFeedback onPress={onPress}>
       <Container
         onLayout={onLayout}
-        gap={gap}
         style={style}
         selected={selected}
         selectedColor={selectedColor}
@@ -65,12 +57,11 @@ const Container = styled.View<{
   selectedColor: string;
   selected?: boolean;
   showIndicator?: boolean;
-  gap?: number;
+  horzontalGap?: number;
+  verticalGap?: number;
 }>`
   height: 30px;
   padding: 5px;
-  margin-right: ${props => props.gap || 0}px;
-  margin-bottom: ${props => props.gap || 0}px;
   justify-content: center;
   align-items: center;
   border-bottom-color: ${props => props.selectedColor};
