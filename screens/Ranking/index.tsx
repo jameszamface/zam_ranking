@@ -6,14 +6,12 @@ import {Category} from '../../api/category';
 import useCategories from '../../hooks/useCategories';
 import useProducts from '../../hooks/useProducts';
 import useSort from '../../hooks/useSort';
-import {HeaderOption, headerOptions, Sort, sorts} from './config';
+import {headerOptions, Sort, sorts} from './config';
 import {width} from '../../constants';
 import Product from '../../components/Product';
 import {Product as ProductType} from '../../data/products';
-import ScrollViewWithScrollTo from '../../components/ScrollViewWithScrollTo';
-import TappableText from '../../components/Tappable/TappableText';
-import TappableImage from '../../components/Tappable/TappableImage';
-import ListLoader from '../../components/ListLoader';
+import ListLoader from '../../components/Loader/ListLoader';
+import {generateCategoriesList} from './headerUtils';
 
 const ITEM_GAP = 10;
 const ITEM_IMAGE_RATIO = 0.85;
@@ -72,66 +70,19 @@ function Ranking() {
     [string, Category[]] | [string, Category[]][] | ProductType[] | undefined
   > = useCallback(
     ({item, index}) => {
-      // 메인 카테고리 랜더링
-      if (index === 0) {
-        // 서버에서 데이터를 받아오기 전에 메인 카테고리는 undefined이다.
-        if (!item) {
-          return null;
-        }
-        const [depth, mainCategories] = item as [string, Category[]];
-        const selectedCategoryId = categoryInfo.selectedCategoryIds[depth];
-        const option = headerOptions.categories[depth];
-
-        return (
-          <ScrollViewWithScrollTo
-            horizontal
-            style={option.style}
-            showsHorizontalScrollIndicator={false}
-            key="main_category">
-            {convertCategoriesToComponents(
-              mainCategories,
-              selectedCategoryId,
-              onCategoryPressed,
-              option,
-            )}
-          </ScrollViewWithScrollTo>
-        );
+      const isCategoryInfo = index === 0 || index === 1;
+      if (isCategoryInfo) {
+        const depthCategoriesArray = item as
+          | [string, Category[]]
+          | [string, Category[]][];
+        return generateCategoriesList({
+          depthCategoriesArray,
+          categoryInfo,
+          onPress: onCategoryPressed,
+          isMainCategory: index === 0,
+        });
       }
-      // 이외 카테고리 묶음 랜더링
-      if (index === 1) {
-        const etcCategoriesArray = item as [string, Category[]][];
-        const separator = {
-          width: etcCategoriesArray.length > 1 ? 1 : 0.5,
-          color: '#cccccc',
-        };
-        return (
-          <EtcCategoriesContainer>
-            {etcCategoriesArray.map(([depth, etcCategories], etcIndex) => {
-              const selectedCategoryId =
-                categoryInfo.selectedCategoryIds[depth];
-              const option = headerOptions.categories[depth];
 
-              console.log(option);
-
-              return (
-                <ScrollViewWithScrollTo
-                  separator={separator}
-                  backgroundColor="#ffffff"
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  key={`etc_category_${etcIndex}`}>
-                  {convertCategoriesToComponents(
-                    etcCategories,
-                    selectedCategoryId,
-                    onCategoryPressed,
-                    option,
-                  )}
-                </ScrollViewWithScrollTo>
-              );
-            })}
-          </EtcCategoriesContainer>
-        );
-      }
       // 제품 랜더링
       // eslint-disable-next-line @typescript-eslint/no-shadow
       const products = item as ProductType[];
@@ -141,16 +92,16 @@ function Ranking() {
           onEndReached={onEndReached}
           numColumns={2}
           renderItem={renderProduct}
-          ListFooterComponent={<ListLoader isLoading={isLoading} />}
+          ListFooterComponent={
+            <ListLoader
+              isLoading={isLoading}
+              height={!products ? 500 : undefined}
+            />
+          }
         />
       );
     },
-    [
-      categoryInfo.selectedCategoryIds,
-      isLoading,
-      onCategoryPressed,
-      onEndReached,
-    ],
+    [categoryInfo, isLoading, onCategoryPressed, onEndReached],
   );
 
   return (
@@ -170,36 +121,5 @@ const Container = styled.View<{paddingTop: number}>`
   background-color: #ffffff;
   flex: 1;
 `;
-
-const EtcCategoriesContainer = styled.View`
-  margin-bottom: 10px;
-`;
-
-const convertCategoriesToComponents = (
-  categories: Category[],
-  selectedCategoryId: string,
-  onPress: (category: Category) => void,
-  option?: HeaderOption,
-) => {
-  return categories.map(category => {
-    const isText = option?.type === 'text';
-    const Component = isText ? TappableText : TappableImage;
-
-    return (
-      <Component
-        item={category}
-        key={category.cdId}
-        style={isText ? headerOptions.textStyle : headerOptions.imageStyle}
-        image="" // only for TappableImage
-        backgroundColor={category.cdEtc1} // only for TappableImage
-        showIndicator={option?.showIndicator} // only for TappableText
-        selectedColor="#000000"
-        selected={selectedCategoryId === category.cdId}
-        onPress={onPress}>
-        {category.cdNm}
-      </Component>
-    );
-  });
-};
 
 export default Ranking;

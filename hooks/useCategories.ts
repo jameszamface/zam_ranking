@@ -2,18 +2,18 @@ import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {Category, fetchCategories} from '../api/category';
 import {Dictionary} from '../constants/types';
-import { headerOptions } from '../screens/Ranking/config';
+import {headerOptions} from '../screens/Ranking/config';
+
+export interface CategoryInfo {
+  mainCategory?: [string, Category[]];
+  etcCategories: [string, Category[]][];
+  categories: Dictionary<Category[]>;
+  selectedCategoryIds: Dictionary<string>;
+  depths: string[];
+}
 
 function useCategories() {
   const {data: categoryData} = useQuery('categories', fetchCategories);
-
-  interface CategoryInfo {
-    mainCategory?: [string, Category[]];
-    etcCategories: [string, Category[]][];
-    categories: Dictionary<Category[]>;
-    selectedCategoryIds: Dictionary<string>;
-    depths: string[];
-  }
 
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo>({
     etcCategories: [],

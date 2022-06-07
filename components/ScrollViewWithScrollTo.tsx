@@ -7,7 +7,7 @@ export type ScrollTo = (
   options?: {delay?: number; duration?: number},
 ) => void;
 
-interface Separtor {
+export interface Separtor {
   width: number;
   color: string;
 }

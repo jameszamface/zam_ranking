@@ -22,9 +22,13 @@ function ListLoader({
   );
 }
 
-const Container = styled.View<{height?: number; paddingBottom?: number}>`
+const Container = styled.View<{
+  height?: number;
+  paddingBottom?: number;
+}>`
   width: 100%;
   height: ${props => props.height || 50}px;
+  flex: 1;
   padding-bottom: ${props => props.paddingBottom || 0}px;
 `;
 

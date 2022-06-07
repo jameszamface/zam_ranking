@@ -1,6 +1,6 @@
 import {Dictionary} from 'lodash';
 import {products} from '../data/products';
-import { delay } from '../utils/time';
+import {delay} from '../utils/time';
 
 interface FetchProductsProps {
   selectedCategoryIds: Dictionary<string>;
