@@ -11,7 +11,7 @@ interface Props {
 
 function useProducts({selectedCategoryIds, sort}: Props) {
   const key = useMemo(
-    () => [..._.keys(selectedCategoryIds), sort],
+    () => [..._.values(selectedCategoryIds), sort],
     [selectedCategoryIds, sort],
   );
 
@@ -37,7 +37,9 @@ function useProducts({selectedCategoryIds, sort}: Props) {
     if (!data) {
       return;
     }
-    setProducts(_.flatMap(data.pages, 'products'));
+    const newProducts = _.flatMap(data.pages, 'products') as Product[];
+    // const twoDimentionsProducts = _.chunk(newProducts, 2);
+    setProducts(newProducts);
   }, [data]);
 
   return {

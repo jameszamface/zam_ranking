@@ -7,14 +7,17 @@ function useCategories() {
   const {data: categoryData} = useQuery('categories', fetchCategories);
 
   interface CategoryInfo {
+    mainCategory?: [string, Category[]];
+    etcCategories: [string, Category[]][];
     categories: Dictionary<Category[]>;
     selectedCategoryIds: Dictionary<string>;
     depths: string[];
   }
 
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo>({
-    categories: {},
+    etcCategories: [],
     selectedCategoryIds: {},
+    categories: {},
     depths: [],
   });
 
@@ -31,12 +34,8 @@ function useCategories() {
       saveCategory(parentId, category);
 
       setCategoryInfo(prev => {
-        const {
-          categories: oldCategories,
-          selectedCategoryIds: oldSelectedCategoryIds,
-        } = prev;
-
         const newCategoryInfo: CategoryInfo = {
+          etcCategories: [],
           categories: {},
           selectedCategoryIds: {},
           depths: [],
@@ -46,24 +45,29 @@ function useCategories() {
         // depth가 어디서 끝나는지 모르기 때문에, 마지막 depth까지 반복하는 while 문을 사용한다.
         for (let i = 0; i < allDepths.length; i++) {
           const depth = allDepths[i];
-
-          // 이전 depth는 과거 정보를 그대로 사용하기 위한 플래그이다.
-          const useOld = depth < depthProp;
+          const usePrevData = depth < depthProp;
+          const isMainCategory = i === 0;
 
           // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, 마지막 depth인 것이다.
-          const depthCategories = useOld
-            ? oldCategories[depth]
+          const depthCategories = usePrevData
+            ? prev.categories[depth]
             : categoryMap[depth][parentId];
 
           if (!depthCategories) {
             break;
           }
 
-          const selectedCategoryId = useOld
-            ? oldSelectedCategoryIds[i]
+          const selectedCategoryId = usePrevData
+            ? prev.selectedCategoryIds[i]
             : restoreCategory(parentId) || depthCategories[0].cdId;
 
           parentId = selectedCategoryId || '';
+
+          if (isMainCategory) {
+            newCategoryInfo.mainCategory = [depth, depthCategories];
+          } else {
+            newCategoryInfo.etcCategories.push([depth, depthCategories]);
+          }
 
           newCategoryInfo.categories[depth] = depthCategories;
           newCategoryInfo.selectedCategoryIds[depth] = selectedCategoryId;
