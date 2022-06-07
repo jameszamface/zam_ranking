@@ -41,7 +41,7 @@ function useProducts({selectedCategoryIds, sort}: Props) {
   }, [data]);
 
   return {
-    products,
+    products: products || [],
     hasNextPage,
     fetchNextPage,
     isLoading: isFetching || isFetchingNextPage,

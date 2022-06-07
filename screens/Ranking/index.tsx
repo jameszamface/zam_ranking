@@ -1,9 +1,9 @@
 import React, {useCallback, useRef} from 'react';
 import {
   FlatList,
+  ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  View,
 } from 'react-native';
 import {useSharedValue} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -15,6 +15,15 @@ import useProducts from '../../hooks/useProducts';
 import useSort from '../../hooks/useSort';
 import {headerOptions, Sort, sorts} from './config';
 import Header from './Header';
+import {width} from '../../constants';
+import Product from '../../components/Product';
+import {Product as ProductType} from '../../data/products';
+
+const ITEM_GAP = 10;
+const ITEM_IMAGE_RATIO = 0.85;
+
+const ITEM_WIDTH = (width - ITEM_GAP * 3) / 2;
+const ITEM_IMAGE_HEIGHT = ITEM_WIDTH * ITEM_IMAGE_RATIO;
 
 function Ranking() {
   const flatlistRef = useRef<FlatList>(null);
@@ -26,10 +35,11 @@ function Ranking() {
     categoryInfo.selectedCategoryIds[headerOptions.sortLinkedDepth],
     sorts[0],
   );
-  const {products, isLoading, isError, hasNextPage} = useProducts({
-    selectedCategoryIds: categoryInfo.selectedCategoryIds,
-    sort,
-  });
+  const {products, isLoading, isError, hasNextPage, fetchNextPage} =
+    useProducts({
+      selectedCategoryIds: categoryInfo.selectedCategoryIds,
+      sort,
+    });
 
   const headerTranslateY = useSharedValue(0);
   const headerThresholdY = useSharedValue(0);
@@ -67,6 +77,24 @@ function Ranking() {
     [],
   );
 
+  const renderItem: ListRenderItem<ProductType> = ({item: product}) => {
+    return (
+      <Product
+        product={product}
+        width={ITEM_WIDTH}
+        gap={ITEM_GAP}
+        imageHeight={ITEM_IMAGE_HEIGHT}
+      />
+    );
+  };
+
+  const onEndReached = useCallback(() => {
+    if (!hasNextPage) {
+      return;
+    }
+    fetchNextPage();
+  }, [fetchNextPage, hasNextPage]);
+
   return (
     <Container paddingTop={top}>
       <Header
@@ -79,14 +107,16 @@ function Ranking() {
         selectedCategoryIds={categoryInfo.selectedCategoryIds}
         onCategoryPressed={onCategoryPressed}
       />
-      <List
+      <FlatList
+        bounces={false}
         ref={flatlistRef}
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        data={products || []}
         numColumns={2}
         onScroll={onScroll}
-        contentContainerStyle={{paddingTop: headerLayout?.height}}
-        // eslint-disable-next-line react-native/no-inline-styles
-        renderItem={() => <View style={{width: '100%', height: 300}} />}
+        contentContainerStyle={{paddingTop: (headerLayout?.height || 0) + top}}
+        renderItem={renderItem}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.8}
       />
     </Container>
   );
@@ -95,10 +125,6 @@ function Ranking() {
 const Container = styled.View<{paddingTop: number}>`
   padding-top: ${props => props.paddingTop}px;
   background-color: #ffffff;
-  flex: 1;
-`;
-
-const List = styled(FlatList)`
   flex: 1;
 `;
 

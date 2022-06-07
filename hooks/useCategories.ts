@@ -42,8 +42,6 @@ function useCategories() {
           depths: [],
         };
 
-        let depthCategories: Category[] | undefined;
-
         // 각 depth의 카테고리마다 최대 depth가 변하는 유동적인 상황을 가정했다.
         // depth가 어디서 끝나는지 모르기 때문에, 마지막 depth까지 반복하는 while 문을 사용한다.
         for (let i = 0; i < allDepths.length; i++) {
@@ -53,7 +51,7 @@ function useCategories() {
           const useOld = depth < depthProp;
 
           // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, 마지막 depth인 것이다.
-          depthCategories = useOld
+          const depthCategories = useOld
             ? oldCategories[depth]
             : categoryMap[depth][parentId];
 
