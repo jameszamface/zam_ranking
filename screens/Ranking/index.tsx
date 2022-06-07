@@ -35,20 +35,18 @@ function Ranking() {
       sort,
     });
 
-  const scrollTo = useCallback((y: number) => {
-    flatlistRef?.current?.scrollToOffset({offset: y, animated: true});
-  }, []);
-
   const onCategoryPressed = useCallback(
     (category: Category) => {
       const {cdId: id, cdEtc2: depth} = category;
       if (id === categoryInfo.selectedCategoryIds[depth]) {
         return;
       }
+      const isMainCategory = depth === headerOptions.mainCategoryDepth;
+      flatlistRef?.current?.scrollToIndex({index: isMainCategory ? 0 : 1});
       changeCategory(category);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [changeCategory, scrollTo],
+    [changeCategory],
   );
 
   const renderProduct: ListRenderItem<ProductType> = ({item}) => {
@@ -80,9 +78,11 @@ function Ranking() {
         const [depth, mainCategories] = item as [string, Category[]];
         const selectedCategoryId = categoryInfo.selectedCategoryIds[depth];
         const option = headerOptions.categories[depth];
+
         return (
           <ScrollViewWithScrollTo
             horizontal
+            style={option.style}
             showsHorizontalScrollIndicator={false}
             key="main_category">
             {convertCategoriesToComponents(
@@ -106,6 +106,8 @@ function Ranking() {
               const selectedCategoryId =
                 categoryInfo.selectedCategoryIds[depth];
               const option = headerOptions.categories[depth];
+
+              console.log(option);
 
               return (
                 <ScrollViewWithScrollTo
@@ -143,6 +145,7 @@ function Ranking() {
   return (
     <Container paddingTop={top}>
       <FlatList
+        ref={flatlistRef}
         data={[categoryInfo.mainCategory, categoryInfo.etcCategories, products]}
         stickyHeaderIndices={[1]}
         renderItem={renderCategoriesOrProducts}

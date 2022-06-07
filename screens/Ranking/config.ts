@@ -5,16 +5,16 @@ export interface HeaderOption {
   type: 'image' | 'text';
   showIndicator?: boolean;
   style?: ViewStyle;
-  scrollThreshold?: boolean; // 처음 나온 설정에서만
 }
 
 export const headerOptions: {
   categories: Dictionary<HeaderOption>;
-  thresholdDepth: string;
   sortLinkedDepth: string;
   imageStyle: StyleProp<ViewStyle>;
   textStyle: StyleProp<ViewStyle>;
+  mainCategoryDepth: string;
 } = {
+  mainCategoryDepth: '0',
   categories: {
     '0': {
       type: 'image',
@@ -30,7 +30,6 @@ export const headerOptions: {
       style: {
         paddingHorizontal: 5,
       },
-      scrollThreshold: true,
     },
     '2': {
       type: 'text',
@@ -40,7 +39,6 @@ export const headerOptions: {
       },
     },
   },
-  thresholdDepth: '1',
   sortLinkedDepth: '0',
   imageStyle: {
     width: 100,

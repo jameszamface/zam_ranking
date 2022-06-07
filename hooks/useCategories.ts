@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {Category, fetchCategories} from '../api/category';
 import {Dictionary} from '../constants/types';
+import { headerOptions } from '../screens/Ranking/config';
 
 function useCategories() {
   const {data: categoryData} = useQuery('categories', fetchCategories);
@@ -46,7 +47,7 @@ function useCategories() {
         for (let i = 0; i < allDepths.length; i++) {
           const depth = allDepths[i];
           const usePrevData = depth < depthProp;
-          const isMainCategory = i === 0;
+          const isMainCategory = depth === headerOptions.mainCategoryDepth;
 
           // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, 마지막 depth인 것이다.
           const depthCategories = usePrevData
