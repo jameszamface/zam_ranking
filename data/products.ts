@@ -20,9 +20,10 @@ export interface Product {
   youtubers: number;
 }
 
-export const products: Product[] = [
+export type ProductWithoutId = Omit<Product, 'id'>;
+
+export const products: ProductWithoutId[] = [
   {
-    id: 1,
     rank: 1,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -43,7 +44,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 2,
     rank: 2,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -64,7 +64,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 3,
     rank: 3,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -85,7 +84,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 4,
     rank: 4,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -106,7 +104,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 5,
     rank: 5,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -127,7 +124,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 6,
     rank: 6,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -148,7 +144,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 7,
     rank: 7,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -169,7 +164,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 8,
     rank: 8,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -190,7 +184,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 9,
     rank: 9,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -211,7 +204,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 10,
     rank: 10,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],
@@ -232,7 +224,6 @@ export const products: Product[] = [
     youtubers: 100,
   },
   {
-    id: 11,
     rank: 11,
     brand: '브랜드1',
     tags: ['블랜딩', '무드'],

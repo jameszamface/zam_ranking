@@ -16,6 +16,9 @@ export const fetchProducts = async ({
   const isLast = Math.random() < 0.85;
   return {
     cursor: isLast ? undefined : (cursor || 0) + 1,
-    products,
+    products: products.map(productWithoutId => ({
+      ...productWithoutId,
+      id: Math.floor(Math.random() * 100000),
+    })),
   };
 };
