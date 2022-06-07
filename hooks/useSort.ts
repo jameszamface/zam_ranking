@@ -23,7 +23,7 @@ function useSort<T>(linkedId: string, defaultSort: T) {
     [storedSorts],
   );
 
-  return [sort, changeSort];
+  return {sort, changeSort};
 }
 
 const saveSort = <T>(store: Dictionary<T>, linkedId: string, sort: T) => {
