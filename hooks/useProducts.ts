@@ -37,7 +37,7 @@ function useProducts({selectedCategoryIds, sort}: Props) {
     if (!data) {
       return;
     }
-    setProducts(_.flatMap(data, 'products'));
+    setProducts(_.flatMap(data.pages, 'products'));
   }, [data]);
 
   return {

@@ -13,7 +13,7 @@ export const fetchProducts = async ({
   cursor,
 }: FetchProductsProps) => {
   console.log('fetchProducts', selectedCategoryIds, sort);
-  const isLast = Math.random() < 0.85;
+  const isLast = Math.random() > 0.85;
   return {
     cursor: isLast ? undefined : (cursor || 0) + 1,
     products: products.map(productWithoutId => ({
