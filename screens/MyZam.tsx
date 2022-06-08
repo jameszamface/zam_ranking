@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, FlatList, Text, View, Animated} from 'react-native';
+import {FlatList, Text, View, Animated} from 'react-native';
 import styled from 'styled-components/native';
 import ParallaxScrolView from '@monterosa/react-native-parallax-scroll';
 import {width} from '../constants';

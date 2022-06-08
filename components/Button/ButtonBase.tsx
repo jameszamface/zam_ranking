@@ -8,16 +8,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 
-interface ContainerSize {
-  width?: number;
-  height?: number;
-  padding?: number;
-  paddingHorizontal?: number;
-  paddingVertical?: number;
-  fontSize?: number;
-}
-
-export interface ButtonProps extends ContainerSize {
+export interface ButtonProps {
   children: string;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
@@ -29,20 +20,14 @@ const ButtonBase = ({
   containerStyle,
   textStyle,
   onPress,
-  ...containerSize
 }: ButtonProps) => {
   return (
     <TouchableWithoutFeedback onPress={() => onPress && onPress(children)}>
-      <Container style={[containerStyle, containerSize]}>
-        <Text style={[textStyle]}>{children}</Text>
+      <Container style={containerStyle}>
+        <Text style={textStyle}>{children}</Text>
       </Container>
     </TouchableWithoutFeedback>
   );
-};
-
-ButtonBase.defaultProps = {
-  paddingHorizontal: 10,
-  paddingVertical: 5,
 };
 
 const Container = styled.View`

@@ -1,54 +1,22 @@
-import _, {isEqual} from 'lodash';
 import React from 'react';
+import isEqual from 'react-fast-compare';
 import ButtonBase, {ButtonProps} from './ButtonBase';
+import {BorderProps, PaddingProps, TextProps} from './types';
+import {makeBorderStyle, makeTextStyle} from './utils';
 
-interface BorderButtonProps {
-  color?: string;
-  backgroundColor?: string;
-  borderColor?: string;
-  borderWidth?: number;
-  borderRadius?: number;
-}
-
-interface Props extends BorderButtonProps {
-  selectedStyle?: BorderButtonProps;
-}
-
-const BorderButton = (props: Props & ButtonProps) => {
-  const borderContainerStyle = makeContainerStyle(props);
-  const borderTextStyle = makeTextStyle(props);
-
-  const containerStyle = _.merge(borderContainerStyle, props.containerStyle);
-  const textStyle = _.merge(borderTextStyle, props.textStyle);
+const BorderButton = (
+  props: BorderProps & PaddingProps & TextProps & ButtonProps,
+) => {
+  const borderStyle = makeBorderStyle(props);
+  const textStyle = makeTextStyle(props);
 
   return (
     <ButtonBase
       {...props}
-      containerStyle={containerStyle}
+      containerStyle={[borderStyle, props.containerStyle]}
       textStyle={textStyle}
     />
   );
-};
-
-const makeContainerStyle = (props?: BorderButtonProps) => {
-  if (!props) {
-    return;
-  }
-  return {
-    borderColor: props?.borderColor,
-    borderWidth: props?.borderWidth,
-    borderRadius: props?.borderRadius,
-    backgroundColor: props?.backgroundColor,
-  };
-};
-
-const makeTextStyle = (props?: BorderButtonProps) => {
-  if (!props) {
-    return;
-  }
-  return {
-    color: props?.color,
-  };
 };
 
 BorderButton.defaultProps = {
@@ -56,6 +24,8 @@ BorderButton.defaultProps = {
   backgroundColor: '#ffffff',
   borderColor: '#cccccc',
   borderWidth: 1,
+  paddingHorizontal: 10,
+  paddingVertical: 5,
 };
 
 export default React.memo(BorderButton, isEqual);
