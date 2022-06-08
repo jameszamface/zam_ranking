@@ -60,11 +60,11 @@ function Ranking() {
   };
 
   const onEndReached = useCallback(() => {
-    if (!hasNextPage) {
+    if (!hasNextPage || isLoading) {
       return;
     }
     fetchNextPage();
-  }, [fetchNextPage, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isLoading]);
 
   const renderCategoriesOrProducts: ListRenderItem<
     [string, Category[]] | [string, Category[]][] | ProductType[] | undefined
