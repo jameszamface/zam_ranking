@@ -3,6 +3,7 @@ import {ScrollView, FlatList, Text, View, Animated} from 'react-native';
 import styled from 'styled-components/native';
 import ParallaxScrolView from '@monterosa/react-native-parallax-scroll';
 import {width} from '../constants';
+import BorderButton from '../components/Button/BorderButton';
 
 const profileHeight = width;
 
@@ -19,7 +20,7 @@ function MyZam() {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text>List Header</Text>
+          <BorderButton height={40} borderRadius={10}>Border Button</BorderButton>
         </View>
       }
       renderScrollComponent={() => (
