@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {useQuery} from 'react-query';
 import {
   fetchLikedCosmetics,
+  fetchScrapVideos,
   fetchWatchedCosmetics,
   fetchWatchedVideos,
 } from '../api/activity';
@@ -40,7 +41,7 @@ export function useWatchedVideos() {
 export function useScrapVideos() {
   const {data, isLoading, isError} = useQuery(
     ['activity', 'scrapVideos'],
-    fetchWatchedVideos,
+    fetchScrapVideos,
   );
   const [scrapVideos, setScrapVideos] = useState<Video[]>();
 

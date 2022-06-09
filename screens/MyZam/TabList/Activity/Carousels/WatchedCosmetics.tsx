@@ -18,7 +18,6 @@ function WatchedCosmetics() {
   const renderItem: ListRenderItem<WatchedCosmetic> = useCallback(
     ({item: product}) => (
       <SimpleProduct
-        id={product.goodsNo}
         image={productConfig.image}
         brand={product.goodsBrand}
         name={product.goodsNm}

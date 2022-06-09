@@ -6,7 +6,6 @@ import Text from '../Text';
 import {TouchableWithoutFeedback} from 'react-native';
 
 interface Props<T> {
-  id: number;
   image: {
     width: number;
     height: number;
@@ -65,7 +64,8 @@ const Container = styled.View<{width: number}>`
 const Image = styled(FastImage)<{width: number; height: number}>`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  background-color: #dedede;
+  background-color: #eeeeee;
+  border-radius: 5px;
 `;
 
 const ColorInfoContainer = styled.View`

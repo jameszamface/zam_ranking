@@ -18,7 +18,6 @@ function LikedCosmetics() {
   const renderItem: ListRenderItem<LikedCosmetic> = useCallback(
     ({item: product}) => (
       <SimpleProduct
-        id={product.C01}
         image={productConfig.image}
         brand={product.C05}
         name={product.C03}
