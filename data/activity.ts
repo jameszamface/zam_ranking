@@ -12,7 +12,7 @@ export interface WatchedCosmetic {
   useYn: string; // 'Y';
 }
 
-export interface LinkedCosmetic {
+export interface LikedCosmetic {
   C00: number; // 1000000256;
   C01: number; // 10003;
   C02: number; // 10400;
@@ -48,7 +48,7 @@ export interface Activities {
   watchedCosmetics: WatchedCosmetic[];
   watchedVideos: Video[];
   scrapVideos: Video[];
-  likedCosmetics: LinkedCosmetic[];
+  likedCosmetics: LikedCosmetic[];
 }
 
 export const activities: Activities = {
