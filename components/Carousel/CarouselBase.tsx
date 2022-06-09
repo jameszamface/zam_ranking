@@ -6,8 +6,8 @@ import Text from '../Text';
 
 interface Props<T> {
   title: string;
-  data: T[];
   renderItem: ListRenderItem<T>;
+  data?: T[];
   gap?: number;
   hasMore?: boolean;
 }
