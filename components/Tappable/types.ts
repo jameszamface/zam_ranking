@@ -1,12 +1,13 @@
-import {StyleProp, ViewProps} from 'react-native';
+import {ReactNode} from 'react';
+import {StyleProp, ViewStyle} from 'react-native';
 import {ScrollTo} from '../ScrollViewWithScrollTo';
 
 export interface TappableProps<T> {
   item: T;
-  children?: string;
+  children?: ReactNode;
   onPress?: (category: T) => void;
   selectedColor?: string;
   selected?: boolean;
   scrollTo?: ScrollTo;
-  style?: StyleProp<ViewProps>;
+  style?: StyleProp<ViewStyle>;
 }

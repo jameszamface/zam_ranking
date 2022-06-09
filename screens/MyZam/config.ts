@@ -9,6 +9,6 @@ export const tabLabels: {
   activity: '내 활동',
   feed: '잼피드',
   review: '잼플 리뷰',
-};
+} as const;
 
 export const profileHeight = width;

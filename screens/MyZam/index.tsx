@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View} from 'react-native';
 import Header from './Header';
 import useSort from '../../hooks/useSort';
-import {Tab, tabs} from './config';
+import { Tab, tabs, tabLabels } from './config';
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
+import Tabs from './Tabs';
 
 function MyZam() {
   const scrollTop = useSharedValue(0);
@@ -21,6 +22,13 @@ function MyZam() {
     [],
   );
 
+  const onTabPressed = useCallback(
+    (tab: Tab) => {
+      changeTab(tab);
+    },
+    [changeTab],
+  );
+
   return (
     <Animated.FlatList
       ListHeaderComponent={<Header scrollTop={scrollTop} />}
@@ -32,8 +40,11 @@ function MyZam() {
       renderItem={({item}) => {
         if (item === 'tab') {
           return (
-            <View
-              style={{width: '100%', height: 100, backgroundColor: 'orange'}}
+            <Tabs
+              tabs={tabs}
+              selectedTab={selectedTab}
+              tabLabels={tabLabels}
+              onPress={onTabPressed}
             />
           );
         }

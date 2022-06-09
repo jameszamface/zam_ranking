@@ -11,7 +11,7 @@ interface Props {
 function Profile({scrollTop}: Props) {
   const style = useAnimatedStyle(
     () => ({
-      transform: [{translateY: scrollTop.value}],
+      transform: [{translateY: scrollTop.value * 0.9}],
     }),
     [scrollTop],
   );
