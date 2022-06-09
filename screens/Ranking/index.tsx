@@ -8,7 +8,7 @@ import useProducts from '../../hooks/useProducts';
 import useSort from '../../hooks/useSort';
 import {headerOptions, Sort, sorts} from './config';
 import {width} from '../../constants';
-import Product from '../../components/Product';
+import Product from '../../components/Product/RankingProduct';
 import {Product as ProductType} from '../../data/products';
 import ListLoader from '../../components/Loader/ListLoader';
 import {generateCategoriesList} from './headerUtils';

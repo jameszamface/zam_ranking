@@ -1,8 +1,8 @@
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
-import {Product as ProductType} from '../data/products';
-import Text from '../components/Text';
+import {Product as ProductType} from '../../data/products';
+import Text from '../Text';
 
 interface Props {
   product: ProductType;
