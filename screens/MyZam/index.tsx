@@ -1,13 +1,15 @@
 import React, {useCallback} from 'react';
-import {View} from 'react-native';
 import Header from './Header';
 import useSort from '../../hooks/useSort';
-import { Tab, tabs, tabLabels } from './config';
+import {Tab, tabs, tabLabels} from './config';
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
 import Tabs from './Tabs';
+import Activity from './TabList/Activity';
+import Feed from './TabList/Feed';
+import Review from './TabList/Review';
 
 function MyZam() {
   const scrollTop = useSharedValue(0);
@@ -49,14 +51,25 @@ function MyZam() {
           );
         }
 
-        return (
-          <View
-            style={{width: '100%', height: 1500, backgroundColor: 'yellow'}}
-          />
-        );
+        const tab = item as Tab;
+        return fetchList(tab);
       }}
     />
   );
 }
+
+const fetchList = (tab: Tab) => {
+  if (tab === 'activity') {
+    return <Activity />;
+  }
+  if (tab === 'feed') {
+    return <Feed />;
+  }
+  if (tab === 'review') {
+    return <Review />;
+  }
+
+  return null;
+};
 
 export default MyZam;

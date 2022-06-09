@@ -3,7 +3,7 @@ import {StyleProp, ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 import TappableText from '../../components/Tappable/TappableText';
 
-interface Props<T> {
+interface Props<T extends string> {
   tabs: readonly T[];
   selectedTab: T;
   tabLabels: {[key in T]: string};
