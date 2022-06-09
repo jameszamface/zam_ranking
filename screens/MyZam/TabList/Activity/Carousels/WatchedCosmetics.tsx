@@ -14,7 +14,7 @@ function WatchedCosmetics() {
 
   return (
     <CarouselBase
-      title="최근 본 영상"
+      title="최근 본 제품"
       data={watchedCosmetics}
       renderItem={renderItem}
     />

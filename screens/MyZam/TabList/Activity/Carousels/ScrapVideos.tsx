@@ -11,7 +11,7 @@ function ScrapVideos() {
 
   return (
     <CarouselBase
-      title="최근 본 영상"
+      title="스크랩한 영상"
       data={scrapVideos}
       renderItem={renderItem}
     />
