@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export interface Review {
   USER_ID: number; // 1000000256;
   A1: number; // 4;
@@ -35,7 +37,9 @@ export interface Review {
   orderId: string; // '0';
 }
 
-export const reviews: Review[] = [
+type ReviewWithoutId = Omit<Review, 'ID'>;
+
+export const localReviews: ReviewWithoutId[] = [
   {
     USER_ID: 1000000256,
     A1: 4,
@@ -64,7 +68,6 @@ export const reviews: Review[] = [
     rgbCd: '906f5e',
     ord: 1,
     evalNm: '발색력,발림성,지속력,밀착력',
-    ID: 158618,
     likes: 0,
     isReviewer: '0',
     useYn: 'Y',
@@ -100,7 +103,6 @@ export const reviews: Review[] = [
     rgbCd: 'b46763',
     ord: 1,
     evalNm: '발색력,발림성,지속력,밀착력',
-    ID: 158604,
     likes: 0,
     isReviewer: '0',
     useYn: 'Y',
@@ -136,7 +138,6 @@ export const reviews: Review[] = [
     rgbCd: 'd46261',
     ord: 1,
     evalNm: '발색력,발림성,지속력,밀착력',
-    ID: 158603,
     likes: 0,
     isReviewer: '0',
     useYn: 'Y',
@@ -172,7 +173,6 @@ export const reviews: Review[] = [
     rgbCd: 'd07e98',
     ord: 1,
     evalNm: '발색력,발림성,지속력,밀착력',
-    ID: 158600,
     likes: 0,
     isReviewer: '0',
     useYn: 'Y',
@@ -208,7 +208,6 @@ export const reviews: Review[] = [
     rgbCd: 'b46763',
     ord: 1,
     evalNm: '발색력,발림성,지속력,밀착력',
-    ID: 158599,
     likes: 0,
     isReviewer: '0',
     useYn: 'Y',
@@ -217,3 +216,9 @@ export const reviews: Review[] = [
     orderId: '202205271554283761_102359665_38209074',
   },
 ];
+
+export const reviews = _.cloneDeep([
+  ...localReviews,
+  ...localReviews,
+  ...localReviews,
+]);
