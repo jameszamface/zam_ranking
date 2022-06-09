@@ -1,7 +1,7 @@
 import {Dictionary} from 'lodash';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-function useSort<T>(linkedId: string, defaultSort: T) {
+function useSort<T>(defaultSort: T, linkedId?: string) {
   const storedSorts = useRef<Dictionary<T>>({}).current;
 
   const [sort, setSort] = useState<T>(
@@ -30,7 +30,8 @@ const saveSort = <T>(store: Dictionary<T>, linkedId: string, sort: T) => {
   store[linkedId] = sort;
 };
 
-const restoreSort = <T>(store: Dictionary<T>, linkedId: string) => {
+const restoreSort = <T>(store: Dictionary<T>, linkedId?: string) => {
+  if (!linkedId) return;
   return store[linkedId] as T | undefined;
 };
 

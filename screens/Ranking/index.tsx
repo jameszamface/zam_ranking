@@ -25,8 +25,8 @@ function Ranking() {
   const {top} = useSafeAreaInsets();
   const {categoryInfo, changeCategory} = useCategories();
   const {sort, changeSort} = useSort<Sort>(
-    categoryInfo.selectedCategoryIds[headerOptions.sortLinkedDepth],
     sorts[0],
+    categoryInfo.selectedCategoryIds[headerOptions.sortLinkedDepth],
   );
   const {products, isLoading, isError, hasNextPage, fetchNextPage} =
     useProducts({
