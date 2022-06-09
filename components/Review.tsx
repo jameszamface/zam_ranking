@@ -65,8 +65,8 @@ function Review<T>({
           <Text>{score}</Text>
         </RowContainer>
 
-        {makeEvals(evals)}
-        {makeTags(tags)}
+        <Evals evals={evals}/>
+        <Tags tags={tags}/>
         {note && <Text>{note}</Text>}
         <Text color="#666666">{date.replace(/-/gi, '.')}</Text>
       </Container>
@@ -98,7 +98,7 @@ const Image = styled(FastImage)`
   margin-right: 15px;
 `;
 
-const makeEvals = (evals?: Eval[]) => {
+const Evals = ({evals}: {evals?: Eval[]}) => {
   if (!evals) return null;
   return (
     <RowContainer>
@@ -117,7 +117,7 @@ const makeEvals = (evals?: Eval[]) => {
   );
 };
 
-const makeTags = (tags?: string[]) => {
+const Tags = ({tags}: {tags?: string[]}) => {
   if (!tags) return null;
   return (
     <RowContainer>
@@ -127,11 +127,5 @@ const makeTags = (tags?: string[]) => {
     </RowContainer>
   );
 };
-
-const makeDate = (date: Date) => {
-  return (
-    <Text></Text>
-  )
-}
 
 export default Review;
