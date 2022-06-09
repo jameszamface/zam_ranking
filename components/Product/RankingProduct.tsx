@@ -2,6 +2,7 @@ import React from 'react';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import {Product as ProductType} from '../../data/products';
+import ColorCircle from '../Cricle/ColorCircle';
 import Text from '../Text';
 
 interface Props {
@@ -17,7 +18,7 @@ function Product({product, width, imageHeight, gap}: Props) {
       <ImageContainer>
         <Image source={{uri: ''}} width={width} height={imageHeight} />
         <ColorInfoContainer>
-          <ColorCircle color={product.color.string} />
+          <ColorCircle size={10} marginRight={5} color={product.color.string} />
           <Text color="#666666">{`${product.color.number} ${product.color.description}`}</Text>
         </ColorInfoContainer>
       </ImageContainer>
@@ -57,12 +58,6 @@ const ImageContainer = styled.View`
 
 const ColorInfoContainer = styled(RowContainer)`
   justify-content: center;
-`;
-const ColorCircle = styled.View<{color: string}>`
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
-  background-color: ${props => props.color};
 `;
 
 const Image = styled(FastImage)<{width: number; height: number}>`

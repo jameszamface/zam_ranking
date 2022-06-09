@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {FlatList, ListRenderItem} from 'react-native';
+import {FlatList, ListRenderItem, StyleProp, ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 import TextButton from '../Button/TextButton';
 import Text from '../Text';
@@ -34,6 +34,8 @@ function Carousel<T>({title, data, renderItem, gap, hasMore}: Props<T>) {
       </HeaderContainer>
       <FlatList
         horizontal
+        contentContainerStyle={contentContainerStyle}
+        showsHorizontalScrollIndicator={false}
         ItemSeparatorComponent={itemSeparatorComponent}
         data={data}
         renderItem={renderItem}
@@ -41,6 +43,10 @@ function Carousel<T>({title, data, renderItem, gap, hasMore}: Props<T>) {
     </Container>
   );
 }
+
+const contentContainerStyle: StyleProp<ViewStyle> = {
+  paddingHorizontal: 10,
+};
 
 const Container = styled.View`
   width: 100%;
@@ -54,6 +60,7 @@ const HeaderContainer = styled.View<{hasMore?: boolean}>`
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
+  margin-bottom: 10px;
 `;
 
 const Separator = styled.View<{width: number}>`
