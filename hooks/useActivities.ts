@@ -5,8 +5,8 @@ import {
   fetchScrapVideos,
   fetchWatchedCosmetics,
   fetchWatchedVideos,
-} from '../api/activity';
-import {LikedCosmetic, WatchedCosmetic, Video} from '../data/activity';
+} from '../api/myActivities';
+import {LikedCosmetic, WatchedCosmetic, Video} from '../data/myActivities';
 
 export function useWatchedCosmetics() {
   const {data, isLoading, isError} = useQuery(

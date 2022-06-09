@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {ListRenderItem} from 'react-native';
 import CarouselBase from '../../../../../components/Carousel/CarouselBase';
 import SimpleProduct from '../../../../../components/Product/SimpleProduct';
-import {LikedCosmetic} from '../../../../../data/activity';
+import {LikedCosmetic} from '../../../../../data/myActivities';
 import {useLikedCosmetics} from '../../../../../hooks/useActivities';
 import {productConfig} from './config';
 
@@ -18,7 +18,10 @@ function LikedCosmetics() {
   const renderItem: ListRenderItem<LikedCosmetic> = useCallback(
     ({item: product}) => (
       <SimpleProduct
-        image={productConfig.image}
+        image={{
+          ...productConfig.image,
+          uri: product.C04,
+        }}
         brand={product.C05}
         name={product.C03}
         item={product}

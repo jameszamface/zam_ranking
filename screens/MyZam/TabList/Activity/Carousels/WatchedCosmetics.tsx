@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {ListRenderItem} from 'react-native';
 import CarouselBase from '../../../../../components/Carousel/CarouselBase';
 import SimpleProduct from '../../../../../components/Product/SimpleProduct';
-import {WatchedCosmetic} from '../../../../../data/activity';
+import {WatchedCosmetic} from '../../../../../data/myActivities';
 import {useWatchedCosmetics} from '../../../../../hooks/useActivities';
 import {productConfig} from './config';
 

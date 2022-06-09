@@ -1,4 +1,4 @@
-import {activities} from '../data/activity';
+import {activities} from '../data/myActivities';
 
 export const fetchWatchedCosmetics = async () => {
   return activities.watchedCosmetics;

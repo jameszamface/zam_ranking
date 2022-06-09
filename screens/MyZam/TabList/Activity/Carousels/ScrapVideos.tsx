@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {ListRenderItem} from 'react-native';
 import CarouselBase from '../../../../../components/Carousel/CarouselBase';
 import SimpleVideo from '../../../../../components/Video/SimpleVideo';
-import {Video} from '../../../../../data/activity';
+import {Video} from '../../../../../data/myActivities';
 import {useScrapVideos} from '../../../../../hooks/useActivities';
 import {videoConfig} from './config';
 
