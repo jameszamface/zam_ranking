@@ -7,6 +7,7 @@ import RowContainer from './RowContainer';
 import ColorCircle from './Cricle/ColorCircle';
 import {Eval} from '../data/myReviews';
 import Tag from './Tag';
+import PurchaseReview from '../icons/PurchaseReview';
 
 interface Props<T> {
   image?: string;
@@ -43,6 +44,7 @@ function Review<T>({
   const onPress = () => {
     onPressFromProps && onPressFromProps(item);
   };
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Container>
@@ -57,9 +59,16 @@ function Review<T>({
           </View>
         </ProductContainer>
 
+        <RowContainer>
+          {purchased && <PurchaseReview />}
+          <Text>✭</Text>
+          <Text>{score}</Text>
+        </RowContainer>
+
         {makeEvals(evals)}
         {makeTags(tags)}
         {note && <Text>{note}</Text>}
+        <Text color="#666666">{date.replace(/-/gi, '.')}</Text>
       </Container>
     </TouchableWithoutFeedback>
   );
@@ -118,5 +127,11 @@ const makeTags = (tags?: string[]) => {
     </RowContainer>
   );
 };
+
+const makeDate = (date: Date) => {
+  return (
+    <Text></Text>
+  )
+}
 
 export default Review;

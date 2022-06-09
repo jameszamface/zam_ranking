@@ -24,6 +24,8 @@ function Review() {
             string: `#${review.rgbCd}`,
             description: review.colorNm,
           }}
+          purchased={!!review.orderId}
+          note={review.ANS_NOTE}
           evals={review.evals}
           tags={review.hashtags}
           item={review}
