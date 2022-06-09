@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {Review, reviews} from '../data/myReviews';
 import {delay} from '../utils/time';
 
@@ -14,11 +15,19 @@ export const fetchMyReviews = async (
   console.log('fetchReviews', {cursor: props.cursor});
   const isLast = Math.random() > 0.85;
   await delay(1500);
+
   return {
     cursor: isLast ? undefined : (props.cursor || 0) + 1,
-    reviews: reviews.map(reviewWithoutId => ({
-      ...reviewWithoutId,
-      ID: Math.floor(Math.random() * 100000),
-    })),
+    reviews: reviews.map(reviewWithoutId => {
+      const labels = reviewWithoutId.evalNm.split(',');
+      const evalScores = JSON.parse(reviewWithoutId.ANS) as number[];
+
+      const evals = _.zip(labels, evalScores);
+      return {
+        ...reviewWithoutId,
+        ID: Math.floor(Math.random() * 1000000),
+        evals,
+      };
+    }),
   };
 };

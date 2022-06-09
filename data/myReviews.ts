@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+export type Eval = [string | undefined, number | undefined];
+
 export interface Review {
   USER_ID: number; // 1000000256;
   A1: number; // 4;
@@ -35,11 +37,12 @@ export interface Review {
   video: string; // '';
   hashtags: string[]; // ['색감예쁜'];
   orderId: string; // '0';
+  evals: Eval[]; // zip(Array(evalNm), Array(ANS));
 }
 
-type ReviewWithoutId = Omit<Review, 'ID'>;
+type ReviewWithoutIdEval = Omit<Review, 'ID' | 'evals'>;
 
-export const localReviews: ReviewWithoutId[] = [
+export const localReviews: ReviewWithoutIdEval[] = [
   {
     USER_ID: 1000000256,
     A1: 4,
@@ -55,8 +58,8 @@ export const localReviews: ReviewWithoutId[] = [
     SEC: 0,
     SHOP_ID: 10003,
     GOODS_NO: 2651,
-    GOODS_BRAND: '데이지크',
-    GOODS_NM: '섀도우 팔레트',
+    GOODS_BRAND: '데이지크', // brand
+    GOODS_NM: '섀도우 팔레트', // name
     STS: '',
     STS_CD: '',
     EVENT_CNT: 0,
@@ -221,4 +224,4 @@ export const reviews = _.cloneDeep([
   ...localReviews,
   ...localReviews,
   ...localReviews,
-]);
+]); // 12개

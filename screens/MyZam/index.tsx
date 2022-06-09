@@ -43,6 +43,7 @@ function MyZam() {
         if (item === 'tab') {
           return (
             <Tabs
+              key="tab"
               tabs={tabs}
               selectedTab={selectedTab}
               tabLabels={tabLabels}
@@ -60,13 +61,13 @@ function MyZam() {
 
 const fetchList = (tab: Tab) => {
   if (tab === 'activity') {
-    return <Activity />;
+    return <Activity key="activity" />;
   }
   if (tab === 'feed') {
-    return <Feed />;
+    return <Feed key="feed" />;
   }
   if (tab === 'review') {
-    return <Review />;
+    return <Review key="review" />;
   }
 
   return null;
