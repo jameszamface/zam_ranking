@@ -5,7 +5,8 @@ import {Review as ReviewType} from '../../../data/myReviews';
 import ReviewComponent from '../../../components/Review';
 
 function Review() {
-  const {reviews, isLoading, isError, fetchNextReviews, hasNextPage} = useMyReviews();
+  const {reviews, isLoading, isError, fetchNextReviews, hasNextPage} =
+    useMyReviews();
 
   const onPress = useCallback((review?: ReviewType) => {
     console.log('잼플 리뷰', review?.GOODS_NM);

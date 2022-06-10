@@ -80,6 +80,8 @@ class Masonry<ItemT> extends React.Component<
     );
   };
 
+  keyExtractor = (item: ItemT[], index: number) => String(index);
+
   render() {
     return (
       <FlatList
@@ -87,7 +89,7 @@ class Masonry<ItemT> extends React.Component<
         style={containerStyle}
         data={this.state?.splittedData}
         renderItem={this.renderFlatList}
-        keyExtractor={(item: ItemT[], index: number) => String(index)}
+        keyExtractor={this.keyExtractor}
       />
     );
   }
