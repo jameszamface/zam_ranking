@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import Text from '../../../components/Text';
+import useMyFeeds from '../../../hooks/useMyFeeds';
 
 function Feed() {
+  const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
+    useMyFeeds();
   return (
     <Container>
       <Text>Feed</Text>
