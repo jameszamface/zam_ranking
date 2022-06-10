@@ -5,7 +5,6 @@ import {
   FlatListProps,
   ListRenderItem,
   StyleProp,
-  View,
   ViewStyle,
 } from 'react-native';
 import {width} from '../constants';
@@ -17,6 +16,7 @@ const propsSplitter = [
   'keyExtractor',
   'scrollEventThrottle',
   'scrollEnabled',
+  'renderItem',
 ] as const;
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface State<ItemT> {
-  splittedData: ItemT[][];
+  splittedData: ItemT[][] | undefined;
 }
 
 class Masonry<ItemT> extends React.Component<
@@ -52,9 +52,11 @@ class Masonry<ItemT> extends React.Component<
   }
 
   renderFlatList: ListRenderItem<ItemT[]> = ({item: data, index}) => {
+    const {numColumns = 1} = this.props;
     return (
       <FlatList
         {...this.childProps}
+        ref={null}
         style={{
           width: this.childWidth,
           marginLeft: this.props.gap,
@@ -68,7 +70,7 @@ class Masonry<ItemT> extends React.Component<
           if (!this.props.renderItem) return null;
           return this.props.renderItem({
             item,
-            index: index + childIndex,
+            index: index + numColumns * childIndex,
             ...etc,
           });
         }}
@@ -90,14 +92,15 @@ class Masonry<ItemT> extends React.Component<
 }
 
 function splitArray<T>(arr?: readonly T[] | null, splitCount = 1) {
-  if (!arr) return [];
-  return arr.reduce<T[][]>(
-    (acc, cur, i) => {
-      acc[i % splitCount].push(cur);
-      return acc;
-    },
-    [[], []],
-  );
+  return arr?.reduce<T[][]>((acc, cur, i) => {
+    const basket = acc[i % splitCount];
+    if (!basket) {
+      acc.push([cur]);
+    } else {
+      basket.push(cur);
+    }
+    return acc;
+  }, []);
 }
 
 const containerStyle: StyleProp<ViewStyle> = {
