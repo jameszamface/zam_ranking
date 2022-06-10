@@ -63,6 +63,7 @@ class Masonry<ItemT> extends React.Component<
         key={index}
         scrollEnabled={false}
         listKey={String(index)}
+        // index를 사용하지 않는다면 this.props.renderItem을 그대로 넘겨주어도 된다.
         renderItem={({item, index: childIndex, ...etc}) => {
           if (!this.props.renderItem) return null;
           return this.props.renderItem({

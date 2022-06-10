@@ -1,6 +1,5 @@
 import React from 'react';
 import {View} from 'react-native';
-import styled from 'styled-components/native';
 import Masonry from '../../../components/Masonry';
 import useMyFeeds from '../../../hooks/useMyFeeds';
 
@@ -12,7 +11,7 @@ function Feed() {
     <Masonry
       data={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
       numColumns={2}
-      gap={10}
+      gap={2}
       renderItem={({index}) => {
         console.log(index);
         return (
