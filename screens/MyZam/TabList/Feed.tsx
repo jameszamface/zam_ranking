@@ -6,6 +6,7 @@ import useMyFeeds from '../../../hooks/useMyFeeds';
 function Feed() {
   const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
     useMyFeeds();
+
   return (
     <Container>
       <Text>Feed</Text>
