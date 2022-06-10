@@ -8,6 +8,7 @@ import ColorCircle from './Cricle/ColorCircle';
 import {Eval} from '../data/myReviews';
 import Tag from './Tag';
 import PurchaseReview from '../icons/PurchaseReview';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface Props<T> {
   image?: string;
@@ -48,25 +49,10 @@ function Review<T>({
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Container>
-        <ProductContainer>
-          <Image source={{uri: image}} />
-          <View>
-            <Text>{`[${brand}] ${name}`}</Text>
-            <RowContainer>
-              <ColorCircle size={10} marginRight={10} color={color.string} />
-              <Text color="#666666">{color.description}</Text>
-            </RowContainer>
-          </View>
-        </ProductContainer>
-
-        <RowContainer>
-          {purchased && <PurchaseReview />}
-          <Text>✭</Text>
-          <Text>{score}</Text>
-        </RowContainer>
-
-        <Evals evals={evals}/>
-        <Tags tags={tags}/>
+        <Product image={image} brand={brand} name={name} color={color} />
+        <Score score={score} purchased={purchased} />
+        <Evals evals={evals} />
+        <Tags tags={tags} />
         {note && <Text>{note}</Text>}
         <Text color="#666666">{date.replace(/-/gi, '.')}</Text>
       </Container>
@@ -98,6 +84,32 @@ const Image = styled(FastImage)`
   margin-right: 15px;
 `;
 
+const Product = ({
+  brand,
+  name,
+  image,
+  color,
+}: {
+  brand: string;
+  name: string;
+  image?: string;
+  color: {
+    string: string;
+    description: string;
+  };
+}) => (
+  <ProductContainer>
+    <Image source={{uri: image}} />
+    <View>
+      <Text>{`[${brand}] ${name}`}</Text>
+      <RowContainer>
+        <ColorCircle size={10} marginRight={10} color={color.string} />
+        <Text color="#666666">{color.description}</Text>
+      </RowContainer>
+    </View>
+  </ProductContainer>
+);
+
 const Evals = ({evals}: {evals?: Eval[]}) => {
   if (!evals) return null;
   return (
@@ -108,7 +120,7 @@ const Evals = ({evals}: {evals?: Eval[]}) => {
         return (
           <Text key={index}>
             <Text color="#666666">{evalName}</Text>
-            <Text>{evalScore}</Text>
+            <Text>{` ${evalScore}`}</Text>
             {!isLast ? <Text>{' | '}</Text> : null}
           </Text>
         );
@@ -124,6 +136,16 @@ const Tags = ({tags}: {tags?: string[]}) => {
       {tags.map(tag => (
         <Tag key={tag}>{tag}</Tag>
       ))}
+    </RowContainer>
+  );
+};
+
+const Score = ({score, purchased}: {score: number; purchased?: boolean}) => {
+  return (
+    <RowContainer>
+      {purchased && <PurchaseReview />}
+      <AntDesign name="star" size={15} color="#f0d83e" />
+      <Text>{score.toFixed(1)}</Text>
     </RowContainer>
   );
 };

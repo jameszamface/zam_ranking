@@ -9,8 +9,3 @@ export interface BorderProps {
   borderWidth?: number;
   borderRadius?: number;
 }
-
-export interface PaddingProps {
-  paddingHorizontal?: number;
-  paddingVertical?: number;
-}

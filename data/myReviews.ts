@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export type Eval = [string | undefined, number | undefined];
+export type Eval = [string | undefined, string | undefined];
 
 export interface Review {
   USER_ID: number; // 1000000256;

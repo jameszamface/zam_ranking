@@ -1,7 +1,7 @@
+import {Dictionary} from 'lodash';
 import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {Category, fetchCategories} from '../api/category';
-import {Dictionary} from '../constants/types';
 import {headerOptions} from '../screens/Ranking/config';
 
 export interface CategoryInfo {

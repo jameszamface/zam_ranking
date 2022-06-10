@@ -1,5 +1,5 @@
+import {Dictionary} from 'lodash';
 import {StyleProp, ViewStyle} from 'react-native';
-import {Dictionary} from '../../constants/types';
 
 export interface HeaderOption {
   type: 'image' | 'text';

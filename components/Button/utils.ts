@@ -1,6 +1,7 @@
-import {BorderProps, PaddingProps} from './types';
+import { Padding } from '../../constants/type/View';
+import {BorderProps} from './types';
 
-export const makeBorderStyle = (props?: BorderProps & PaddingProps) => {
+export const makeBorderStyle = (props?: BorderProps & Padding) => {
   if (!props) {
     return;
   }

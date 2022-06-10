@@ -1,6 +1,4 @@
 import React, {useCallback} from 'react';
-import styled from 'styled-components/native';
-import Text from '../../../components/Text';
 import useMyReviews from '../../../hooks/useMyReviews';
 import {FlatList, ListRenderItem, StyleProp, ViewStyle} from 'react-native';
 import {Review as ReviewType} from '../../../data/myReviews';
