@@ -1,6 +1,7 @@
 import {Dictionary} from 'lodash';
 import {products} from '../data/products';
 import {delay} from '../utils/time';
+import {createRandomID} from '../utils/id';
 
 interface FetchProductsProps {
   selectedCategoryIds: Dictionary<string>;
@@ -20,7 +21,7 @@ export const fetchProducts = async ({
     cursor: isLast ? undefined : (cursor || 0) + 1,
     products: products.map(productWithoutId => ({
       ...productWithoutId,
-      id: Math.floor(Math.random() * 100000),
+      id: createRandomID(),
     })),
   };
 };

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import {evalScoreDictionary} from '../constants';
 import {Review, reviews} from '../data/myReviews';
 import {delay} from '../utils/time';
+import {createRandomID} from '../utils/id';
 
 interface FetchReviewsProps {
   cursor?: number;
@@ -28,7 +29,7 @@ export const fetchMyReviews = async (
       const evals = _.zip(labels, evalScores);
       return {
         ...reviewWithoutId,
-        ID: Math.floor(Math.random() * 1000000),
+        ID: createRandomID(),
         evals,
       };
     }),
