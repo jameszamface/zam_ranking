@@ -5,7 +5,7 @@ import {Review as ReviewType} from '../../../data/myReviews';
 import ReviewComponent from '../../../components/Review';
 
 function Review() {
-  const {reviews, isLoading, isError, fetchNextReviews} = useMyReviews();
+  const {reviews, isLoading, isError, fetchNextReviews, hasNextPage} = useMyReviews();
 
   const onPress = useCallback((review?: ReviewType) => {
     console.log('잼플 리뷰', review?.GOODS_NM);
@@ -37,9 +37,9 @@ function Review() {
   );
 
   const onEndReached = useCallback(() => {
-    if (isLoading || isError) return;
+    if (isLoading || isError || !hasNextPage) return;
     fetchNextReviews();
-  }, [isLoading, isError, fetchNextReviews]);
+  }, [isLoading, isError, hasNextPage, fetchNextReviews]);
 
   return (
     <FlatList
@@ -49,6 +49,9 @@ function Review() {
       keyExtractor={keyExtractor}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.8}
+      scrollEventThrottle={16}
+      updateCellsBatchingPeriod={100}
+      maxToRenderPerBatch={7}
     />
   );
 }

@@ -10,6 +10,7 @@ import Tabs from './Tabs';
 import Activity from './TabList/Activity';
 import Feed from './TabList/Feed';
 import Review from './TabList/Review';
+import {ListRenderItem} from 'react-native';
 
 function MyZam() {
   const scrollTop = useSharedValue(0);
@@ -31,6 +32,26 @@ function MyZam() {
     [changeTab],
   );
 
+  const renderItem: ListRenderItem<string> = useCallback(
+    ({item}) => {
+      if (item === 'tab') {
+        return (
+          <Tabs
+            key="tab"
+            tabs={tabs}
+            selectedTab={selectedTab}
+            tabLabels={tabLabels}
+            onPress={onTabPressed}
+          />
+        );
+      }
+
+      const tab = item as Tab;
+      return fetchList(tab);
+    },
+    [onTabPressed, selectedTab],
+  );
+
   return (
     <Animated.FlatList
       ListHeaderComponent={<Header scrollTop={scrollTop} />}
@@ -39,22 +60,7 @@ function MyZam() {
       bounces
       onScroll={scrollHandler}
       scrollEventThrottle={16}
-      renderItem={({item}) => {
-        if (item === 'tab') {
-          return (
-            <Tabs
-              key="tab"
-              tabs={tabs}
-              selectedTab={selectedTab}
-              tabLabels={tabLabels}
-              onPress={onTabPressed}
-            />
-          );
-        }
-
-        const tab = item as Tab;
-        return fetchList(tab);
-      }}
+      renderItem={renderItem}
     />
   );
 }
