@@ -61,6 +61,7 @@ function MyZam() {
       onScroll={scrollHandler}
       scrollEventThrottle={16}
       renderItem={renderItem}
+      showsVerticalScrollIndicator={false}
     />
   );
 }

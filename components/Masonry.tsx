@@ -17,6 +17,8 @@ const propsSplitter = [
   'scrollEventThrottle',
   'scrollEnabled',
   'renderItem',
+  'style',
+  'contentContainerStyle',
 ] as const;
 
 interface Props {

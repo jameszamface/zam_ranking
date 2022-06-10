@@ -12,6 +12,8 @@ import com.facebook.soloader.SoLoader;
 import com.zamranking.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.facebook.react.bridge.JSIModulePackage; // reanimated
+import com.swmansion.reanimated.ReanimatedJSIModulePackage; // reanimated
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -34,6 +36,11 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected String getJSMainModuleName() {
           return "index";
+        }
+
+        @Override
+        protected JSIModulePackage getJSIModulePackage() {
+          return new ReanimatedJSIModulePackage(); // reanimated
         }
       };
 

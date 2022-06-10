@@ -17,7 +17,7 @@ function Feed() {
           <View
             style={{
               width: '100%',
-              height: index % 3 ? 50 : 75,
+              height: index % 3 ? 100 : 150,
               backgroundColor: index % 3 ? 'red' : 'blue',
               justifyContent: 'center',
               alignItems: 'center',
@@ -28,6 +28,7 @@ function Feed() {
       }}
       keyExtractor={item => String(item)}
       scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
     />
   );
 }
