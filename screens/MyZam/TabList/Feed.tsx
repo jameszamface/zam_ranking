@@ -1,6 +1,7 @@
 import React from 'react';
+import {View} from 'react-native';
 import styled from 'styled-components/native';
-import Text from '../../../components/Text';
+import Masonry from '../../../components/Masonry';
 import useMyFeeds from '../../../hooks/useMyFeeds';
 
 function Feed() {
@@ -8,18 +9,26 @@ function Feed() {
     useMyFeeds();
 
   return (
-    <Container>
-      <Text>Feed</Text>
-    </Container>
+    <Masonry
+      data={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
+      numColumns={2}
+      gap={10}
+      renderItem={({index}) => {
+        console.log(index);
+        return (
+          <View
+            style={{
+              width: '100%',
+              height: index % 3 ? 50 : 75,
+              backgroundColor: index % 3 ? 'red' : 'blue',
+            }}
+          />
+        );
+      }}
+      keyExtractor={item => String(item)}
+      scrollEventThrottle={16}
+    />
   );
 }
-
-const Container = styled.View`
-  width: 100%;
-  height: 1500px;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffffff;
-`;
 
 export default Feed;
