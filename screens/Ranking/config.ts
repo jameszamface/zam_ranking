@@ -1,19 +1,21 @@
 import {Dictionary} from 'lodash';
 import {StyleProp, ViewStyle} from 'react-native';
 
-export interface HeaderOption {
+export interface CategoryOption {
   type: 'image' | 'text';
   showIndicator?: boolean;
   style?: ViewStyle;
 }
 
-export const headerOptions: {
-  categories: Dictionary<HeaderOption>;
+export interface HeaderOptions {
+  categories: Dictionary<CategoryOption>;
   sortLinkedDepth: string;
   imageStyle: StyleProp<ViewStyle>;
   textStyle: StyleProp<ViewStyle>;
   mainCategoryDepth: string;
-} = {
+}
+
+export const headerOptions: HeaderOptions = {
   mainCategoryDepth: '0',
   categories: {
     '0': {

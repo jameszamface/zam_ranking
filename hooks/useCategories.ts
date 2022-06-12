@@ -1,8 +1,8 @@
 import {Dictionary} from 'lodash';
 import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
-import {Category, fetchCategories} from '../api/category';
-import {headerOptions} from '../screens/Ranking/config';
+import {Category, CategoryMap, fetchCategories} from '../api/category';
+import {HeaderOptions, headerOptions} from '../screens/Ranking/config';
 
 export interface CategoryInfo {
   mainCategory?: [string, Category[]];
@@ -24,56 +24,24 @@ function useCategories() {
 
   const changeCategory = useCallback(
     (category: Category) => {
-      const depthProp = category.cdEtc2;
+      const depthInProps = category.cdEtc2;
       if (!categoryData) {
         return;
       }
 
       const {allDepths, categoryMap} = categoryData;
 
-      let parentId = category.cdNote;
+      const parentId = category.cdNote;
       saveCategory(parentId, category);
 
-      setCategoryInfo(prev => {
-        const newCategoryInfo: CategoryInfo = {
-          etcCategories: [],
-          categories: {},
-          selectedCategoryIds: {},
-          depths: [],
-        };
-
-        // 각 depth의 카테고리마다 최대 depth가 변하는 유동적인 상황을 가정했다.
-        // depth가 어디서 끝나는지 모르기 때문에, 마지막 depth까지 반복하는 while 문을 사용한다.
-        for (let i = 0; i < allDepths.length; i++) {
-          const depth = allDepths[i];
-          const usePrevData = depth < depthProp;
-          const isMainCategory = depth === headerOptions.mainCategoryDepth;
-
-          // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, 마지막 depth인 것이다.
-          const depthCategories = usePrevData
-            ? prev.categories[depth]
-            : categoryMap[depth][parentId];
-
-          if (!depthCategories) {
-            break;
-          }
-
-          const selectedCategoryId = usePrevData
-            ? prev.selectedCategoryIds[i]
-            : restoreCategory(parentId) || depthCategories[0].cdId;
-
-          parentId = selectedCategoryId || '';
-
-          if (isMainCategory) {
-            newCategoryInfo.mainCategory = [depth, depthCategories];
-          } else {
-            newCategoryInfo.etcCategories.push([depth, depthCategories]);
-          }
-
-          newCategoryInfo.categories[depth] = depthCategories;
-          newCategoryInfo.selectedCategoryIds[depth] = selectedCategoryId;
-          newCategoryInfo.depths.push(depth);
-        }
+      setCategoryInfo(prevCategoryInfo => {
+        const newCategoryInfo = makeCategoryInfo({
+          headerOptions,
+          categoryMap,
+          prevCategoryInfo,
+          allDepths,
+          depthInProps,
+        });
 
         return newCategoryInfo;
       });
@@ -110,6 +78,74 @@ const saveCategory = (parentId: string, category: Category) => {
 
 const restoreCategory = (parentId?: string) => {
   return storedCategories[parentId || ''];
+};
+
+const makeCategoryInfo = ({
+  headerOptions,
+  categoryMap,
+  prevCategoryInfo,
+  allDepths,
+  depthInProps,
+  parentId = '',
+  depthIndex = 0,
+  categoryInfoInProcess,
+}: {
+  headerOptions: HeaderOptions;
+  categoryMap: CategoryMap;
+  prevCategoryInfo: CategoryInfo;
+  allDepths: string[];
+  depthInProps: string;
+  // 재귀호출을 위한 변수들이다. 해당 함수를 호출할 때 입력되지 않는다.
+  parentId?: string;
+  depthIndex?: number;
+  categoryInfoInProcess?: CategoryInfo;
+}): CategoryInfo => {
+  const newCategoryInfo: CategoryInfo = categoryInfoInProcess || {
+    etcCategories: [],
+    categories: {},
+    selectedCategoryIds: {},
+    depths: [],
+  };
+
+  // 최대 depth를 넘어서 makeCategoryInfo가 실행되면 undefined일 수 있다.
+  const depth = allDepths[depthIndex];
+
+  const usePrevData = depth < depthInProps;
+  const isMainCategory = depth === headerOptions.mainCategoryDepth;
+
+  if (!depth) return newCategoryInfo;
+
+  // 전체 테이블(categoryMap)에서 카테고리 리스트를 찾시 못 했다면, undefined이고, 마지막 depth인 것이다.
+  const depthCategories = usePrevData
+    ? prevCategoryInfo.categories[depth]
+    : categoryMap[depth][parentId];
+
+  if (!depthCategories) return newCategoryInfo;
+
+  const selectedCategoryId = usePrevData
+    ? prevCategoryInfo.selectedCategoryIds[depthIndex]
+    : restoreCategory(parentId) || depthCategories[0].cdId;
+
+  if (isMainCategory) {
+    newCategoryInfo.mainCategory = [depth, depthCategories];
+  } else {
+    newCategoryInfo.etcCategories.push([depth, depthCategories]);
+  }
+
+  newCategoryInfo.categories[depth] = depthCategories;
+  newCategoryInfo.selectedCategoryIds[depth] = selectedCategoryId;
+  newCategoryInfo.depths.push(depth);
+
+  return makeCategoryInfo({
+    headerOptions,
+    categoryMap,
+    prevCategoryInfo,
+    parentId: selectedCategoryId,
+    allDepths,
+    depthInProps,
+    depthIndex: depthIndex + 1,
+    categoryInfoInProcess: newCategoryInfo,
+  });
 };
 
 export default useCategories;

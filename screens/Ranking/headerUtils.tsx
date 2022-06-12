@@ -7,7 +7,7 @@ import ScrollViewWithScrollTo, {
 import TappableImage from '../../components/Tappable/TappableImage';
 import TappableText from '../../components/Tappable/TappableText';
 import {CategoryInfo} from '../../hooks/useCategories';
-import {HeaderOption, headerOptions} from './config';
+import {CategoryOption, headerOptions} from './config';
 
 const EtcCategoriesContainer = styled.View`
   margin-bottom: 10px;
@@ -17,7 +17,7 @@ const convertCategoriesToComponents = (
   categories: Category[],
   selectedCategoryId: string,
   onPress: (category: Category) => void,
-  option?: HeaderOption,
+  option?: CategoryOption,
 ) => {
   return categories.map(category => {
     const isText = option?.type === 'text';

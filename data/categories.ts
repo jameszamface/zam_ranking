@@ -1,4 +1,4 @@
-const categories = [
+export const categories = [
   {
     cdDitc: 10120,
     cdEtc1: '#fcf4ef',
