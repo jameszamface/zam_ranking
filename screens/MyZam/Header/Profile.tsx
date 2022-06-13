@@ -1,8 +1,8 @@
 import React from 'react';
 import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
 import styled from 'styled-components/native';
-import Text from '../../components/Text';
-import {profileHeight} from './config';
+import Text from '../../../components/Text';
+import {profileHeight} from '../config';
 
 interface Props {
   scrollTop: SharedValue<number>;

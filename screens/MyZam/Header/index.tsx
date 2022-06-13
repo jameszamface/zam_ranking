@@ -1,8 +1,7 @@
 import React from 'react';
 import {SharedValue} from 'react-native-reanimated';
 import styled from 'styled-components/native';
-import Text from '../../components/Text';
-import {profileHeight} from './config';
+import Text from '../../../components/Text';
 import Profile from './Profile';
 
 interface Props {
