@@ -44,7 +44,7 @@ function Feed() {
 const containerStyle: StyleProp<ViewStyle> = {
   flex: 1,
   width: '100%',
-  backgroundColor: '#ffffff',
+  backgroundColor: '#eeeeee',
 };
 
 export default Feed;
