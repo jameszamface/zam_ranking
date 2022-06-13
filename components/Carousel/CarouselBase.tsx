@@ -7,28 +7,36 @@ import Text from '../Text';
 interface Props<T> {
   title: string;
   renderItem: ListRenderItem<T>;
+  containerStyle?: StyleProp<ViewStyle>;
   data?: T[];
   gap?: number;
-  hasMore?: boolean;
+  rightButton?: string;
+  onRightButton?: () => void;
 }
 
-function Carousel<T>({title, data, renderItem, gap, hasMore}: Props<T>) {
+function Carousel<T>({
+  title,
+  data,
+  containerStyle,
+  renderItem,
+  gap,
+  rightButton,
+  onRightButton,
+}: Props<T>) {
   const itemSeparatorComponent = useCallback(() => {
     if (!gap) return null;
-    return <Separator width={gap} />;
+    return <Separator gap={gap} />;
   }, [gap]);
 
   return (
-    <Container>
-      <HeaderContainer hasMore={hasMore}>
+    <Container style={containerStyle}>
+      <HeaderContainer rightButton={!!rightButton}>
         <Text bold fontSize={15}>
           {title}
         </Text>
-        {hasMore && (
-          <TextButton
-            color="#999999"
-            onPress={() => console.log(`${title} 더 보기`)}>
-            {'더 보기'}
+        {rightButton && (
+          <TextButton color="#999999" onPress={onRightButton}>
+            {rightButton}
           </TextButton>
         )}
       </HeaderContainer>
@@ -54,17 +62,18 @@ const Container = styled.View`
   padding-bottom: 10px;
 `;
 
-const HeaderContainer = styled.View<{hasMore?: boolean}>`
+const HeaderContainer = styled.View<{rightButton?: boolean}>`
   flex-direction: row;
-  justify-content: ${props => (props.hasMore ? 'space-between' : 'flex-start')};
+  justify-content: ${props =>
+    props.rightButton ? 'space-between' : 'flex-start'};
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 10px;
 `;
 
-const Separator = styled.View<{width: number}>`
-  width: ${props => props.width || 0}px;
+const Separator = styled.View<{gap: number}>`
+  width: ${props => props.gap || 0}px;
 `;
 
 export default Carousel;
