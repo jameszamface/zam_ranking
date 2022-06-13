@@ -62,6 +62,7 @@ function PickCarousel({name}: Props) {
         data={['register', ...myPicks]}
         renderItem={renderItem}
         title={`${name}님의 Pick`}
+        titleSize={17}
         titleColor="#ffffff"
         headerMargin={20}
         rightButton="편집"

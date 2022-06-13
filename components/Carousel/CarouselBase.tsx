@@ -6,6 +6,7 @@ import Text from '../Text';
 
 interface Props<T> {
   title: string;
+  titleSize?: number;
   titleColor?: string;
   headerMargin?: number;
   renderItem: ListRenderItem<T>;
@@ -18,6 +19,7 @@ interface Props<T> {
 
 function Carousel<T>({
   title,
+  titleSize = 15,
   titleColor = '#000000',
   headerMargin = 10,
   data,
@@ -35,7 +37,7 @@ function Carousel<T>({
   return (
     <Container style={containerStyle}>
       <HeaderContainer rightButton={!!rightButton} headerMargin={headerMargin}>
-        <Text color={titleColor} bold fontSize={15}>
+        <Text color={titleColor} bold fontSize={titleSize}>
           {title}
         </Text>
         {rightButton && (
