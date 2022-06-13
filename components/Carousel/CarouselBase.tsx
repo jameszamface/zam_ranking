@@ -6,6 +6,8 @@ import Text from '../Text';
 
 interface Props<T> {
   title: string;
+  titleColor?: string;
+  headerMargin?: number;
   renderItem: ListRenderItem<T>;
   containerStyle?: StyleProp<ViewStyle>;
   data?: T[];
@@ -16,6 +18,8 @@ interface Props<T> {
 
 function Carousel<T>({
   title,
+  titleColor = '#000000',
+  headerMargin = 10,
   data,
   containerStyle,
   renderItem,
@@ -30,8 +34,8 @@ function Carousel<T>({
 
   return (
     <Container style={containerStyle}>
-      <HeaderContainer rightButton={!!rightButton}>
-        <Text bold fontSize={15}>
+      <HeaderContainer rightButton={!!rightButton} headerMargin={headerMargin}>
+        <Text color={titleColor} bold fontSize={15}>
           {title}
         </Text>
         {rightButton && (
@@ -60,20 +64,25 @@ const Container = styled.View`
   width: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
+  justify-content: center;
 `;
 
-const HeaderContainer = styled.View<{rightButton?: boolean}>`
+const HeaderContainer = styled.View<{
+  rightButton?: boolean;
+  headerMargin?: number;
+}>`
   flex-direction: row;
   justify-content: ${props =>
     props.rightButton ? 'space-between' : 'flex-start'};
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
-  margin-bottom: 10px;
+  margin-bottom: ${props => props.headerMargin}px;
 `;
 
 const Separator = styled.View<{gap: number}>`
   width: ${props => props.gap || 0}px;
+  height: 0px;
 `;
 
 export default Carousel;

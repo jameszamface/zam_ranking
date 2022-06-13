@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { useState, useEffect } from 'react';
-import { useInfiniteQuery } from 'react-query';
-import { fetchMyPicks } from '../api/myPicks';
-import { Pick } from '../data/myPicks';
+import {useState, useEffect} from 'react';
+import {useInfiniteQuery} from 'react-query';
+import {fetchMyPicks} from '../api/myPicks';
+import {Pick} from '../data/myPicks';
 
 function useMyPicks() {
   const {
@@ -13,7 +13,7 @@ function useMyPicks() {
     isError,
     fetchNextPage,
   } = useInfiniteQuery(
-    'myMyPicks',
+    'myPicks',
     ({pageParam}) => fetchMyPicks({cursor: pageParam}),
     {
       getNextPageParam: lastPage => lastPage.cursor,
@@ -25,12 +25,12 @@ function useMyPicks() {
 
   useEffect(() => {
     if (!data) return;
-    const newMyPicks = _.flatMap(data.pages, 'zamFeeds') as Pick[];
+    const newMyPicks = _.flatMap(data.pages, 'picks') as Pick[];
     setMyPicks(newMyPicks);
   }, [data]);
 
   return {
-    myPicks,
+    myPicks: myPicks || [],
     hasNextPage,
     fetchNextPicks: fetchNextPage,
     isLoading: isFetching || isFetchingNextPage,

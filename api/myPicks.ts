@@ -1,5 +1,6 @@
 import {picks} from '../data/myPicks';
 import {delay} from '../utils/time';
+import {createRandomID} from '../utils/id';
 
 interface FetchMyPicksProps {
   cursor?: number;
@@ -12,6 +13,9 @@ export const fetchMyPicks = async (props: FetchMyPicksProps) => {
 
   return {
     cursor: isLast ? undefined : (props.cursor || 0) + 1,
-    picks: picks,
+    picks: picks.map(pick => ({
+      ...pick,
+      id: createRandomID(),
+    })),
   };
 };

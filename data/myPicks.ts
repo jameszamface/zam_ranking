@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import {createRandomID} from '../utils/id';
 
 interface Goods {
   chasu: number; // 1;
@@ -48,7 +47,4 @@ const localPick: PickWithoutId = {
   },
   title: '👝\n파우치에\n없으면 불안한',
 };
-export const picks = _.range(0, 10).map(() => ({
-  ...localPick,
-  id: createRandomID(),
-}));
+export const picks = _.cloneDeep(_.range(0, 10).map(() => localPick));
