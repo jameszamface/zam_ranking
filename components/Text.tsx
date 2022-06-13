@@ -18,7 +18,7 @@ const Text = styled.Text<
   margin-top: ${props => props.marginTop || props.marginVertical || 0}px;
   margin-bottom: ${props => props.marginBottom || props.marginVertical || 0}px;
   text-align: ${props => props.textAlign || 'left'};
-  line-height: ${props => props.lineHeihgt || 0}px;
+  ${props => (props.lineHeihgt ? `line-height: ${props.lineHeihgt}px` : null)}
 `;
 
 export default Text;

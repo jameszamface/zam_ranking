@@ -28,7 +28,6 @@ function Shopping({carts = 0, orders = 0, points = 0}: Props) {
         <Text fontSize={17} bold>
           나의 쇼핑
         </Text>
-        <View />
       </HeaderContainer>
       <ShoppingContainer>
         <CountButton label="장바구니" count={carts} onPress={onCarts} />
@@ -77,8 +76,8 @@ const CountButton = ({
         <Text>{label}</Text>
       </CountButtonContainer>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
 const CountButtonContainer = styled.View`
   flex: 1;

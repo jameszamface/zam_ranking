@@ -18,6 +18,7 @@ function PickRegister({title, backgroundColor = '#ffffff', onRegister}: Props) {
       <BorderButton
         color="#fe35d9"
         borderColor="#fe35d9"
+        borderRadius={15}
         onPress={onRegister}
         containerStyle={borderButtonContainerStyle}>
         등록하기
@@ -26,7 +27,7 @@ function PickRegister({title, backgroundColor = '#ffffff', onRegister}: Props) {
   );
 }
 
-const borderButtonContainerStyle = {height: 30, width: 100, borderRadius: 15};
+const borderButtonContainerStyle = {height: 30, width: 100};
 
 const Container = styled.View<{backgroundColor: string}>`
   width: 200px;
