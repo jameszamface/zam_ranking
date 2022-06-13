@@ -9,10 +9,10 @@ import PickRegister from '../../../components/PickRegister';
 import {pickRegisterTitle} from '../config';
 
 interface Props {
-  name: string;
+  nickname: string;
 }
 
-function PickCarousel({name}: Props) {
+function PickCarousel({nickname}: Props) {
   const {myPicks, isLoading, isError, hasNextPage, fetchNextPicks} =
     useMyPicks();
 
@@ -61,7 +61,7 @@ function PickCarousel({name}: Props) {
       <CarouselBase
         data={['register', ...myPicks]}
         renderItem={renderItem}
-        title={`${name}님의 Pick`}
+        title={`${nickname}님의 Pick`}
         titleSize={17}
         titleColor="#ffffff"
         headerMargin={20}

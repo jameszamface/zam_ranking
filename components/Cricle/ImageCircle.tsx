@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 
 interface Props {
   size: number;
-  image: string;
+  image?: string;
 }
 
 function CircleImage({size, image}: Props) {

@@ -13,10 +13,15 @@ interface Props {
 function Header({scrollTop}: Props) {
   return (
     <Container>
-      <Profile scrollTop={scrollTop} />
+      <Profile
+        nickname="보틀친구곽튭2"
+        backgroundImage="https://d1sjhoa769f1sq.cloudfront.net/qa_user_feeds/17519/0.JPG"
+        profileImage="https://d1sjhoa769f1sq.cloudfront.net/qa_user_feeds/17513/0.JPG"
+        scrollTop={scrollTop}
+      />
       <Intro tags={['복합성', '가을웜트루', '속쌍']} intro="곡튜브입니당~.~" />
       <Shopping />
-      <PickCarousel name="보틀친구곽튭2" />
+      <PickCarousel nickname="보틀친구곽튭2" />
     </Container>
   );
 }
