@@ -2,11 +2,11 @@ import React from 'react';
 import isEqual from 'react-fast-compare';
 import {Padding} from '../../constants/type/View';
 import ButtonBase, {ButtonProps} from './ButtonBase';
-import {BorderProps, TextProps} from './types';
+import {BorderProps, SizeProps, TextProps} from './types';
 import {makeBorderStyle, makeTextStyle} from './utils';
 
 const BorderButton = (
-  props: BorderProps & Padding & TextProps & ButtonProps,
+  props: BorderProps & Padding & TextProps & ButtonProps & SizeProps,
 ) => {
   const borderStyle = makeBorderStyle(props);
   const textStyle = makeTextStyle(props);

@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import styled from 'styled-components/native';
+import {SizeProps} from './types';
 
 export interface ButtonProps {
   children: string;
@@ -20,7 +21,7 @@ const ButtonBase = ({
   containerStyle,
   textStyle,
   onPress,
-}: ButtonProps) => {
+}: ButtonProps & SizeProps) => {
   return (
     <TouchableWithoutFeedback onPress={() => onPress && onPress(children)}>
       <Container style={containerStyle}>
@@ -30,7 +31,7 @@ const ButtonBase = ({
   );
 };
 
-const Container = styled.View`
+const Container = styled.View<{width?: number; height?: number}>`
   justify-content: center;
   align-items: center;
 `;

@@ -1,7 +1,7 @@
-import { Padding } from '../../constants/type/View';
-import {BorderProps} from './types';
+import {Padding} from '../../constants/type/View';
+import {BorderProps, SizeProps, TextProps} from './types';
 
-export const makeBorderStyle = (props?: BorderProps & Padding) => {
+export const makeBorderStyle = (props?: BorderProps & Padding & SizeProps) => {
   if (!props) {
     return;
   }
@@ -11,6 +11,8 @@ export const makeBorderStyle = (props?: BorderProps & Padding) => {
     borderRadius: props?.borderRadius,
     paddingHorizontal: props?.paddingHorizontal,
     paddingVertical: props?.paddingVertical,
+    width: props?.width,
+    height: props?.height,
   };
 };
 

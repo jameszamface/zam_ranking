@@ -9,3 +9,8 @@ export interface BorderProps {
   borderWidth?: number;
   borderRadius?: number;
 }
+
+export interface SizeProps {
+  width?: number;
+  height?: number;
+}
