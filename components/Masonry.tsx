@@ -16,6 +16,10 @@ const propsSplitter = [
   'keyExtractor',
   'scrollEventThrottle',
   'scrollEnabled',
+  'onScroll',
+  'onLayout',
+  'onRefresh',
+  'refreshControl',
   'renderItem',
   'style',
   'contentContainerStyle',
@@ -68,12 +72,12 @@ class Masonry<ItemT> extends React.Component<
         scrollEnabled={false}
         listKey={String(index)}
         // index를 사용하지 않는다면 this.props.renderItem을 그대로 넘겨주어도 된다.
-        renderItem={({item, index: childIndex, ...etc}) => {
+        renderItem={({item, index: childIndex, separators}) => {
           if (!this.props.renderItem) return null;
           return this.props.renderItem({
             item,
             index: index + numColumns * childIndex,
-            ...etc,
+            separators,
           });
         }}
       />
