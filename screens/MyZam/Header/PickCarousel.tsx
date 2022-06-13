@@ -48,6 +48,7 @@ function PickCarousel({name}: Props) {
               string: goods.colorNm,
             },
           }}
+          item={pick}
           onPress={onPickPressed}
         />
       );
