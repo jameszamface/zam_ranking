@@ -1,36 +1,50 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {ListRenderItem, StyleProp, ViewStyle} from 'react-native';
+import PictureFeed from '../../../components/Feed';
 import Masonry from '../../../components/Masonry';
+import {ZamFeed} from '../../../data/myFeeds';
 import useMyFeeds from '../../../hooks/useMyFeeds';
 
 function Feed() {
   const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
     useMyFeeds();
 
+  const renderItem: ListRenderItem<ZamFeed> = ({item: zamFeed}) => {
+    const isQuestion = zamFeed.feed.section === 5;
+    if (isQuestion) return null;
+
+    const image = zamFeed.imageUris ? zamFeed.imageUris[0].uri : undefined;
+    const [width, height] = zamFeed.feed.imageSize || [1, 1];
+    const ratio = height / width;
+
+    return <PictureFeed image={image} ratio={ratio} note={zamFeed.feed.note} />;
+  };
+
+  const onEndReached = () => {
+    if (isLoading || isError || !hasNextPage) return;
+    fetchNextFeeds();
+  };
+
   return (
     <Masonry
-      data={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
+      style={containerStyle}
+      data={zamFeeds}
       numColumns={2}
-      gap={2}
-      renderItem={({item, index}) => {
-        return (
-          <View
-            style={{
-              width: '100%',
-              height: index % 3 ? 100 : 150,
-              backgroundColor: index % 3 ? 'red' : 'blue',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>{index}</Text>
-          </View>
-        );
-      }}
+      gap={10}
+      renderItem={renderItem}
       keyExtractor={item => String(item)}
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.8}
     />
   );
 }
+
+const containerStyle: StyleProp<ViewStyle> = {
+  flex: 1,
+  width: '100%',
+  backgroundColor: '#ffffff',
+};
 
 export default Feed;

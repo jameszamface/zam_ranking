@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {ZamFeed, zamFeedsWithoutId} from '../data/myFeeds';
 import {createRandomID} from '../utils/id';
 import {delay} from '../utils/time';
@@ -18,12 +19,27 @@ export const fetchMyFeeds = async (
 
   return {
     cursor: isLast ? undefined : (props.cursor || 0) + 1,
-    zamFeeds: zamFeedsWithoutId.map(zamFeed => ({
-      ...zamFeed,
-      feed: {
-        id: createRandomID(),
-        ...zamFeed.feed,
-      },
-    })),
+    zamFeeds: _.shuffle(
+      zamFeedsWithoutId.map(zamFeed => {
+        const imageSize = getImageSzie(zamFeed.feed.imageSizes);
+        return {
+          ...zamFeed,
+          feed: {
+            id: createRandomID(),
+            imageSize,
+            ...zamFeed.feed,
+          },
+        };
+      }),
+    ),
   };
+};
+
+const getImageSzie = (
+  imageSizes: string | null | undefined,
+): number[] | undefined => {
+  if (!imageSizes) return;
+  try {
+    return JSON.parse(imageSizes)[0] as number[];
+  } catch (e) {}
 };

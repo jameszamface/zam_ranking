@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-interface Feed {
+export interface Feed {
   id: number; // 17519;
   section: number; // 0;
   categ: string; // 'I';
@@ -13,6 +13,7 @@ interface Feed {
   thumbnails?: string | null; // '["17519/TH_0.JPG"]';
   images?: string | null; // '["17519/0.JPG"]';
   imageSizes?: string | null; // '[[899, 900]]';
+  imageSize?: number[];
   video?: string | null; // null;
   votes?: number | null; // null;
   votesResult?: string | null; // null;
@@ -209,7 +210,7 @@ export const localFeeds: ZamFeedWithoutId[] = [
   // 질문글?
   {
     feed: {
-      section: 5,
+      section: 5, // 질문글?
       categ: 'T',
       userId: 1000000256,
       likes: 1,

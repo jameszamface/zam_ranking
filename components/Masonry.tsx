@@ -8,6 +8,8 @@ import {
   ViewStyle,
 } from 'react-native';
 import {width} from '../constants';
+import isEqual from 'react-fast-compare';
+import styled from 'styled-components/native';
 
 const propsSplitter = [
   'data',
@@ -15,6 +17,7 @@ const propsSplitter = [
   'onEndReached',
   'keyExtractor',
   'scrollEventThrottle',
+  'onEndReachedThreshold',
   'scrollEnabled',
   'onScroll',
   'onLayout',
@@ -51,7 +54,23 @@ class Masonry<ItemT> extends React.Component<
     this.parentProps = _.pick(this.props, propsSplitter);
   }
 
+  ItemSeparatorComponent = () => {
+    if (!this.props.gap) return null;
+    return <Separator gap={this.props.gap} />;
+  };
+
   componentDidMount() {
+    this.setState({
+      splittedData: splitArray(this.props.data, this.props.numColumns),
+    });
+  }
+
+  componentDidUpdate(prevProps: FlatListProps<ItemT> & Props) {
+    if (isEqual(prevProps, this.props)) return false;
+
+    this.childProps = _.omit(this.props, propsSplitter);
+    this.parentProps = _.pick(this.props, propsSplitter);
+
     this.setState({
       splittedData: splitArray(this.props.data, this.props.numColumns),
     });
@@ -80,6 +99,7 @@ class Masonry<ItemT> extends React.Component<
             separators,
           });
         }}
+        ItemSeparatorComponent={this.ItemSeparatorComponent}
       />
     );
   };
@@ -90,7 +110,6 @@ class Masonry<ItemT> extends React.Component<
     return (
       <FlatList
         {...this.parentProps}
-        style={containerStyle}
         data={this.state?.splittedData}
         renderItem={this.renderFlatList}
         keyExtractor={this.keyExtractor}
@@ -98,6 +117,10 @@ class Masonry<ItemT> extends React.Component<
     );
   }
 }
+
+const Separator = styled.View<{gap: number}>`
+  height: ${props => props.gap || 0}px;
+`;
 
 function splitArray<T>(arr?: readonly T[] | null, splitCount = 1) {
   return arr?.reduce<T[][]>((acc, cur, i) => {
@@ -110,10 +133,5 @@ function splitArray<T>(arr?: readonly T[] | null, splitCount = 1) {
     return acc;
   }, []);
 }
-
-const containerStyle: StyleProp<ViewStyle> = {
-  flex: 1,
-  width: '100%',
-};
 
 export default Masonry;
