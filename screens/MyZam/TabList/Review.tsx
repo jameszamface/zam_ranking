@@ -62,6 +62,7 @@ const keyExtractor = (item: ReviewType) => String(item.ID);
 const containerStyle: StyleProp<ViewStyle> = {
   backgroundColor: '#ffffff',
   paddingHorizontal: 15,
+  paddingTop: 15,
 };
 
 export default Review;

@@ -17,6 +17,7 @@ function Activity() {
 }
 
 const Container = styled.View`
+  padding-top: 15px;
   width: 100%;
   background-color: #ffffff;
 `;

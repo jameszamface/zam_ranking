@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {ListRenderItem, StyleProp, ViewStyle} from 'react-native';
 import PictureFeed from '../../../components/Feed/PictureFeed';
 import QuestionFeed from '../../../components/Feed/QuestionFeed';
@@ -10,6 +10,10 @@ function Feed() {
   const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
     useMyFeeds();
 
+  const onPress = useCallback((zamFeed?: ZamFeed) => {
+    console.log('Zam Feed', zamFeed?.feed.note);
+  }, []);
+
   const renderItem: ListRenderItem<ZamFeed> = ({item: zamFeed}) => {
     const isQuestion = zamFeed.feed.section === 5;
 
@@ -20,7 +24,15 @@ function Feed() {
     const [width, height] = zamFeed.feed.imageSize || [1, 1];
     const ratio = height / width;
 
-    return <Component image={image} ratio={ratio} note={zamFeed.feed.note} />;
+    return (
+      <Component
+        image={image}
+        ratio={ratio}
+        note={zamFeed.feed.note}
+        item={zamFeed}
+        onPress={onPress}
+      />
+    );
   };
 
   const onEndReached = () => {
@@ -47,6 +59,7 @@ function Feed() {
 const containerStyle: StyleProp<ViewStyle> = {
   flex: 1,
   width: '100%',
+  paddingTop: 15,
   backgroundColor: '#eeeeee',
 };
 
