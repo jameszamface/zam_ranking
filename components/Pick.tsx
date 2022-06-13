@@ -1,5 +1,5 @@
-import React, {ReactNode} from 'react';
-import {View} from 'react-native';
+import React from 'react';
+import {TouchableWithoutFeedback} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import styled from 'styled-components/native';
 import ColorCircle from './Cricle/ColorCircle';
@@ -15,20 +15,34 @@ interface Goods {
   };
 }
 
-interface Props {
+interface Props<T> {
   title: string;
   backgroundColor?: string;
   goods: Goods;
+  item?: T;
+  onPress?: (item?: T) => void;
 }
 
-function Pick({title, backgroundColor = '#ffffff', goods}: Props) {
+function Pick<T>({
+  title,
+  backgroundColor = '#ffffff',
+  goods,
+  item,
+  onPress: onPressFromProps,
+}: Props<T>) {
+  const onPress = () => {
+    onPressFromProps && onPressFromProps(item);
+  };
+
   return (
-    <Container backgroundColor={backgroundColor}>
-      <Text fontSize={15} bold lineHeihgt={20}>
-        {title}
-      </Text>
-      <GoodsComponent goods={goods} />
-    </Container>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <Container backgroundColor={backgroundColor}>
+        <Text fontSize={15} bold lineHeihgt={20}>
+          {title}
+        </Text>
+        <GoodsComponent goods={goods} />
+      </Container>
+    </TouchableWithoutFeedback>
   );
 }
 

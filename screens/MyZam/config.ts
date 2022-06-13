@@ -11,4 +11,6 @@ export const tabLabels: {
   review: '잼플 리뷰',
 } as const;
 
+export const pickRegisterTitle = '🐶\n나만 아는 찐템을\n소개해 주세요!';
+
 export const profileHeight = width;
