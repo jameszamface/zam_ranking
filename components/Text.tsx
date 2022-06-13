@@ -2,7 +2,12 @@ import styled from 'styled-components/native';
 import {Margin} from '../constants/type/View';
 
 const Text = styled.Text<
-  {bold?: boolean; fontSize?: number; color?: string} & Margin
+  {
+    bold?: boolean;
+    fontSize?: number;
+    color?: string;
+    textAlign?: 'left' | 'center' | 'right';
+  } & Margin
 >`
   font-size: ${props => props.fontSize || 13}px;
   font-weight: ${props => (props.bold ? 'bold' : 'normal')};
@@ -11,6 +16,7 @@ const Text = styled.Text<
   margin-right: ${props => props.marginRight || props.marginHorizontal || 0}px;
   margin-top: ${props => props.marginTop || props.marginVertical || 0}px;
   margin-bottom: ${props => props.marginBottom || props.marginVertical || 0}px;
+  text-align: ${props => props.textAlign || 'left'};
 `;
 
 export default Text;

@@ -1,6 +1,7 @@
 import React from 'react';
 import {ListRenderItem, StyleProp, ViewStyle} from 'react-native';
-import PictureFeed from '../../../components/Feed';
+import PictureFeed from '../../../components/Feed/PictureFeed';
+import QuestionFeed from '../../../components/Feed/QuestionFeed';
 import Masonry from '../../../components/Masonry';
 import {ZamFeed} from '../../../data/myFeeds';
 import useMyFeeds from '../../../hooks/useMyFeeds';
@@ -11,13 +12,15 @@ function Feed() {
 
   const renderItem: ListRenderItem<ZamFeed> = ({item: zamFeed}) => {
     const isQuestion = zamFeed.feed.section === 5;
-    if (isQuestion) return null;
+
+    const Component = isQuestion ? QuestionFeed : PictureFeed;
 
     const image = zamFeed.imageUris ? zamFeed.imageUris[0].uri : undefined;
+
     const [width, height] = zamFeed.feed.imageSize || [1, 1];
     const ratio = height / width;
 
-    return <PictureFeed image={image} ratio={ratio} note={zamFeed.feed.note} />;
+    return <Component image={image} ratio={ratio} note={zamFeed.feed.note} />;
   };
 
   const onEndReached = () => {
