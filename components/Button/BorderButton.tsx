@@ -25,6 +25,7 @@ BorderButton.defaultProps = {
   backgroundColor: '#ffffff',
   borderColor: '#cccccc',
   borderWidth: 1,
+  borderRadius: '50%',
   paddingHorizontal: 10,
   paddingVertical: 5,
 };

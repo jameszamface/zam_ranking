@@ -54,8 +54,8 @@ const GoodsComponent = ({goods}: {goods: Goods}) => {
       </ImageContainer>
       <MetaContainer>
         <RowContainer marginBottom={5}>
-          {goods.name.split(' ').map(text => (
-            <Text> {text}</Text>
+          {goods.name.split(' ').map((text, index) => (
+            <Text key={`@pick_component_${index}`}> {text}</Text>
           ))}
         </RowContainer>
         <ColorInfoContainer>

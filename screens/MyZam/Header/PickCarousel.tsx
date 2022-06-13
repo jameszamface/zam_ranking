@@ -28,15 +28,14 @@ function PickCarousel({nickname}: Props) {
     console.log('Pick', pick?.goods.goodsNm);
   }, []);
 
-  const renderItem: ListRenderItem<Pick | string> = useCallback(
-    ({item}) => {
-      if (item === 'register') {
+  const renderItem: ListRenderItem<Pick | 'register'> = useCallback(
+    ({item: pick}) => {
+      if (pick === 'register') {
         return (
           <PickRegister title={pickRegisterTitle} onRegister={onRegister} />
         );
       }
 
-      const pick = item as Pick;
       const {goods} = pick;
       return (
         <PickComponent

@@ -15,6 +15,7 @@ interface Props<T> {
   gap?: number;
   rightButton?: string;
   onRightButton?: () => void;
+  keyExtractor?: (item: T, index: number) => string;
 }
 
 function Carousel<T>({
@@ -28,6 +29,7 @@ function Carousel<T>({
   gap,
   rightButton,
   onRightButton,
+  keyExtractor,
 }: Props<T>) {
   const itemSeparatorComponent = useCallback(() => {
     if (!gap) return null;
@@ -53,6 +55,7 @@ function Carousel<T>({
         ItemSeparatorComponent={itemSeparatorComponent}
         data={data}
         renderItem={renderItem}
+        keyExtractor={keyExtractor}
       />
     </Container>
   );

@@ -35,7 +35,7 @@ function Intro({tags, intro}: Props) {
 }
 
 const Container = styled.View`
-  margin-top: -50px;
+  margin-top: -100px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   overflow: hidden;

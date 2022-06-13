@@ -2,7 +2,7 @@ import React from 'react';
 import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
 import styled from 'styled-components/native';
 import CircleImage from '../../../components/Cricle/ImageCircle';
-import Text from '../../../components/Text';
+import {width} from '../../../constants';
 import {profileHeight} from '../config';
 
 interface Props {
@@ -17,9 +17,11 @@ interface Props {
 
 function Profile({scrollTop, nickname, backgroundImage, profileImage}: Props) {
   const style = useAnimatedStyle(() => {
-    const scale = 1 - Math.min(scrollTop.value / profileHeight, 0) * 1.2;
+    const scale = 1 - Math.min(scrollTop.value / profileHeight, 0);
+    const opacity = 1.3 - scrollTop.value / profileHeight;
 
     return {
+      opacity,
       transform: [
         {translateY: scrollTop.value * 0.9},
         {scaleX: scale},
@@ -31,7 +33,7 @@ function Profile({scrollTop, nickname, backgroundImage, profileImage}: Props) {
   return (
     <Container style={style}>
       <BackgroundImageContainer>
-        <CircleImage size={profileHeight} image={backgroundImage} />
+        <CircleImage size={width} image={backgroundImage} />
         <Dim />
       </BackgroundImageContainer>
     </Container>

@@ -84,7 +84,6 @@ function Ranking() {
       }
 
       // 제품 랜더링
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       const products = item as ProductType[];
       return (
         <FlatList
