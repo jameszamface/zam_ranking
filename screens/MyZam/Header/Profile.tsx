@@ -17,8 +17,8 @@ interface Props {
   nickname: string;
   backgroundImage?: string;
   profileImage?: string;
-  follower?: number;
-  following?: number;
+  followers?: number;
+  followings?: number;
   stickers?: number;
   height?: number;
   scrollTopMaxOverflow?: number;
@@ -26,7 +26,7 @@ interface Props {
 
 interface ButtonProps {
   children: string;
-  marginRight?: number;
+  marginRight?: boolean;
   onPress?: (children: string) => void;
 }
 
@@ -40,6 +40,9 @@ function Profile({
   nickname,
   backgroundImage,
   profileImage,
+  followers = 0,
+  followings = 0,
+  stickers = 0,
   height = 0,
   scrollTopMaxOverflow = 0,
 }: Props) {
@@ -60,11 +63,31 @@ function Profile({
   }, [scrollTop]);
 
   const foregroundStyle = useAnimatedStyle(() => {
-    const translateY = scrollTop.value * 0.15;
+    const translateY = scrollTop.value * 0.1;
     return {
       transform: [{translateY}],
     };
   }, [scrollTop]);
+
+  const onFollowers = () => {
+    console.log('onFollowers');
+  };
+
+  const onFollowings = () => {
+    console.log('onFollowings');
+  };
+
+  const onStickers = () => {
+    console.log('onStickers');
+  };
+
+  const onMyPicks = () => {
+    console.log('onMyPicks');
+  };
+
+  const onPercorMatching = () => {
+    console.log('onPercorMatching');
+  };
 
   return (
     <Container style={containerStyle} height={height}>
@@ -78,13 +101,19 @@ function Profile({
           {nickname}
         </Text>
         <RowContainer marginTop={10}>
-          <TextButton marginRight={15}>팔로워</TextButton>
-          <TextButton marginRight={15}>팔로워</TextButton>
-          <TextButton>잼스티커</TextButton>
+          <TextButton
+            onPress={onFollowers}
+            marginRight>{`팔로워 ${followers}`}</TextButton>
+          <TextButton
+            onPress={onFollowings}
+            marginRight>{`팔로잉 ${followings}`}</TextButton>
+          <TextButton onPress={onStickers}>{`잼스티커 ${stickers}`}</TextButton>
         </RowContainer>
         <RowContainer marginTop={25}>
-          <BorderButton marginRight={15}>나의 찜</BorderButton>
-          <BorderButton>퍼컬 매칭</BorderButton>
+          <BorderButton onPress={onMyPicks} marginRight>
+            나의 찜
+          </BorderButton>
+          <BorderButton onPress={onPercorMatching}>퍼컬 매칭</BorderButton>
         </RowContainer>
       </ForegroundContainer>
     </Container>
@@ -126,7 +155,7 @@ const TextButton = ({children, marginRight, onPress}: ButtonProps) => {
   return (
     <TextButtonOrigin
       color="#ffffff"
-      marginRight={marginRight}
+      marginRight={marginRight ? 15 : 0}
       fontSize={14}
       bold
       onPress={onPress}>
@@ -141,7 +170,7 @@ const BorderButton = ({children, marginRight, onPress}: ButtonProps) => {
       color="#ffffff"
       height={30}
       borderRadius={15}
-      marginRight={marginRight}
+      marginRight={marginRight ? 15 : 0}
       paddingHorizontal={15}
       onPress={onPress}>
       {children}
