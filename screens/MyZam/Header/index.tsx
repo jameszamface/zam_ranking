@@ -9,18 +9,19 @@ import {profileHeight, scrollTopMaxOverflow} from '../config';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import useProfile from '../../../hooks/useProfile';
 import useRelation from '../../../hooks/useRelation';
+import {View, ViewProps} from 'react-native';
 
-interface Props {
+interface Props extends ViewProps {
   scrollTop: SharedValue<number>;
 }
 
-function Header({scrollTop}: Props) {
+function Header({scrollTop, ...props}: Props) {
   const {top} = useSafeAreaInsets();
   const {profile} = useProfile();
   const {relation} = useRelation();
 
   return (
-    <Container marginTop={top}>
+    <Container {...props} marginTop={top}>
       <Profile
         nickname={profile?.nick}
         backgroundImage="https://d1sjhoa769f1sq.cloudfront.net/qa_user_feeds/17519/0.JPG"
@@ -38,7 +39,7 @@ function Header({scrollTop}: Props) {
   );
 }
 
-const Container = styled.View<{marginTop: number}>`
+const Container = styled(View)<{marginTop: number}>`
   margin-top: ${props => -props.marginTop}px;
   width: 100%;
 `;

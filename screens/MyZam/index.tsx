@@ -17,6 +17,7 @@ import styled from 'styled-components/native';
 import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
 import FullScreenLoader from '../../components/Loader/FullScreenLoader';
+import SafeTopCover from './SafeTopCover';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -27,6 +28,8 @@ function MyZam() {
     () => (layout?.height || 0) - top - tabHeight,
     [top, layout],
   );
+
+  const {layout: headerLayout, onLayout: onHeaderLayout} = useLayout();
 
   const flatlistRef = useRef<FlatList<string>>(null);
   const scrollTop = useSharedValue(0);
@@ -75,12 +78,15 @@ function MyZam() {
   return (
     <Suspense fallback={<FullScreenLoader isLoading />}>
       <Container onLayout={onLayout}>
+        <SafeTopCover scrollTop={scrollTop} triggerOffset={headerLayout?.height} />
         <List
           paddingTop={top}
           contentContainerStyle={{paddingBottom: top}}
           ref={flatlistRef}
           onScroll={scrollHandler}
-          ListHeaderComponent={<Header scrollTop={scrollTop} />}
+          ListHeaderComponent={
+            <Header onLayout={onHeaderLayout} scrollTop={scrollTop} />
+          }
           data={['tab', selectedTab]}
           stickyHeaderIndices={[1]}
           bounces
