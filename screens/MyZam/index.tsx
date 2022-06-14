@@ -1,6 +1,6 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import useSort from '../../hooks/useSort';
-import {Tab, tabs, tabLabels} from './config';
+import {Tab, tabs, tabLabels, tabHeight} from './config';
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -9,15 +9,22 @@ import Tabs from './Tabs';
 import Activity from './TabList/Activity';
 import Feed from './TabList/Feed';
 import Review from './TabList/Review';
-import {FlatList, ListRenderItem, ScrollViewProps} from 'react-native';
+import {FlatList, ListRenderItem, ScrollViewProps, View} from 'react-native';
 import Header from './Header';
 import {delay} from '../../utils/time';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import {StyledComponent} from 'styled-components';
+import useLayout from '../../hooks/useLayout';
 
 function MyZam() {
   const {top} = useSafeAreaInsets();
+  const {layout, onLayout} = useLayout();
+  const tabScreenMinHeight = useMemo(
+    () => (layout?.height || 0) - top - tabHeight,
+    [top, layout],
+  );
+
   const flatlistRef = useRef<FlatList>(null);
   const scrollTop = useSharedValue(0);
   const {sort: selectedTab, changeSort: changeTab} = useSort<Tab>(tabs[0]);
@@ -35,7 +42,7 @@ function MyZam() {
     async (tab: Tab) => {
       changeTab(tab);
       await delay(500);
-      flatlistRef.current?.scrollToIndex({index: 1});
+      flatlistRef.current?.scrollToIndex({index: 1, viewOffset: tabHeight});
     },
     [changeTab],
   );
@@ -50,14 +57,16 @@ function MyZam() {
             selectedTab={selectedTab}
             tabLabels={tabLabels}
             onPress={onTabPressed}
+            height={tabHeight}
           />
         );
       }
 
       const tab = item as Tab;
-      return fetchList(tab);
+      const List = fetchList(tab);
+      return <List key={selectedTab} minHeight={tabScreenMinHeight} />;
     },
-    [onTabPressed, selectedTab],
+    [onTabPressed, selectedTab, tabScreenMinHeight],
   );
 
   const renderScrollComponent = useCallback(
@@ -68,20 +77,26 @@ function MyZam() {
   );
 
   return (
-    <List
-      paddingTop={top}
-      ref={flatlistRef}
-      ListHeaderComponent={<Header scrollTop={scrollTop} />}
-      data={['tab', selectedTab]}
-      stickyHeaderIndices={[1]}
-      bounces
-      scrollEventThrottle={16}
-      renderItem={renderItem}
-      showsVerticalScrollIndicator={false}
-      renderScrollComponent={renderScrollComponent}
-    />
+    <Container onLayout={onLayout}>
+      <List
+        paddingTop={top}
+        ref={flatlistRef}
+        ListHeaderComponent={<Header scrollTop={scrollTop} />}
+        data={['tab', selectedTab]}
+        stickyHeaderIndices={[1]}
+        bounces
+        scrollEventThrottle={16}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        renderScrollComponent={renderScrollComponent}
+      />
+    </Container>
   );
 }
+
+const Container = styled(View)`
+  flex: 1;
+`;
 
 const List = styled(FlatList)<{paddingTop?: number}>`
   background-color: #ffffff;
@@ -96,17 +111,14 @@ const List = styled(FlatList)<{paddingTop?: number}>`
 >;
 
 const fetchList = (tab: Tab) => {
-  if (tab === 'activity') {
-    return <Activity key="activity" />;
-  }
   if (tab === 'feed') {
-    return <Feed key="feed" />;
+    return Feed;
   }
   if (tab === 'review') {
-    return <Review key="review" />;
+    return Review;
   }
 
-  return null;
+  return Activity;
 };
 
 export default MyZam;

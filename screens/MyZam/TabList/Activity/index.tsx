@@ -4,10 +4,11 @@ import WatchedCosmetics from './Carousels/WatchedCosmetics';
 import LikedCosmetics from './Carousels/LikedCosmetics';
 import ScrapVideos from './Carousels/ScrapVideos';
 import WatchedVideos from './Carousels/WatchedVideos';
+import {TabProps} from '../types';
 
-function Activity() {
+function Activity({minHeight=0}: TabProps) {
   return (
-    <Container>
+    <Container minHeight={minHeight}>
       <WatchedCosmetics />
       <WatchedVideos />
       <ScrapVideos />
@@ -16,10 +17,11 @@ function Activity() {
   );
 }
 
-const Container = styled.View`
+const Container = styled.View<{minHeight: number}>`
   padding-top: 15px;
   width: 100%;
   background-color: #ffffff;
+  min-height: ${props => props.minHeight}px;
 `;
 
 export default Activity;

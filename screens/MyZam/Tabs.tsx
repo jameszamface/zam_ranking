@@ -8,6 +8,7 @@ interface Props<T extends string> {
   selectedTab: T;
   tabLabels: {[key in T]: string};
   onPress?: (tab: T) => void;
+  height?: number;
 }
 
 function Tabs<T extends string>({
@@ -15,12 +16,13 @@ function Tabs<T extends string>({
   selectedTab,
   tabLabels,
   onPress,
+  height,
 }: Props<T>) {
   return (
     <Container>
       {tabs.map(tab => (
         <TappableText
-          style={tabStyle}
+          style={[tabStyle, {height}]}
           key={`@my_zam_${tab}`}
           item={tab}
           onPress={onPress}

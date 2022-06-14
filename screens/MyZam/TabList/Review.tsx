@@ -3,8 +3,9 @@ import useMyReviews from '../../../hooks/useMyReviews';
 import {FlatList, ListRenderItem, StyleProp, ViewStyle} from 'react-native';
 import {Review as ReviewType} from '../../../data/myReviews';
 import ReviewComponent from '../../../components/Review';
+import {TabProps} from './types';
 
-function Review() {
+function Review({minHeight = 0}: TabProps) {
   const {reviews, isLoading, isError, fetchNextReviews, hasNextPage} =
     useMyReviews();
 
@@ -44,7 +45,7 @@ function Review() {
 
   return (
     <FlatList
-      style={containerStyle}
+      style={[containerStyle, {minHeight}]}
       data={reviews}
       renderItem={renderItem}
       keyExtractor={keyExtractor}

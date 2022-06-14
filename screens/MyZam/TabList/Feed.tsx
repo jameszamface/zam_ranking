@@ -5,8 +5,9 @@ import QuestionFeed from '../../../components/Feed/QuestionFeed';
 import Masonry from '../../../components/Masonry';
 import {ZamFeed} from '../../../data/myFeeds';
 import useMyFeeds from '../../../hooks/useMyFeeds';
+import {TabProps} from './types';
 
-function Feed() {
+function Feed({minHeight = 0}: TabProps) {
   const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
     useMyFeeds();
 
@@ -42,7 +43,7 @@ function Feed() {
 
   return (
     <Masonry
-      style={containerStyle}
+      style={[containerStyle, {minHeight}]}
       data={zamFeeds}
       numColumns={2}
       gap={10}
