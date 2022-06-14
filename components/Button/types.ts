@@ -1,7 +1,7 @@
 export interface TextProps {
   color?: string;
   fontSize?: number;
-  isBold?: boolean;
+  bold?: boolean;
 }
 
 export interface BorderProps {

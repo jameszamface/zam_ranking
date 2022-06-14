@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import isEqual from 'react-fast-compare';
 import ButtonBase, {ButtonProps} from './ButtonBase';
 import {TextProps} from './types';
-import {makeTextStyle} from './utils';
+import {makeTextStyle, makeMarginStyle} from './utils';
+import {Margin} from '../../constants/type/View';
 
-function TextButton(props: TextProps & ButtonProps) {
+function TextButton(
+  props: PropsWithChildren<TextProps & ButtonProps & Margin>,
+) {
   const textStyle = makeTextStyle(props);
-  return <ButtonBase {...props} textStyle={textStyle} />;
+  const marginStyle = makeMarginStyle(props);
+  return (
+    <ButtonBase {...props} containerStyle={marginStyle} textStyle={textStyle} />
+  );
 }
 
 TextButton.defaultProps = {

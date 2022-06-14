@@ -71,7 +71,7 @@ function MyZam() {
 
   const renderScrollComponent = useCallback(
     (props: ScrollViewProps) => (
-      <Animated.ScrollView {...props} onScroll={scrollHandler} />
+      <Animated.ScrollView {...props} onScroll={scrollHandler}/>
     ),
     [scrollHandler],
   );

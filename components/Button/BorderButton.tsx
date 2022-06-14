@@ -1,20 +1,21 @@
 import React from 'react';
 import isEqual from 'react-fast-compare';
-import {Padding} from '../../constants/type/View';
+import {Margin, Padding} from '../../constants/type/View';
 import ButtonBase, {ButtonProps} from './ButtonBase';
 import {BorderProps, SizeProps, TextProps} from './types';
-import {makeBorderStyle, makeTextStyle} from './utils';
+import {makeBorderStyle, makeTextStyle, makeMarginStyle} from './utils';
 
 const BorderButton = (
-  props: BorderProps & Padding & TextProps & ButtonProps & SizeProps,
+  props: BorderProps & Padding & Margin & TextProps & ButtonProps & SizeProps,
 ) => {
   const borderStyle = makeBorderStyle(props);
+  const marginStyle = makeMarginStyle(props);
   const textStyle = makeTextStyle(props);
 
   return (
     <ButtonBase
       {...props}
-      containerStyle={[borderStyle, props.containerStyle]}
+      containerStyle={[marginStyle, borderStyle, props.containerStyle]}
       textStyle={textStyle}
     />
   );
@@ -25,7 +26,6 @@ BorderButton.defaultProps = {
   backgroundColor: '#ffffff',
   borderColor: '#cccccc',
   borderWidth: 1,
-  borderRadius: '50%',
   paddingHorizontal: 10,
   paddingVertical: 5,
 };

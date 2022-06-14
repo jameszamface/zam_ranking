@@ -1,4 +1,4 @@
-import {Padding} from '../../constants/type/View';
+import { Padding, Margin } from '../../constants/type/View';
 import {BorderProps, SizeProps, TextProps} from './types';
 
 export const makeBorderStyle = (props?: BorderProps & Padding & SizeProps) => {
@@ -23,6 +23,18 @@ export const makeTextStyle = (props?: TextProps) => {
   return {
     color: props?.color,
     fontSize: props?.fontSize,
-    fontWeight: props?.isBold ? 'bold' : 'normal',
+    fontWeight: props?.bold ? 'bold' : 'normal',
   } as const;
+};
+
+export const makeMarginStyle = (props?: Margin) => {
+  if (!props) return;
+  return {
+    marginTop: props?.marginTop,
+    marginBottom: props?.marginBottom,
+    marginLeft: props?.marginLeft,
+    marginRight: props?.marginRight,
+    marginHorizontal: props?.marginHorizontal,
+    marginVertical: props?.marginVertical,
+  };
 };

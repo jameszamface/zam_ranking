@@ -6,14 +6,16 @@ import PickCarousel from './PickCarousel';
 import Profile from './Profile';
 import Shopping from './Shopping';
 import {profileHeight, scrollTopMaxOverflow} from '../config';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface Props {
   scrollTop: SharedValue<number>;
 }
 
 function Header({scrollTop}: Props) {
+  const {top} = useSafeAreaInsets();
   return (
-    <Container>
+    <Container marginTop={top}>
       <Profile
         nickname="보틀친구곽튭2"
         backgroundImage="https://d1sjhoa769f1sq.cloudfront.net/qa_user_feeds/17519/0.JPG"
@@ -29,7 +31,8 @@ function Header({scrollTop}: Props) {
   );
 }
 
-const Container = styled.View`
+const Container = styled.View<{marginTop: number}>`
+  margin-top: ${props => -props.marginTop}px;
   width: 100%;
 `;
 
