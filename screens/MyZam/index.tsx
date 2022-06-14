@@ -16,7 +16,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
-import Text from '../../components/Text';
+import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 
 function MyZam() {
   const {top} = useSafeAreaInsets();
@@ -78,7 +78,7 @@ function MyZam() {
   );
 
   return (
-    <Suspense fallback={<Text>로딩중</Text>}>
+    <Suspense fallback={<FullScreenLoader isLoading />}>
       <Container onLayout={onLayout}>
         <List
           paddingTop={top}
