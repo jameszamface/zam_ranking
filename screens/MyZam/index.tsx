@@ -1,5 +1,4 @@
-import React, {useCallback} from 'react';
-import Header from './Header';
+import React, {useCallback, useRef} from 'react';
 import useSort from '../../hooks/useSort';
 import {Tab, tabs, tabLabels} from './config';
 import Animated, {
@@ -10,9 +9,12 @@ import Tabs from './Tabs';
 import Activity from './TabList/Activity';
 import Feed from './TabList/Feed';
 import Review from './TabList/Review';
-import {ListRenderItem} from 'react-native';
+import {FlatList, ListRenderItem, ScrollViewProps} from 'react-native';
+import Header from './Header';
+import {delay} from '../../utils/time';
 
 function MyZam() {
+  const flatlistRef = useRef<FlatList>(null);
   const scrollTop = useSharedValue(0);
   const {sort: selectedTab, changeSort: changeTab} = useSort<Tab>(tabs[0]);
 
@@ -26,8 +28,10 @@ function MyZam() {
   );
 
   const onTabPressed = useCallback(
-    (tab: Tab) => {
+    async (tab: Tab) => {
       changeTab(tab);
+      await delay(500);
+      flatlistRef.current?.scrollToIndex({index: 1});
     },
     [changeTab],
   );
@@ -52,16 +56,24 @@ function MyZam() {
     [onTabPressed, selectedTab],
   );
 
+  const renderScrollComponent = useCallback(
+    (props: ScrollViewProps) => (
+      <Animated.ScrollView {...props} onScroll={scrollHandler} />
+    ),
+    [scrollHandler],
+  );
+
   return (
-    <Animated.FlatList
+    <FlatList
+      ref={flatlistRef}
       ListHeaderComponent={<Header scrollTop={scrollTop} />}
       data={['tab', selectedTab]}
       stickyHeaderIndices={[1]}
       bounces
-      onScroll={scrollHandler}
       scrollEventThrottle={16}
       renderItem={renderItem}
       showsVerticalScrollIndicator={false}
+      renderScrollComponent={renderScrollComponent}
     />
   );
 }
