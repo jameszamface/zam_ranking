@@ -9,7 +9,7 @@ import Tabs from './Tabs';
 import Activity from './TabList/Activity';
 import Feed from './TabList/Feed';
 import Review from './TabList/Review';
-import {FlatList, ListRenderItem, ScrollViewProps, View} from 'react-native';
+import {FlatList, ListRenderItem, View} from 'react-native';
 import Header from './Header';
 import {delay} from '../../utils/time';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -17,6 +17,8 @@ import styled from 'styled-components/native';
 import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
 import FullScreenLoader from '../../components/Loader/FullScreenLoader';
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 function MyZam() {
   const {top} = useSafeAreaInsets();
@@ -26,7 +28,7 @@ function MyZam() {
     [top, layout],
   );
 
-  const flatlistRef = useRef<FlatList>(null);
+  const flatlistRef = useRef<FlatList<string>>(null);
   const scrollTop = useSharedValue(0);
   const {sort: selectedTab, changeSort: changeTab} = useSort<Tab>(tabs[0]);
 
@@ -45,7 +47,7 @@ function MyZam() {
       await delay(500);
       flatlistRef.current?.scrollToIndex({index: 1, viewOffset: tabHeight});
     },
-    [changeTab],
+    [changeTab, flatlistRef],
   );
 
   const renderItem: ListRenderItem<string> = useCallback(
@@ -70,19 +72,14 @@ function MyZam() {
     [onTabPressed, selectedTab, tabScreenMinHeight],
   );
 
-  const renderScrollComponent = useCallback(
-    (props: ScrollViewProps) => (
-      <Animated.ScrollView {...props} onScroll={scrollHandler} />
-    ),
-    [scrollHandler],
-  );
-
   return (
     <Suspense fallback={<FullScreenLoader isLoading />}>
       <Container onLayout={onLayout}>
         <List
           paddingTop={top}
+          contentContainerStyle={{paddingBottom: top}}
           ref={flatlistRef}
+          onScroll={scrollHandler}
           ListHeaderComponent={<Header scrollTop={scrollTop} />}
           data={['tab', selectedTab]}
           stickyHeaderIndices={[1]}
@@ -90,7 +87,6 @@ function MyZam() {
           scrollEventThrottle={16}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
-          renderScrollComponent={renderScrollComponent}
         />
       </Container>
     </Suspense>
@@ -101,7 +97,7 @@ const Container = styled(View)`
   flex: 1;
 `;
 
-const List = styled(FlatList)<{paddingTop?: number}>`
+const List = styled(AnimatedFlatList)<{paddingTop?: number}>`
   background-color: #ffffff;
   padding-top: ${props => props.paddingTop}px;
 ` as unknown as StyledComponent<
