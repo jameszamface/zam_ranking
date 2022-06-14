@@ -47,7 +47,7 @@ function Profile(props: Props) {
     scrollTopMaxOverflow = 0,
   } = props;
 
-  const scrollInputRange = [scrollTopMaxOverflow, 0, height / 3, height];
+  const scrollInputRange = [scrollTopMaxOverflow, 0, height / 4, height];
   const containerStyle = useAnimatedStyle(() => {
     const scale = interpolate(scrollTop.value, scrollInputRange, outputs.scale);
     const opacity = interpolate(
