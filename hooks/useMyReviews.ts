@@ -18,6 +18,7 @@ function useMyReviews() {
     {
       getNextPageParam: lastPage => lastPage.cursor,
       getPreviousPageParam: firstPage => firstPage.cursor,
+      refetchOnMount: false,
     },
   );
 

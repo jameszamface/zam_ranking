@@ -12,6 +12,9 @@ export function useWatchedCosmetics() {
   const {data, isLoading, isError} = useQuery(
     ['activity', 'watchedCosmetics'],
     fetchWatchedCosmetics,
+    {
+      refetchOnMount: false,
+    },
   );
   const [watchedCosmetics, setWatchedCosmetics] = useState<WatchedCosmetic[]>();
 
