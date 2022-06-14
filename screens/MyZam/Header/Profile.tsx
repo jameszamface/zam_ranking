@@ -1,9 +1,12 @@
 import React from 'react';
-import Animated, {SharedValue, useAnimatedStyle} from 'react-native-reanimated';
+import Animated, {
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import styled from 'styled-components/native';
 import CircleImage from '../../../components/Cricle/ImageCircle';
 import {width} from '../../../constants';
-import {profileHeight} from '../config';
 
 interface Props {
   scrollTop: SharedValue<number>;
@@ -13,36 +16,52 @@ interface Props {
   follower?: number;
   following?: number;
   stickers?: number;
+  height?: number;
+  scrollTopMaxOverflow?: number;
 }
 
-function Profile({scrollTop, nickname, backgroundImage, profileImage}: Props) {
+const outputs = {
+  scale: [2, 1, 1, 1],
+  opacity: [1, 1, 1, 0],
+};
+
+function Profile({
+  scrollTop,
+  nickname,
+  backgroundImage,
+  profileImage,
+  height = 0,
+  scrollTopMaxOverflow = 0,
+}: Props) {
+  const scrollInputRange = [scrollTopMaxOverflow, 0, height / 3, height];
   const style = useAnimatedStyle(() => {
-    const scale = 1 - Math.min(scrollTop.value / profileHeight, 0);
-    const opacity = 1.3 - scrollTop.value / profileHeight;
+    const scale = interpolate(scrollTop.value, scrollInputRange, outputs.scale);
+    const opacity = interpolate(
+      scrollTop.value,
+      scrollInputRange,
+      outputs.opacity,
+    );
+    const translateY = scrollTop.value * 0.9;
 
     return {
       opacity,
-      transform: [
-        {translateY: scrollTop.value * 0.9},
-        {scaleX: scale},
-        {scaleY: scale},
-      ],
+      transform: [{translateY}, {scale: scale}],
     };
   }, [scrollTop]);
 
   return (
-    <Container style={style}>
+    <Container style={style} height={height}>
       <BackgroundImageContainer>
         <CircleImage size={width} image={backgroundImage} />
-        <Dim />
+        <Dim height={height} />
       </BackgroundImageContainer>
     </Container>
   );
 }
 
-const Container = styled(Animated.View)`
+const Container = styled(Animated.View)<{height: number}>`
   width: 100%;
-  height: ${profileHeight}px;
+  height: ${props => props.height}px;
   background-color: #ffffff;
 `;
 
@@ -51,10 +70,10 @@ const BackgroundImageContainer = styled.View`
   align-items: center;
 `;
 
-const Dim = styled.View`
+const Dim = styled.View<{height: number}>`
   position: absolute;
   width: 100%;
-  height: ${profileHeight}px;
+  height: ${props => props.height}px;
   background-color: #000000;
   opacity: 0.3;
 `;

@@ -14,3 +14,4 @@ export const tabLabels: {
 export const pickRegisterTitle = '🐶\n나만 아는 찐템을\n소개해 주세요!';
 
 export const profileHeight = width + 100;
+export const scrollTopMaxOverflow = -250;
