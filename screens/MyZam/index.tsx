@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {Suspense, useCallback, useMemo, useRef} from 'react';
 import useSort from '../../hooks/useSort';
 import {Tab, tabs, tabLabels, tabHeight} from './config';
 import Animated, {
@@ -16,6 +16,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
+import Text from '../../components/Text';
 
 function MyZam() {
   const {top} = useSafeAreaInsets();
@@ -77,20 +78,22 @@ function MyZam() {
   );
 
   return (
-    <Container onLayout={onLayout}>
-      <List
-        paddingTop={top}
-        ref={flatlistRef}
-        ListHeaderComponent={<Header scrollTop={scrollTop} />}
-        data={['tab', selectedTab]}
-        stickyHeaderIndices={[1]}
-        bounces
-        scrollEventThrottle={16}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        renderScrollComponent={renderScrollComponent}
-      />
-    </Container>
+    <Suspense fallback={<Text>로딩중</Text>}>
+      <Container onLayout={onLayout}>
+        <List
+          paddingTop={top}
+          ref={flatlistRef}
+          ListHeaderComponent={<Header scrollTop={scrollTop} />}
+          data={['tab', selectedTab]}
+          stickyHeaderIndices={[1]}
+          bounces
+          scrollEventThrottle={16}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          renderScrollComponent={renderScrollComponent}
+        />
+      </Container>
+    </Suspense>
   );
 }
 

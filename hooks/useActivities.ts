@@ -14,6 +14,7 @@ export function useWatchedCosmetics() {
     fetchWatchedCosmetics,
     {
       refetchOnMount: false,
+      suspense: true,
     },
   );
   const [watchedCosmetics, setWatchedCosmetics] = useState<WatchedCosmetic[]>();
@@ -30,6 +31,10 @@ export function useWatchedVideos() {
   const {data, isLoading, isError} = useQuery(
     ['activity', 'watchedVideos'],
     fetchWatchedVideos,
+    {
+      refetchOnMount: false,
+      suspense: true,
+    },
   );
   const [watchedVideos, setWatchedVideos] = useState<Video[]>();
 
@@ -60,6 +65,10 @@ export function useLikedCosmetics() {
   const {data, isLoading, isError} = useQuery(
     ['activity', 'likedCosmetics'],
     fetchLikedCosmetics,
+    {
+      refetchOnMount: false,
+      suspense: true,
+    },
   );
   const [likedCosmetics, setLikedCosmetics] = useState<LikedCosmetic[]>();
 

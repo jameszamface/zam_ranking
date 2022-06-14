@@ -9,7 +9,7 @@ import PickRegister from '../../../components/PickRegister';
 import {pickRegisterTitle} from '../config';
 
 interface Props {
-  nickname: string;
+  nickname?: string;
 }
 
 function PickCarousel({nickname}: Props) {

@@ -18,7 +18,7 @@ import {TouchableWithoutFeedback} from 'react-native';
 
 interface Props {
   scrollTop: SharedValue<number>;
-  nickname: string;
+  nickname?: string;
   backgroundImage?: string;
   profileImage?: string;
   followers?: number;
