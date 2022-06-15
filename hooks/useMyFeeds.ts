@@ -44,7 +44,7 @@ function useMyFeeds(props?: Props) {
         | undefined;
       if (!clonedData) return oldData;
 
-      const indices = findFeedIndices(clonedData, zamFeed);
+      const indices = findFeedIndices2(clonedData, zamFeed);
       if (!indices) return oldData;
       const {pageIndex, feedIndex} = indices;
       clonedData.pages[pageIndex].zamFeeds[feedIndex] = zamFeed;
@@ -59,7 +59,7 @@ function useMyFeeds(props?: Props) {
         | undefined;
       if (!clonedData) return oldData;
 
-      const indices = findFeedIndices(clonedData, zamFeed);
+      const indices = findFeedIndices2(clonedData, zamFeed);
       if (!indices) return oldData;
       const {pageIndex, feedIndex} = indices;
       clonedData.pages[pageIndex].zamFeeds.splice(feedIndex, 1);
@@ -92,7 +92,31 @@ const findFeedIndices = (
   });
 
   if (pageIndex === -1 || feedIndex === -1) return;
+
   return {pageIndex, feedIndex};
+};
+
+const findFeedIndices2 = (
+  oldData: InfiniteData<FetchFeedsResult>,
+  zamFeed: ZamFeed,
+) => {
+  const feedsWithIndices = _.flatMap(oldData.pages, (page, pageIndex) => {
+    return page.zamFeeds.map((feed, feedIndex) => ({
+      originFeed: feed,
+      pageIndex,
+      feedIndex,
+    }));
+  });
+
+  // feedsWithIndices를 시간 등을 기준으로 정렬해서 검색한다면 더 빠를 수도 있을 것이다.
+  const feedWithIndices = feedsWithIndices.find(feedWithIndices => {
+    return feedWithIndices.originFeed.feed.id === zamFeed.feed.id;
+  });
+
+  if (!feedWithIndices) return;
+
+  const result = _.pick(feedWithIndices, ['pageIndex', 'feedIndex']);
+  return result;
 };
 
 export default useMyFeeds;
