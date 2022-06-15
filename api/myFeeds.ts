@@ -7,12 +7,14 @@ interface FetchFeedsProps {
   cursor?: number;
 }
 
-export const fetchMyFeeds = async (
-  props: FetchFeedsProps,
-): Promise<{
+export interface FetchFeedsResult {
   cursor?: number;
   zamFeeds: ZamFeed[];
-}> => {
+}
+
+export const fetchMyFeeds = async (
+  props: FetchFeedsProps,
+): Promise<FetchFeedsResult> => {
   console.log('fetchMyFeeds', {cursor: props.cursor});
   const isLast = Math.random() > 0.85;
   await delay(1500);

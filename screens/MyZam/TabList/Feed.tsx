@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, {useCallback} from 'react';
 import {ListRenderItem, StyleSheet} from 'react-native';
 import PictureFeed from '../../../components/Feed/PictureFeed';
@@ -8,12 +9,25 @@ import useMyFeeds from '../../../hooks/useMyFeeds';
 import {TabProps} from './types';
 
 function Feed({minHeight = 0}: TabProps) {
-  const {zamFeeds, isLoading, isError, fetchNextFeeds, hasNextPage} =
-    useMyFeeds();
+  const {
+    zamFeeds,
+    isLoading,
+    isError,
+    fetchNextFeeds,
+    hasNextPage,
+    changeFeed,
+  } = useMyFeeds();
 
-  const onPress = useCallback((zamFeed?: ZamFeed) => {
-    console.log('Zam Feed', zamFeed?.feed.note);
-  }, []);
+  const onPress = useCallback(
+    (zamFeed?: ZamFeed) => {
+      if (!zamFeed) return;
+      const clone = _.cloneDeep(zamFeed);
+      clone.feed.note = '82147039857430258237450834295720349587324058342975';
+      changeFeed(clone);
+      console.log('Zam Feed', zamFeed?.feed.note);
+    },
+    [changeFeed],
+  );
 
   const renderItem: ListRenderItem<ZamFeed> = ({item: zamFeed}) => {
     const isQuestion = zamFeed.feed.section === 5;
