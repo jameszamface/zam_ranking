@@ -8,6 +8,7 @@ interface Props {
   enabled?: boolean;
 }
 
+// change/deleteFeed만 사용하고 싶을 때는 enalbed 속성을 false로 하고 사용한다.
 function useMyFeeds(props?: Props) {
   const queryClient = useQueryClient();
 
