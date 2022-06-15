@@ -20,7 +20,6 @@ function Activity({minHeight=0}: TabProps) {
 const Container = styled.View<{minHeight: number}>`
   padding-top: 15px;
   width: 100%;
-  background-color: #ffffff;
   min-height: ${props => props.minHeight}px;
 `;
 

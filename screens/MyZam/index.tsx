@@ -9,7 +9,7 @@ import Tabs from './Tabs';
 import Activity from './TabList/Activity';
 import Feed from './TabList/Feed';
 import Review from './TabList/Review';
-import {FlatList, ListRenderItem, View} from 'react-native';
+import {FlatList, ListRenderItem, View, StyleSheet} from 'react-native';
 import Header from './Header';
 import {delay} from '../../utils/time';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -20,7 +20,9 @@ import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
 import {isIOS} from '../../constants/index';
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const AnimatedFlatList = Animated.createAnimatedComponent(
+  FlatList,
+) as typeof FlatList;
 
 function MyZam() {
   const {top} = useSafeAreaInsets();
@@ -85,8 +87,8 @@ function MyZam() {
             triggerOffset={headerLayout?.height}
           />
         )}
-        <List
-          paddingTop={top}
+        <AnimatedFlatList
+          style={[styles.listStyle, {paddingTop: top}]}
           contentContainerStyle={{paddingBottom: top}}
           ref={flatlistRef}
           onScroll={scrollHandler}
@@ -109,17 +111,11 @@ const Container = styled(View)`
   flex: 1;
 `;
 
-const List = styled(AnimatedFlatList)<{paddingTop?: number}>`
-  background-color: #ffffff;
-  padding-top: ${props => props.paddingTop}px;
-` as unknown as StyledComponent<
-  typeof FlatList,
-  any,
-  {
-    paddingTop?: number | undefined;
+const styles = StyleSheet.create({
+  listStyle: {
+    backgroundColor: '#fafafa',
   },
-  string
->;
+});
 
 const fetchList = (tab: Tab) => {
   if (tab === 'feed') {

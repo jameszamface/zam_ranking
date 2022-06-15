@@ -60,7 +60,6 @@ function Feed({minHeight = 0}: TabProps) {
   return (
     <Masonry
       style={[styles.container, {minHeight}]}
-      contentContainerStyle={styles.contentContainerStyle}
       data={zamFeeds}
       numColumns={2}
       gap={10}
@@ -79,10 +78,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingTop: 15,
-    backgroundColor: '#eeeeee',
-  },
-  contentContainerStyle: {
-    backgroundColor: '#eeeeee',
   },
 });
 

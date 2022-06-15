@@ -61,7 +61,6 @@ function Review({minHeight = 0}: TabProps) {
 const keyExtractor = (item: ReviewType) => String(item.ID);
 
 const containerStyle: StyleProp<ViewStyle> = {
-  backgroundColor: '#ffffff',
   paddingHorizontal: 15,
   paddingTop: 15,
 };
