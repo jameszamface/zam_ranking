@@ -14,7 +14,6 @@ import Header from './Header';
 import {delay} from '../../utils/time';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
-import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
 import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
