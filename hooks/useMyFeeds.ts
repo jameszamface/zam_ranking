@@ -1,11 +1,6 @@
 import _ from 'lodash';
 import {useEffect, useState} from 'react';
-import {
-  useInfiniteQuery,
-  QueryClient,
-  useQueryClient,
-  InfiniteData,
-} from 'react-query';
+import {useInfiniteQuery, useQueryClient, InfiniteData} from 'react-query';
 import {FetchFeedsResult, fetchMyFeeds} from '../api/myFeeds';
 import {ZamFeed} from '../data/myFeeds';
 
@@ -57,6 +52,21 @@ function useMyFeeds(props?: Props) {
     });
   };
 
+  const deleteFeed = (zamFeed: ZamFeed) => {
+    queryClient.setQueryData('myFeeds', oldData => {
+      const clonedData = _.cloneDeep(oldData) as
+        | InfiniteData<FetchFeedsResult>
+        | undefined;
+      if (!clonedData) return oldData;
+
+      const indices = findFeedIndices(clonedData, zamFeed);
+      if (!indices) return oldData;
+      const {pageIndex, feedIndex} = indices;
+      clonedData.pages[pageIndex].zamFeeds.splice(feedIndex, 1);
+      return clonedData;
+    });
+  };
+
   return {
     zamFeeds,
     hasNextPage,
@@ -64,6 +74,7 @@ function useMyFeeds(props?: Props) {
     isLoading: isFetching || isFetchingNextPage,
     isError,
     changeFeed,
+    deleteFeed,
   };
 }
 

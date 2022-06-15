@@ -16,17 +16,19 @@ function Feed({minHeight = 0}: TabProps) {
     fetchNextFeeds,
     hasNextPage,
     changeFeed,
+    deleteFeed,
   } = useMyFeeds();
 
   const onPress = useCallback(
     (zamFeed?: ZamFeed) => {
       if (!zamFeed) return;
-      const clone = _.cloneDeep(zamFeed);
-      clone.feed.note = '82147039857430258237450834295720349587324058342975';
-      changeFeed(clone);
+      // const clone = _.cloneDeep(zamFeed);
+      // clone.feed.note = '82147039857430258237450834295720349587324058342975';
+      // changeFeed(clone);
+      deleteFeed(zamFeed);
       console.log('Zam Feed', zamFeed?.feed.note);
     },
-    [changeFeed],
+    [deleteFeed],
   );
 
   const renderItem: ListRenderItem<ZamFeed> = ({item: zamFeed}) => {
