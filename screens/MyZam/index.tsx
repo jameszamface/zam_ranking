@@ -18,6 +18,7 @@ import {StyledComponent} from 'styled-components';
 import useLayout from '../../hooks/useLayout';
 import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
+import {isIOS} from '../../constants/index';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -78,7 +79,12 @@ function MyZam() {
   return (
     <Suspense fallback={<FullScreenLoader isLoading />}>
       <Container onLayout={onLayout}>
-        <SafeTopCover scrollTop={scrollTop} triggerOffset={headerLayout?.height} />
+        {isIOS && (
+          <SafeTopCover
+            scrollTop={scrollTop}
+            triggerOffset={headerLayout?.height}
+          />
+        )}
         <List
           paddingTop={top}
           contentContainerStyle={{paddingBottom: top}}

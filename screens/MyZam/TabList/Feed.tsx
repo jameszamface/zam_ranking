@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {ListRenderItem, StyleProp, ViewStyle} from 'react-native';
+import {ListRenderItem, StyleSheet} from 'react-native';
 import PictureFeed from '../../../components/Feed/PictureFeed';
 import QuestionFeed from '../../../components/Feed/QuestionFeed';
 import Masonry from '../../../components/Masonry';
@@ -43,7 +43,8 @@ function Feed({minHeight = 0}: TabProps) {
 
   return (
     <Masonry
-      style={[containerStyle, {minHeight}]}
+      style={[styles.container, {minHeight}]}
+      contentContainerStyle={styles.contentContainerStyle}
       data={zamFeeds}
       numColumns={2}
       gap={10}
@@ -57,11 +58,16 @@ function Feed({minHeight = 0}: TabProps) {
   );
 }
 
-const containerStyle: StyleProp<ViewStyle> = {
-  flex: 1,
-  width: '100%',
-  paddingTop: 15,
-  backgroundColor: '#eeeeee',
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    paddingTop: 15,
+    backgroundColor: '#eeeeee',
+  },
+  contentContainerStyle: {
+    backgroundColor: '#eeeeee',
+  },
+});
 
 export default Feed;

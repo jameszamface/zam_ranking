@@ -18,7 +18,7 @@ function SafeTopCover({scrollTop, triggerOffset = 0}: Props) {
     () => ({
       opacity: interpolate(
         scrollTop.value,
-        [triggerOffset + top, triggerOffset],
+        [triggerOffset + top * 0.5, triggerOffset],
         [1, 0],
       ),
     }),

@@ -25,7 +25,6 @@ const propsSplitter = [
   'refreshControl',
   'renderItem',
   'style',
-  'contentContainerStyle',
 ] as const;
 
 interface Props {
