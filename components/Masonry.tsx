@@ -1,12 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import {
-  FlatList,
-  FlatListProps,
-  ListRenderItem,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import {FlatList, FlatListProps, ListRenderItem} from 'react-native';
 import {width} from '../constants';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/native';
@@ -25,6 +19,10 @@ const propsSplitter = [
   'refreshControl',
   'renderItem',
   'style',
+  'ListFooterComponent',
+  'ListFooterComponentStyle',
+  'ListHeaderComponent',
+  'ListHeaderComponentStyle',
 ] as const;
 
 interface Props {

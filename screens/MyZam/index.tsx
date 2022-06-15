@@ -50,7 +50,7 @@ function MyZam() {
   const onTabPressed = useCallback(
     async (tab: Tab) => {
       changeTab(tab);
-      await delay(500);
+      await delay(250);
       flatlistRef.current?.scrollToIndex({index: 1, viewOffset: tabHeight});
     },
     [changeTab, flatlistRef],

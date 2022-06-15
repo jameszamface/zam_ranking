@@ -3,6 +3,7 @@ import React, {useCallback} from 'react';
 import {ListRenderItem, StyleSheet} from 'react-native';
 import PictureFeed from '../../../components/Feed/PictureFeed';
 import QuestionFeed from '../../../components/Feed/QuestionFeed';
+import ListLoader from '../../../components/Loader/ListLoader';
 import Masonry from '../../../components/Masonry';
 import {ZamFeed} from '../../../data/myFeeds';
 import useMyFeeds from '../../../hooks/useMyFeeds';
@@ -69,6 +70,12 @@ function Feed({minHeight = 0}: TabProps) {
       showsVerticalScrollIndicator={false}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.8}
+      ListFooterComponent={
+        <ListLoader
+          height={!zamFeeds ? minHeight : undefined}
+          isLoading={isLoading}
+        />
+      }
     />
   );
 }

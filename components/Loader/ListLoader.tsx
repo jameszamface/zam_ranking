@@ -28,8 +28,9 @@ const Container = styled.View<{
 }>`
   width: 100%;
   height: ${props => props.height || 50}px;
-  flex: 1;
   padding-bottom: ${props => props.paddingBottom || 0}px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default ListLoader;

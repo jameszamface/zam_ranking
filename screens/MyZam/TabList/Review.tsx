@@ -1,9 +1,10 @@
 import React, {useCallback} from 'react';
 import useMyReviews from '../../../hooks/useMyReviews';
-import {FlatList, ListRenderItem, StyleProp, ViewStyle} from 'react-native';
+import { FlatList, ListRenderItem, StyleProp, ViewStyle, StyleSheet } from 'react-native';
 import {Review as ReviewType} from '../../../data/myReviews';
 import ReviewComponent from '../../../components/Review';
 import {TabProps} from './types';
+import ListLoader from '../../../components/Loader/ListLoader';
 
 function Review({minHeight = 0}: TabProps) {
   const {reviews, isLoading, isError, fetchNextReviews, hasNextPage} =
@@ -45,7 +46,8 @@ function Review({minHeight = 0}: TabProps) {
 
   return (
     <FlatList
-      style={[containerStyle, {minHeight}]}
+      style={[styles.listStyle, {minHeight}]}
+      contentContainerStyle={styles.contentStyle}
       data={reviews}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
@@ -54,15 +56,28 @@ function Review({minHeight = 0}: TabProps) {
       scrollEventThrottle={16}
       updateCellsBatchingPeriod={100}
       maxToRenderPerBatch={7}
+      ListFooterComponent={
+        <ListLoader
+          height={!reviews ? minHeight : undefined}
+          isLoading={isLoading}
+        />
+      }
     />
   );
 }
 
 const keyExtractor = (item: ReviewType) => String(item.ID);
 
-const containerStyle: StyleProp<ViewStyle> = {
-  paddingHorizontal: 15,
-  paddingTop: 15,
-};
+const styles = StyleSheet.create({
+  listStyle: {
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
+  contentStyle: {
+    flexGrow: 1,
+    backgroundColor: 'yellow',
+  },
+});
 
 export default Review;
