@@ -1,6 +1,7 @@
 import React, {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -21,23 +22,33 @@ function TutorialProvider({children}: PropsWithChildren<{}>) {
     initTutorial();
   }, []);
 
-  const getTutorial = async (screen: string) => {
+  const getTutorial = useCallback(async (screen: string) => {
     // TODO: tutorials에서 완료된 튜토리얼을 필터링
     // TODO: tutorials에서 screen 속성이 파라미터로 전달받은 screen과 동일한 스크린 객체 반환
     return [];
-  };
+  }, []);
 
-  const triggerAction = async (action: Action) => {
+  const triggerAction = useCallback(async (action: Action) => {
     // TODO: action의 내용대로 모달, 이미지 등을 띄운거나 변경한다.
-  };
+  }, []);
+
+  const completeAction = useCallback(
+    async (tutorialId: number, actionId: number) => {
+      // TODO: 튜토리얼 객체 추출
+      // TODO: 해당 액션의 state를 State.Complete로 변경
+      // TODO: 다음 액션을 트리거시킨다.
+    },
+    [],
+  );
 
   const value = useMemo(
     () => ({
       getTutorial,
       triggerAction,
       completeTutorial: saveCompletedTutorialId,
+      completeAction,
     }),
-    [],
+    [completeAction, getTutorial, triggerAction],
   );
 
   return (
