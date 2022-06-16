@@ -14,6 +14,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import BottomTabs from './navigations/BottomTabs';
 import 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import TutorialProvider from './contexts/TutorialContext/index';
 
 const queryClient = new QueryClient();
 
@@ -22,7 +23,9 @@ const App = () => {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <BottomTabs />
+          <TutorialProvider>
+            <BottomTabs />
+          </TutorialProvider>
         </NavigationContainer>
       </QueryClientProvider>
     </SafeAreaProvider>
