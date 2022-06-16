@@ -15,6 +15,9 @@ export interface Action {
   duration: number; // millisecond 단위이고, modal.button이 존재하는 경우 무시됩니다.
   modal: Modal;
   image?: Image;
+  // 첫 번째 Size는 좌상단, 두 번째 Size는 우하단 포인트이고, 두 개의 포인트로 터치 가능한 사각형 영역을 생성합니다.
+  // 두 번째 Size가 첫 번째 Size의 우측 또는 상단에 있을 경우 touchableArea를 생성하지 않습니다.
+  touchableArea?: [Size, Size];
 }
 
 export interface Modal {
