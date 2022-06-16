@@ -28,3 +28,5 @@ export interface Modal {
   bottomImage?: Image; // 텍스트 하단에 표시되는 이미지입니다.
   button?: Button;
 }
+
+export type ActionCallback = (action: Action) => void;
