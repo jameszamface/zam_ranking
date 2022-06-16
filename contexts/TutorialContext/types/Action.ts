@@ -17,7 +17,11 @@ export interface Action {
   image?: Image;
   // 첫 번째 Size는 좌상단, 두 번째 Size는 우하단 포인트이고, 두 개의 포인트로 터치 가능한 사각형 영역을 생성합니다.
   // 두 번째 Size가 첫 번째 Size의 우측 또는 상단에 있을 경우 touchableArea를 생성하지 않습니다.
+  // 오직 한 개의 영역만 생성할 수 있습니다.
   touchableArea?: [Size, Size];
+  // touchableArea와 동일하지만 다수 영역을 생성할 수 있습니다.
+  // touchableArea가 우선합니다.
+  untouchableAreas?: [Size, Size][];
 }
 
 export interface Modal {
