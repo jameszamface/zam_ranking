@@ -94,9 +94,11 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       if (!tutorial) return;
 
+      // 현재 진행중인 튜토리얼로 등록
       tutorialsInProcess[screen] = tutorial;
-      const pendingActions = getPendingActions(tutorial);
 
+      // Pending 상태인 액션 순차실행
+      const pendingActions = getPendingActions(tutorial);
       execActions(pendingActions, _triggerAction, _removeAction);
     })();
   }, [_removeAction, _triggerAction, screen]);
