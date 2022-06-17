@@ -1,10 +1,8 @@
 import {Button, Image, Position, Rectangle, Size, State, Text} from './common';
 
 export enum ActionType {
-  // 트리거되고 duration 이후, state가 완료 상태로 변경됩니다.
-  // modal.button이 존재하는 경우, 무조건 Manual로 동작합니다.
-  Auto = 0,
-  Manual, // children에서 직접 완료 신호를 주어야 state가 완료 상태로 변경됩니다.
+  Auto = 0, // 튜토리얼 컨텍스트의 모달의 확인 버튼 등에 의해 완료 상태로 변경되는 액션입니다.
+  Manual, // 스크린의 버튼 등 children 내부의 특정 동작에 의해 적접 완료 상태로 변경되는 액션입니다.
 }
 
 // 2.22 기획서 p.14에 튜토리얼 이탈시 처음부터 다시 시작한다고 했으므로, state가 State.Pending인 튜토리얼은 state가 State.Complete인 Action도 다시 트리거시킵니다.
@@ -12,8 +10,8 @@ export interface Action {
   id: string | number;
   type: ActionType;
   state?: State;
-  duration?: number; // millisecond 단위이고, modal.button이 존재하는 경우 무시됩니다.
-  modal: Modal;
+  duration?: number; // millisecond 단위이고, 타입이 Auto이거나 modal.button이 존재하는 경우 무시됩니다.
+  modal?: Modal;
   image?: Image;
   // 첫 번째 Size는 좌상단, 두 번째 Size는 우하단 포인트이고, 두 개의 포인트로 터치 가능한 사각형 영역을 생성합니다.
   // 두 번째 Size가 첫 번째 Size의 우측 또는 상단에 있을 경우 touchableArea를 생성하지 않습니다.
