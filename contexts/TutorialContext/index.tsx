@@ -45,34 +45,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     setAction(action);
   }, []);
 
-  // _completeCurrentAction과 completeActionWithId에서만 사용!
-  const _completeAction = useCallback(
-    (tutorial: Tutorial, action: Action) => {
-      action.state = State.Complete;
-
-      const remainingPendingActions = getPendingActions(tutorial);
-      execActions(remainingPendingActions, _triggerAction, _removeAction);
-    },
-    [_removeAction, _triggerAction],
-  );
-
-  // Provivder 내에서 (모달 확인 버튼, 이미지 등에서), 현재 상태로 등록된 액션을 완료하기 위해 사용됩니다.
-  const _completeCurrentAction = useCallback(() => {
-    const tutorial = tutorialsInProcess[screen];
-    if (!tutorial) return;
-
-    setAction(currentAction => {
-      if (!currentAction) return;
-
-      const lastAction = getLastPendingAction(tutorial);
-      if (lastAction && lastAction.id === currentAction.id) {
-        _completeAction(tutorial, lastAction);
-      }
-
-      return currentAction;
-    });
-  }, [_completeAction, screen]);
-
+  // 모달, 이미지 등은 액션 정보를 알고 있기 때문에, 현재 보여주고 있는 액션의 ID를 담아 호출할 수 있습니다.
   // 수동 액션은 사용자가 정해진 액션(버튼 터치 등)을 완료했을 때 children에서(버튼 터치 핸들러) 액션이 완료되었다는 것을 직접 알려주어야 합니다.
   // children의 버튼 터치 핸들러는 액션 ID를 미리 알고 있어야 합니다.
   const completeActionWithId = useCallback(
@@ -83,9 +56,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       const lastAction = getLastPendingAction(tutorial);
       if (!lastAction || lastAction.id !== id) return;
 
-      _completeAction(tutorial, lastAction);
+      lastAction.state = State.Complete;
+
+      const remainingPendingActions = getPendingActions(tutorial);
+      execActions(remainingPendingActions, _triggerAction, _removeAction);
     },
-    [_completeAction, screen],
+    [_removeAction, _triggerAction, screen],
   );
 
   useEffect(() => {
