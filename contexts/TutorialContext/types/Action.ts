@@ -12,7 +12,7 @@ export interface Action {
   id: string | number;
   type: ActionType;
   state?: State;
-  duration: number; // millisecond 단위이고, modal.button이 존재하는 경우 무시됩니다.
+  duration?: number; // millisecond 단위이고, modal.button이 존재하는 경우 무시됩니다.
   modal: Modal;
   image?: Image;
   // 첫 번째 Size는 좌상단, 두 번째 Size는 우하단 포인트이고, 두 개의 포인트로 터치 가능한 사각형 영역을 생성합니다.

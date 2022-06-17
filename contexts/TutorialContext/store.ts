@@ -6,7 +6,7 @@ export async function restoreCompletedTutorialIds() {
   return JSON.parse((await AsyncStorage.getItem(key)) || '[]') as number[];
 }
 
-export async function saveCompletedTutorialId(id: number) {
+export async function saveCompletedTutorialId(id: string | number) {
   const completedTutorialIds = await restoreCompletedTutorialIds();
 
   // 중복 제거

@@ -22,11 +22,9 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <TutorialProvider>
         <NavigationContainer>
           <BottomTabs />
         </NavigationContainer>
-        </TutorialProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );

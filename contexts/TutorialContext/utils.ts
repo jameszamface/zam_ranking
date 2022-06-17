@@ -1,4 +1,4 @@
-import {Action, ActionType} from './types/Action';
+import {ActionInfo} from '.';
 import {State} from './types/common';
 import {Tutorial} from './types/Tutorial';
 
@@ -52,31 +52,37 @@ export const findExcutableTutorial = (
 
 export const getPendingActions = (tutorial: Tutorial) => {
   const {actions} = tutorial;
-  return actions.filter(action => action.state === State.Pending);
+  return actions.filter(action => action.state !== State.Complete);
 };
 
-export const getLastPendingAction = (tutorial: Tutorial) => {
+export const getFirstPendingActionInfo = (tutorial: Tutorial) => {
   const {actions} = tutorial;
-  return actions.find(action => action.state === State.Pending);
+  const index = actions.findIndex(action => action.state !== State.Complete);
+  if (index === -1) return;
+  return {
+    action: actions[index],
+    step: index,
+  };
 };
 
-// 타입이 Manual인 액션까지 순차적으로 실행하는 함수입니다.
-export const execActions = (
-  pendingActions: Action[],
-  resolve: (action: Action) => void,
-  reject: () => void,
+// 첫 번째 팬딩 액션을 완료로 표시하고 다음 액션을 반환합니다.
+export const completePendingActionInfo = (
+  tutorial: Tutorial,
+  actionInfoFromProp?: ActionInfo,
 ) => {
-  if (pendingActions.length === 0) {
-    reject();
-    return;
-  }
+  const actionInfo = actionInfoFromProp || getFirstPendingActionInfo(tutorial);
+  if (!actionInfo || !actionInfo.action) return;
+  const {actions} = tutorial;
+  const {step: index, action} = actionInfo;
 
-  Promise.all(
-    pendingActions.map(pendingAction => {
-      if (pendingAction.type === ActionType.Manual) {
-        throw new Error('다음 액션은 상대방의 응답을 기다려야 합니다.');
-      }
-      resolve(pendingAction);
-    }),
-  ).catch(() => reject());
+  action.state = State.Complete;
+
+  const nextIndex = index + 1;
+  const nextAction = actions[nextIndex];
+  if (!nextAction) return;
+
+  return {
+    action: nextAction,
+    step: nextIndex,
+  };
 };
