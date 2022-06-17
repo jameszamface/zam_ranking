@@ -9,9 +9,9 @@ export enum ActionType {
 
 // 2.22 기획서 p.14에 튜토리얼 이탈시 처음부터 다시 시작한다고 했으므로, state가 State.Pending인 튜토리얼은 state가 State.Complete인 Action도 다시 트리거시킵니다.
 export interface Action {
-  id: number;
+  id: string | number;
   type: ActionType;
-  state: State;
+  state?: State;
   duration: number; // millisecond 단위이고, modal.button이 존재하는 경우 무시됩니다.
   modal: Modal;
   image?: Image;

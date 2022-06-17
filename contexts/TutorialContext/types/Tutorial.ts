@@ -2,9 +2,10 @@ import {State} from './common';
 import {Action} from './Action';
 
 export interface Tutorial {
-  id: number;
+  id: string | number;
+  parentId?: number; // 부모 튜토리얼의 ID
   screen: string;
-  state: State;
+  state?: State;
   actions: Action[];
   description?: string;
 }

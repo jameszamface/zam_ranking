@@ -2,6 +2,7 @@ import {StyleProp, TextStyle, ViewStyle} from 'react-native';
 
 export enum State {
   Pending = 0, // 트리거 전
+  // Progress, // 진행중
   Complete,
 }
 
