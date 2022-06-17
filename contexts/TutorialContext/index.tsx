@@ -56,6 +56,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 모달, 이미지 등은 액션 정보를 알고 있기 때문에, 현재 보여주고 있는 액션의 ID를 담아 호출할 수 있습니다.
   // 수동 액션은 사용자가 정해진 액션(버튼 터치 등)을 완료했을 때 children에서(버튼 터치 핸들러) 액션이 완료되었다는 것을 직접 알려주어야 합니다.
   // children의 버튼 터치 핸들러는 액션 ID를 미리 알고 있어야 합니다.
+  // ID를 모른다면 completeActionWithStep 함수를 대신 사용할 수 있습니다.
   const completeActionWithId = useCallback(
     (id: string | number) => {
       const tutorial = tutorialsInProcess[screen];
