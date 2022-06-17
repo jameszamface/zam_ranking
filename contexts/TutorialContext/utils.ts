@@ -66,6 +66,11 @@ export const execActions = (
   resolve: (action: Action) => void,
   reject: () => void,
 ) => {
+  if (pendingActions.length === 0) {
+    reject();
+    return;
+  }
+
   Promise.all(
     pendingActions.map(pendingAction => {
       if (pendingAction.type === ActionType.Manual) {

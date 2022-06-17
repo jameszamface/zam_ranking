@@ -27,7 +27,7 @@ interface Props {
 
 const TutorialContext = createContext<Partial<TutorialContextProps>>({});
 
-// 컨텍스트는 앱 생명주기 동안 언마운트되지 않기 때문에, 랜더링과 관련없는 정보는 전역 변수로 관리합니다.
+// 랜더링과 관련없는 정보는 전역 변수로 관리합니다.
 let completedTutorialIds: (string | number)[];
 const tutorialsInProcess: Dictionary<Tutorial> = {};
 
@@ -45,11 +45,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     setAction(action);
   }, []);
 
+  // _completeCurrentAction과 completeActionWithId에서만 사용!
   const _completeAction = useCallback(
     (tutorial: Tutorial, action: Action) => {
       action.state = State.Complete;
-      const remainingPendingActions = getPendingActions(tutorial);
 
+      const remainingPendingActions = getPendingActions(tutorial);
       execActions(remainingPendingActions, _triggerAction, _removeAction);
     },
     [_removeAction, _triggerAction],
@@ -62,7 +63,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
     setAction(currentAction => {
       if (!currentAction) return;
-      _completeAction(tutorial, currentAction);
+
+      const lastAction = getLastPendingAction(tutorial);
+      if (lastAction && lastAction.id === currentAction.id) {
+        _completeAction(tutorial, lastAction);
+      }
+
       return currentAction;
     });
   }, [_completeAction, screen]);
