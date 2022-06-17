@@ -7,10 +7,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {
-  restoreCompletedTutorialIds as restoreCompletedTutorialIdsFromAsyncStorage,
-  saveCompletedTutorialId as saveCompletedTutorialIdToAsyncStorage,
-} from './store';
+import {restoreCompletedTutorialIds, saveCompletedTutorialId} from './store';
 import {TutorialContextProps} from './types';
 import {Tutorial} from './types/Tutorial';
 import {Dictionary} from 'lodash';
@@ -71,7 +68,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       // 다음 액션이 없다면 해당 튜토리얼은 완료된 것입니다.
       if (!nextActionInfo) {
-        saveCompletedTutorialId(id);
+        saveCompletedTutorial(id, screen);
       }
 
       setActionInfo(nextActionInfo);
@@ -125,8 +122,9 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           completeActionWithId,
           completeActionWithStep,
           step: actionInfo?.step,
+          screen,
         }),
-        [completeActionWithId, completeActionWithStep, actionInfo?.step],
+        [completeActionWithId, completeActionWithStep, actionInfo, screen],
       )}>
       {children}
       {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
@@ -137,12 +135,13 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
 const initCompletedTutorialIds = async () => {
   if (completedTutorialIds) return;
-  completedTutorialIds = await restoreCompletedTutorialIdsFromAsyncStorage();
+  completedTutorialIds = await restoreCompletedTutorialIds();
 };
 
-const saveCompletedTutorialId = async (id: string | number) => {
+const saveCompletedTutorial = async (id: string | number, screen: string) => {
   completedTutorialIds.push(id);
-  saveCompletedTutorialIdToAsyncStorage(id);
+  saveCompletedTutorialId(id);
+  delete tutorialsInProcess[screen];
 };
 
 export function useTutorial() {
