@@ -21,6 +21,7 @@ import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
 import {Action} from './types/Action';
 import reducer from './reducer';
+import {View} from 'react-native';
 // import useAutoVisible from './hooks/useAutoVisible';
 
 export interface ActionInfo {
@@ -162,5 +163,33 @@ export function withTutorial<T>(
     );
   };
 }
+
+export const TutorialWrapper = ({
+  children,
+  step: stepFromProp,
+}: PropsWithChildren<{step: number | undefined}>) => {
+  const {step} = useTutorial();
+
+  const child = useMemo(() => {
+    const child = React.Children.only(children);
+    if (!React.isValidElement(child)) return null;
+    const el = React.cloneElement(child);
+
+    return {
+      el,
+      style: el.props.style,
+    };
+  }, [children]);
+
+  if (!child) return null;
+
+  return (
+    <View
+      pointerEvents={stepFromProp === step ? 'none' : 'auto'}
+      style={child.el.props.style}>
+      {child.el}
+    </View>
+  );
+};
 
 export default TutorialProvider;
