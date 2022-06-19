@@ -5,21 +5,22 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useReducer,
 } from 'react';
 import {restoreCompletedTutorialIds, saveCompletedTutorialId} from './store';
 import {TutorialContextProps} from './types';
 import {Tutorial} from './types/Tutorial';
 import {Dictionary} from 'lodash';
-import {State} from './types/common';
 import {
   completePendingActionInfo,
   findExcutableTutorial,
   getFirstPendingActionInfo,
+  isAutoHide,
 } from './utils';
 import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
-import {Action, ActionType} from './types/Action';
+import {Action} from './types/Action';
+import reducer from './reducer';
 // import useAutoVisible from './hooks/useAutoVisible';
 
 export interface ActionInfo {
@@ -42,12 +43,7 @@ const tutorialsInProcess: Dictionary<Tutorial> = {};
 function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 튜토리얼에는 모달 내 확인 버튼을 터치하면 완료되는 액션(자동 액션)이 있는 반면, 화면 내 특정 동작을 수행해야 완료되는 액션(수동 액션)이 있습니다.
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
-  const [actionInfo, setActionInfo] = useState<ActionInfo>();
-
-  const _removeAction = useCallback(() => {
-    setActionInfo(undefined);
-    // setVisible은 변경되지 않기 때문에 completeActionWithId는 변경되지 않습니다.
-  }, []);
+  const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
   // 모달, 이미지 등은 액션 정보를 알고 있기 때문에, 현재 보여주고 있는 액션의 ID를 담아 호출할 수 있습니다.
   // 수동 액션은 사용자가 정해진 액션(버튼 터치 등)을 완료했을 때 children에서(버튼 터치 핸들러) 액션이 완료되었다는 것을 직접 알려주어야 합니다.
@@ -61,44 +57,36 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       const actionInfo = getFirstPendingActionInfo(tutorial);
       if (!actionInfo || actionInfo.action.id !== id) return;
 
-      actionInfo.action.state = State.Complete;
-
+      // 현재 액션을 완료로 표시하고 다음 액션을 가져옵니다.
       const nextActionInfo = completePendingActionInfo(tutorial, actionInfo);
 
       // 다음 액션이 없다면 해당 튜토리얼은 완료된 것입니다.
       if (!nextActionInfo) {
         saveCompletedTutorial(id, screen);
-        _removeAction();
+        dispatchActionInfo({type: 'REMOVE'});
         return;
       }
 
-      setActionInfo({
-        ...nextActionInfo,
-        visible: true,
-      });
+      // 그렇지 않다면 다음 액션을 로드합니다.
+      dispatchActionInfo({type: 'SET', actionInfo: nextActionInfo});
 
-      const {action} = nextActionInfo;
-      if (action.type === ActionType.Manual && action.duration) {
+      if (isAutoHide(nextActionInfo)) {
         setTimeout(() => {
-          setActionInfo({
-            ...nextActionInfo,
-            visible: false,
-          });
-        });
+          dispatchActionInfo({type: 'HIDE'});
+        }, nextActionInfo.action.duration);
       }
     },
-    // _removeAction, screen, setVisible, turnOnAndOffVisible은 변경되지 않기 때문에 completeActionWithId는 변경되지 않습니다.
-    [_removeAction, screen],
+    [screen],
   );
 
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
-  const completeActionWithStep = useCallback(
-    (step: number) => {
-      if (!actionInfo || actionInfo.step !== step) return;
-      completeActionWithId(actionInfo.action.id);
-    },
-    [actionInfo, completeActionWithId],
-  );
+  // const completeActionWithStep = useCallback(
+  //   (step: number) => {
+  //     if (!actionInfo || actionInfo.step !== step) return;
+  //     completeActionWithId(actionInfo.action.id);
+  //   },
+  //   [actionInfo, completeActionWithId],
+  // );
 
   useEffect(() => {
     (async () => {
@@ -112,24 +100,18 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       if (!tutorial) return;
 
-      // 현재 진행중인 튜토리얼로 등록
+      // 현재 진행중인 튜토리얼로 등록합니다.
       tutorialsInProcess[screen] = tutorial;
 
+      // 첫 번째 액션을 로드합니다.
       const actionInfo = getFirstPendingActionInfo(tutorial);
       if (!actionInfo) return;
-      setActionInfo({
-        ...actionInfo,
-        visible: true,
-      });
+      dispatchActionInfo({type: 'SET', actionInfo});
 
-      const {action} = actionInfo;
-      if (action.type === ActionType.Manual && action.duration) {
+      if (isAutoHide(actionInfo)) {
         setTimeout(() => {
-          setActionInfo({
-            ...actionInfo,
-            visible: false,
-          });
-        });
+          dispatchActionInfo({type: 'HIDE'});
+        }, actionInfo.action.duration);
       }
     })();
     // screen, setVisible, turnOnAndOffVisible은 상수이기 때문에, 해당 사이드 이펙트 함수는 래핑한 스크린을 랜더링할 때 한 번만 실행됩니다.
@@ -140,11 +122,11 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       value={useMemo(
         () => ({
           completeActionWithId,
-          completeActionWithStep,
+          // completeActionWithStep,
           step: actionInfo?.step,
           screen,
         }),
-        [completeActionWithId, completeActionWithStep, actionInfo, screen],
+        [completeActionWithId, actionInfo, screen],
       )}>
       {children}
       {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}

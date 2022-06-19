@@ -1,4 +1,5 @@
 import {ActionInfo} from '.';
+import {ActionType} from './types/Action';
 import {State} from './types/common';
 import {Tutorial} from './types/Tutorial';
 
@@ -85,4 +86,13 @@ export const completePendingActionInfo = (
     action: nextAction,
     step: nextIndex,
   };
+};
+
+export const isAutoHide = (actionInfo: ActionInfo) => {
+  const {action} = actionInfo;
+  return Boolean(
+    action.type === ActionType.Manual &&
+      action.duration &&
+      !action.modal?.button,
+  );
 };
