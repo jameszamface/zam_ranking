@@ -20,11 +20,12 @@ import {
 import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
 import {Action, ActionType} from './types/Action';
-import useAutoVisible from './hooks/useAutoVisible';
+// import useAutoVisible from './hooks/useAutoVisible';
 
 export interface ActionInfo {
   action: Action;
   step: number; // actions에서 해당 action의 인덱스입니다.
+  visible?: boolean;
 }
 
 interface Props {
@@ -43,24 +44,10 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, setActionInfo] = useState<ActionInfo>();
 
-  const {visible, setVisible, turnOnAndOffVisible} = useAutoVisible();
-
   const _removeAction = useCallback(() => {
     setActionInfo(undefined);
-    setVisible(false);
     // setVisible은 변경되지 않기 때문에 completeActionWithId는 변경되지 않습니다.
-  }, [setVisible]);
-
-  const _turnOnActionVisible = useCallback(
-    (action: Action) => {
-      if (action.type === ActionType.Manual && action.duration) {
-        turnOnAndOffVisible(action.duration);
-      } else {
-        setVisible(true);
-      }
-    },
-    [setVisible, turnOnAndOffVisible],
-  );
+  }, []);
 
   // 모달, 이미지 등은 액션 정보를 알고 있기 때문에, 현재 보여주고 있는 액션의 ID를 담아 호출할 수 있습니다.
   // 수동 액션은 사용자가 정해진 액션(버튼 터치 등)을 완료했을 때 children에서(버튼 터치 핸들러) 액션이 완료되었다는 것을 직접 알려주어야 합니다.
@@ -85,13 +72,23 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         return;
       }
 
-      setActionInfo(nextActionInfo);
+      setActionInfo({
+        ...nextActionInfo,
+        visible: true,
+      });
 
       const {action} = nextActionInfo;
-      _turnOnActionVisible(action);
+      if (action.type === ActionType.Manual && action.duration) {
+        setTimeout(() => {
+          setActionInfo({
+            ...nextActionInfo,
+            visible: false,
+          });
+        });
+      }
     },
     // _removeAction, screen, setVisible, turnOnAndOffVisible은 변경되지 않기 때문에 completeActionWithId는 변경되지 않습니다.
-    [_removeAction, _turnOnActionVisible, screen],
+    [_removeAction, screen],
   );
 
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
@@ -120,13 +117,23 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       const actionInfo = getFirstPendingActionInfo(tutorial);
       if (!actionInfo) return;
-      setActionInfo(actionInfo);
+      setActionInfo({
+        ...actionInfo,
+        visible: true,
+      });
 
       const {action} = actionInfo;
-      _turnOnActionVisible(action);
+      if (action.type === ActionType.Manual && action.duration) {
+        setTimeout(() => {
+          setActionInfo({
+            ...actionInfo,
+            visible: false,
+          });
+        });
+      }
     })();
     // screen, setVisible, turnOnAndOffVisible은 상수이기 때문에, 해당 사이드 이펙트 함수는 래핑한 스크린을 랜더링할 때 한 번만 실행됩니다.
-  }, [_turnOnActionVisible, screen, setVisible, turnOnAndOffVisible]);
+  }, [screen]);
 
   return (
     <TutorialContext.Provider
@@ -141,7 +148,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       )}>
       {children}
       {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
-      {visible && actionInfo?.action.modal && (
+      {actionInfo?.visible && actionInfo?.action.modal && (
         <Modal {...actionInfo.action.modal} />
       )}
     </TutorialContext.Provider>
