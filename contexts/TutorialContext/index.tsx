@@ -134,7 +134,9 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     <TutorialContext.Provider
       value={useMemo(
         () => ({
-          actionInfo,
+          step: actionInfo?.step,
+          scrollLockRecommended: Boolean(actionInfo),
+          visibility: Boolean(actionInfo?.visible),
           completeActionWithId,
           completeActionWithStep,
           screen,
@@ -211,12 +213,12 @@ export const TutorialBlocker = ({
   step: number | undefined;
   style?: StyleProp<ViewProps>;
 }) => {
-  const {actionInfo} = useTutorial();
+  const {step} = useTutorial();
 
   return (
     <View
       style={[children.props.style, style]}
-      pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
+      pointerEvents={stepFromProp === step ? 'none' : 'auto'}>
       {children}
     </View>
   );
@@ -243,7 +245,8 @@ export const TutorialTrigger = ({
     width: number;
     height: number;
   }>();
-  const {actionInfo, completeActionWithStep, setAccessibleArea} = useTutorial();
+  const {step, visibility, completeActionWithStep, setAccessibleArea} =
+    useTutorial();
 
   const onLayout = useCallback(() => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
@@ -258,15 +261,15 @@ export const TutorialTrigger = ({
   }, []);
 
   useEffect(() => {
-    if (actionInfo?.step !== stepFromProp || !blockOutside || !size.current) return;
+    if (step !== stepFromProp || !blockOutside || !size.current) return;
     setAccessibleArea(size.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionInfo]);
+  }, [visibility]);
 
   const onTouchEnd = useCallback(() => {
-    if (actionInfo?.step !== stepFromProp) return;
+    if (step !== stepFromProp) return;
     completeActionWithStep(stepFromProp);
-  }, [actionInfo?.step, completeActionWithStep, stepFromProp]);
+  }, [completeActionWithStep, step, stepFromProp]);
 
   return (
     <View
