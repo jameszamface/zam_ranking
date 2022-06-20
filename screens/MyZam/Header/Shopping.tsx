@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import {TouchableWithoutFeedback, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {TouchableWithoutFeedback} from 'react-native';
 import styled from 'styled-components/native';
 import RowContainer from '../../../components/RowContainer';
 import Text from '../../../components/Text';

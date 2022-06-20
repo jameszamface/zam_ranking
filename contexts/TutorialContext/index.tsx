@@ -24,9 +24,24 @@ import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
 import {Action} from './types/Action';
 import reducer from './reducer';
-import {View} from 'react-native';
+import {
+  View,
+  TouchableWithoutFeedback,
+  ViewBase,
+  ViewComponent,
+  SafeAreaView,
+  StyleProp,
+  ViewProps,
+} from 'react-native';
 import {Area} from './types/common';
+import {
+  width as screenWidth,
+  height as screenHeight,
+  isIOS,
+} from '../../constants';
+import styled from 'styled-components/native';
 // import useAutoVisible from './hooks/useAutoVisible';
+import useCovers from './hooks/useCovers';
 
 export interface ActionInfo {
   action: Action;
@@ -50,7 +65,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
-  const [accessibleArea, setAccessibleArea] = useState<Area>();
+  const {setAccessibleArea, Covers} = useCovers();
 
   const hideAction = useCallback((delay = 0) => {
     setTimeout(() => {
@@ -90,7 +105,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         hideAction(nextActionInfo.action.duration);
       }
     },
-    [hideAction, screen],
+    [hideAction, screen, setAccessibleArea],
   );
 
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
@@ -139,13 +154,20 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           screen,
           setAccessibleArea,
         }),
-        [completeActionWithId, completeActionWithStep, actionInfo, screen],
+        [
+          completeActionWithId,
+          completeActionWithStep,
+          actionInfo,
+          screen,
+          setAccessibleArea,
+        ],
       )}>
       {children}
       {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
       {actionInfo?.visible && actionInfo?.action.modal && (
         <Modal {...actionInfo.action.modal} />
       )}
+      {Covers}
     </TutorialContext.Provider>
   );
 }
@@ -184,43 +206,36 @@ export function withTutorial<T>(
 export const TutorialBlocker = ({
   children,
   step: stepFromProp,
+  style,
 }: {
   children: ReactElement;
   step: number | undefined;
+  style?: StyleProp<ViewProps>;
 }) => {
   const {step} = useTutorial();
 
-  const child = useMemo(() => {
-    const child = React.Children.only(children);
-    if (!React.isValidElement(child)) return null;
-    const el = React.cloneElement(child) as ReactElement;
-
-    return {
-      el,
-      style: el.props.style,
-    };
-  }, [children]);
-
-  if (!child) return null;
-
   return (
     <View
-      pointerEvents={stepFromProp === step ? 'none' : 'auto'}
-      style={child.el.props.style}>
-      {child.el}
+      style={[children.props.style, style]}
+      pointerEvents={stepFromProp === step ? 'none' : 'auto'}>
+      {children}
     </View>
   );
 };
 
 // 입력된 step이 튜토리얼의 step과 동일한 경우, 해당 step 완료 신호를 트리거하는 HOC입니다.
+// 래핑 대상의 position이 absolute이거나, 크기가 비율인 경우 직접 스타일링해 주어어야 합니다.
+// blockOutside 속성은 각 스탭당 단 하나의 컴포넌트만 래핑되어야 합니다.
 export const TutorialTrigger = ({
   children,
   step: stepFromProp,
   blockOutside,
+  style,
 }: {
   children: ReactElement;
   step: number | undefined;
   blockOutside?: boolean;
+  style?: StyleProp<ViewProps>;
 }) => {
   const ref = useRef<View>(null);
   const {step, completeActionWithStep, setAccessibleArea} = useTutorial();
@@ -228,8 +243,9 @@ export const TutorialTrigger = ({
   const onLayout = useCallback(() => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
       setAccessibleArea({
-        x: x + pageX,
-        y: y + pageY,
+        // eslint-disable-next-line prettier/prettier
+        x: (isIOS && x <= pageX ? pageX : x) + (isIOS && x <= pageX ? 0 : pageX),
+        y: pageY + (isIOS ? 0 : y),
         width,
         height,
       });
@@ -241,26 +257,12 @@ export const TutorialTrigger = ({
     completeActionWithStep(stepFromProp);
   }, [completeActionWithStep, step, stepFromProp]);
 
-  const child = useMemo(() => {
-    const child = React.Children.only(children);
-
-    if (!React.isValidElement(child)) return null;
-    const el = React.cloneElement(child) as ReactElement;
-
-    return {
-      el,
-      style: el.props.style,
-    };
-  }, [children]);
-
-  if (!child) return null;
-
   return (
     <View
+      style={[children.props.style, style]}
       ref={ref}
       onLayout={blockOutside && step === stepFromProp ? onLayout : undefined}
-      onTouchEnd={onTouchEnd}
-      style={child.style}>
+      onTouchEnd={onTouchEnd}>
       {children}
     </View>
   );
