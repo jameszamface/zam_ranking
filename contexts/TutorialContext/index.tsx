@@ -8,7 +8,6 @@ import React, {
   useMemo,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 import {restoreCompletedTutorialIds, saveCompletedTutorialId} from './store';
 import {TutorialContextProps} from './types';
@@ -24,23 +23,8 @@ import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
 import {Action} from './types/Action';
 import reducer from './reducer';
-import {
-  View,
-  TouchableWithoutFeedback,
-  ViewBase,
-  ViewComponent,
-  SafeAreaView,
-  StyleProp,
-  ViewProps,
-} from 'react-native';
-import {Area} from './types/common';
-import {
-  width as screenWidth,
-  height as screenHeight,
-  isIOS,
-} from '../../constants';
-import styled from 'styled-components/native';
-// import useAutoVisible from './hooks/useAutoVisible';
+import {View, StyleProp, ViewProps} from 'react-native';
+import {isIOS} from '../../constants';
 import useCovers from './hooks/useCovers';
 
 export interface ActionInfo {

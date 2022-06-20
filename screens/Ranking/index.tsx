@@ -12,7 +12,7 @@ import Product from '../../components/Product/RankingProduct';
 import {Product as ProductType} from '../../data/products';
 import ListLoader from '../../components/Loader/ListLoader';
 import {generateCategoriesList} from './headerUtils';
-import { withTutorial } from '../../contexts/TutorialContext';
+import {withTutorial} from '../../contexts/TutorialContext';
 
 const ITEM_GAP = 10;
 const ITEM_IMAGE_RATIO = 0.85;
