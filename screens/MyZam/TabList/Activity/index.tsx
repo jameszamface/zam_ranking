@@ -6,7 +6,7 @@ import ScrapVideos from './Carousels/ScrapVideos';
 import WatchedVideos from './Carousels/WatchedVideos';
 import {TabProps} from '../types';
 
-function Activity({minHeight=0}: TabProps) {
+function Activity({minHeight = 0}: TabProps) {
   return (
     <Container minHeight={minHeight}>
       <WatchedCosmetics />

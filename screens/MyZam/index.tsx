@@ -19,6 +19,7 @@ import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
 import {isIOS} from '../../constants/index';
 import {withTutorial} from '../../contexts/TutorialContext';
+import { withSuspense } from '../../hooks/withSuspense';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(
   FlatList,
@@ -79,31 +80,29 @@ function MyZam() {
   );
 
   return (
-    <Suspense fallback={<FullScreenLoader isLoading />}>
-      <Container onLayout={onLayout}>
-        {isIOS && (
-          <SafeTopCover
-            scrollTop={scrollTop}
-            triggerOffset={headerLayout?.height}
-          />
-        )}
-        <AnimatedFlatList
-          style={[styles.listStyle, {paddingTop: top}]}
-          contentContainerStyle={{paddingBottom: top}}
-          ref={flatlistRef}
-          onScroll={scrollHandler}
-          ListHeaderComponent={
-            <Header onLayout={onHeaderLayout} scrollTop={scrollTop} />
-          }
-          data={['tab', selectedTab]}
-          stickyHeaderIndices={[1]}
-          bounces
-          scrollEventThrottle={16}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
+    <Container onLayout={onLayout}>
+      {isIOS && (
+        <SafeTopCover
+          scrollTop={scrollTop}
+          triggerOffset={headerLayout?.height}
         />
-      </Container>
-    </Suspense>
+      )}
+      <AnimatedFlatList
+        style={[styles.listStyle, {paddingTop: top}]}
+        contentContainerStyle={{paddingBottom: top}}
+        ref={flatlistRef}
+        onScroll={scrollHandler}
+        ListHeaderComponent={
+          <Header onLayout={onHeaderLayout} scrollTop={scrollTop} />
+        }
+        data={['tab', selectedTab]}
+        stickyHeaderIndices={[1]}
+        bounces
+        scrollEventThrottle={16}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+      />
+    </Container>
   );
 }
 
@@ -128,4 +127,7 @@ const fetchList = (tab: Tab) => {
   return Activity;
 };
 
-export default withTutorial(MyZam, 'MyZam');
+export default withSuspense(
+  withTutorial(MyZam, 'MyZam'),
+  <FullScreenLoader isLoading />,
+);
