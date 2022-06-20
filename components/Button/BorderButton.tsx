@@ -16,7 +16,7 @@ const BorderButton = (
     <ButtonBase
       {...props}
       containerStyle={[marginStyle, borderStyle, props.containerStyle]}
-      textStyle={textStyle}
+      textStyle={[textStyle, props.textStyle]}
     />
   );
 };

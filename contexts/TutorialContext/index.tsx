@@ -26,6 +26,8 @@ import reducer from './reducer';
 import {View, StyleProp, ViewProps} from 'react-native';
 import {isIOS} from '../../constants';
 import useCovers from './hooks/useCovers';
+import styled from 'styled-components/native';
+import {FullCover} from './components/FullCover';
 
 export interface ActionInfo {
   action: Action;
@@ -132,11 +134,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     <TutorialContext.Provider
       value={useMemo(
         () => ({
+          actionInfo,
           completeActionWithId,
           completeActionWithStep,
-          step: actionInfo?.step,
           screen,
           setAccessibleArea,
+          hideAction,
         }),
         [
           completeActionWithId,
@@ -144,17 +147,29 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           actionInfo,
           screen,
           setAccessibleArea,
+          hideAction,
         ],
       )}>
-      {children}
-      {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
-      {actionInfo?.visible && actionInfo?.action.modal && (
-        <Modal {...actionInfo.action.modal} />
-      )}
-      {Covers}
+      <Container>
+        {children}
+        {!actionInfo?.visible && Covers}
+        {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
+        {actionInfo?.visible && actionInfo.action.modal?.button && (
+          <FullCover />
+        )}
+        {actionInfo?.visible && actionInfo?.action.modal && (
+          <Modal {...actionInfo.action.modal} actionInfo={actionInfo} />
+        )}
+      </Container>
     </TutorialContext.Provider>
   );
 }
+
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 // 완료한 튜토리얼 id를 전역 변수에 저장하는 함수입니다.
 const initCompletedTutorialIds = async () => {
@@ -196,12 +211,12 @@ export const TutorialBlocker = ({
   step: number | undefined;
   style?: StyleProp<ViewProps>;
 }) => {
-  const {step} = useTutorial();
+  const {actionInfo} = useTutorial();
 
   return (
     <View
       style={[children.props.style, style]}
-      pointerEvents={stepFromProp === step ? 'none' : 'auto'}>
+      pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
       {children}
     </View>
   );
@@ -217,35 +232,47 @@ export const TutorialTrigger = ({
   style,
 }: {
   children: ReactElement;
-  step: number | undefined;
+  step: number;
   blockOutside?: boolean;
   style?: StyleProp<ViewProps>;
 }) => {
   const ref = useRef<View>(null);
-  const {step, completeActionWithStep, setAccessibleArea} = useTutorial();
+  const size = useRef<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>();
+  const {actionInfo, completeActionWithStep, setAccessibleArea} = useTutorial();
 
   const onLayout = useCallback(() => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
-      setAccessibleArea({
+      size.current = {
         // eslint-disable-next-line prettier/prettier
         x: (isIOS && x <= pageX ? pageX : x) + (isIOS && x <= pageX ? 0 : pageX),
         y: pageY + (isIOS ? 0 : y),
         width,
         height,
-      });
+      };
     });
-  }, [setAccessibleArea]);
+  }, []);
+
+  useEffect(() => {
+    if (actionInfo?.step !== stepFromProp || !blockOutside || !size.current) return;
+    setAccessibleArea(size.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionInfo]);
 
   const onTouchEnd = useCallback(() => {
-    if (step !== stepFromProp) return;
+    if (actionInfo?.step !== stepFromProp) return;
     completeActionWithStep(stepFromProp);
-  }, [completeActionWithStep, step, stepFromProp]);
+  }, [actionInfo?.step, completeActionWithStep, stepFromProp]);
 
   return (
     <View
       style={[children.props.style, style]}
       ref={ref}
-      onLayout={blockOutside && step === stepFromProp ? onLayout : undefined}
+      onLayout={blockOutside ? onLayout : undefined}
       onTouchEnd={onTouchEnd}>
       {children}
     </View>

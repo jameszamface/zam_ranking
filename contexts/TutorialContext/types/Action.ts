@@ -1,4 +1,5 @@
-import {Button, Image, Position, Rectangle, Size, State, Text} from './common';
+import {StyleProp, TextStyle} from 'react-native';
+import {Button, Image, Position, Size, State, Text} from './common';
 
 export enum ActionType {
   Auto = 0, // 튜토리얼 컨텍스트의 모달의 확인 버튼 등에 의해 완료 상태로 변경되는 액션입니다.
@@ -13,22 +14,14 @@ export interface Action {
   duration?: number; // millisecond 단위이고, 타입이 Auto이거나 modal.button이 존재하는 경우 무시됩니다.
   modal?: Modal;
   image?: Image;
-  // 첫 번째 Size는 좌상단, 두 번째 Size는 우하단 포인트이고, 두 개의 포인트로 터치 가능한 사각형 영역을 생성합니다.
-  // 두 번째 Size가 첫 번째 Size의 우측 또는 상단에 있을 경우 touchableArea를 생성하지 않습니다.
-  // 오직 한 개의 영역만 생성할 수 있습니다.
-  touchableArea?: Rectangle;
-  // touchableArea와 동일하지만 다수 영역을 생성할 수 있습니다.
-  // untouchableArea가 우선합니다.
-  untouchableAreas?: Rectangle[];
 }
 
 export interface Modal {
-  size: Size;
-  position: Position;
+  texts: Text[];
+  textStyle?: StyleProp<TextStyle>;
+  position?: Position;
+  size?: Partial<Size>;
   topImage?: Image; // 텍스트 상단에 표시되는 이미지입니다. 이미지 사이즈는 모달 사이즈를 기준으로 합니다.
-  text: Text;
   bottomImage?: Image; // 텍스트 하단에 표시되는 이미지입니다.
   button?: Button;
 }
-
-export type ActionCallback = (action: Action) => void;

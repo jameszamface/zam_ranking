@@ -36,13 +36,10 @@ export type Position = Partial<Rectangle>;
 
 export type Text =
   | string
-  | (
-      | string
-      | {
-          color: string;
-          text: string;
-        }
-    )[];
+  | {
+      color: string;
+      text: string;
+    };
 
 // image: jpeg, png, gif 등 Image 컴포넌트로 랜더링할 수 있는 이미지입니다.
 // svg: react-native-svg 라이브러리로 랜더링할 수 있는 이미지입니다.
@@ -60,6 +57,6 @@ export interface Image {
 
 export interface Button {
   text: string;
-  containerStyle: StyleProp<ViewStyle>;
-  textString: StyleProp<TextStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }

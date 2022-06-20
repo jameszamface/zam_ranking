@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import BorderButton from '../../../components/Button/BorderButton';
 import RowContainer from '../../../components/RowContainer';
 import Text from '../../../components/Text';
+import {TutorialTrigger} from '../../../contexts/TutorialContext/index';
 
 interface Props {
   tags?: string[];
@@ -27,9 +28,11 @@ function Intro({tags, intro}: Props) {
           <Text fontSize={14}>{intro}</Text>
         </TextContainer>
       )}
-      <BorderButton borderRadius={5} color="#000000">
-        프로필 공유
-      </BorderButton>
+      <TutorialTrigger step={0} blockOutside>
+        <BorderButton onPress={() => console.log('프로필 공유')} borderRadius={5} color="#000000">
+          프로필 공유
+        </BorderButton>
+      </TutorialTrigger>
     </Container>
   );
 }
