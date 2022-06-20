@@ -1,6 +1,7 @@
 import React, {
   createContext,
   PropsWithChildren,
+  ReactElement,
   useCallback,
   useContext,
   useEffect,
@@ -46,6 +47,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
+  const hideAction = useCallback((delay = 0) => {
+    setTimeout(() => {
+      dispatchActionInfo({type: 'HIDE'});
+    }, delay);
+  }, []);
+
   // 모달, 이미지 등은 액션 정보를 알고 있기 때문에, 현재 보여주고 있는 액션의 ID를 담아 호출할 수 있습니다.
   // 수동 액션은 사용자가 정해진 액션(버튼 터치 등)을 완료했을 때 children에서(버튼 터치 핸들러) 액션이 완료되었다는 것을 직접 알려주어야 합니다.
   // children의 버튼 터치 핸들러는 액션 ID를 미리 알고 있어야 합니다.
@@ -72,22 +79,20 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       dispatchActionInfo({type: 'SET', actionInfo: nextActionInfo});
 
       if (isAutoHide(nextActionInfo)) {
-        setTimeout(() => {
-          dispatchActionInfo({type: 'HIDE'});
-        }, nextActionInfo.action.duration);
+        hideAction(nextActionInfo.action.duration);
       }
     },
-    [screen],
+    [hideAction, screen],
   );
 
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
-  // const completeActionWithStep = useCallback(
-  //   (step: number) => {
-  //     if (!actionInfo || actionInfo.step !== step) return;
-  //     completeActionWithId(actionInfo.action.id);
-  //   },
-  //   [actionInfo, completeActionWithId],
-  // );
+  const completeActionWithStep = useCallback(
+    (step: number) => {
+      if (!actionInfo || actionInfo.step !== step) return;
+      completeActionWithId(actionInfo.action.id);
+    },
+    [actionInfo, completeActionWithId],
+  );
 
   useEffect(() => {
     (async () => {
@@ -110,24 +115,22 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       dispatchActionInfo({type: 'SET', actionInfo});
 
       if (isAutoHide(actionInfo)) {
-        setTimeout(() => {
-          dispatchActionInfo({type: 'HIDE'});
-        }, actionInfo.action.duration);
+        hideAction(actionInfo.action.duration);
       }
     })();
-    // screen, setVisible, turnOnAndOffVisible은 상수이기 때문에, 해당 사이드 이펙트 함수는 래핑한 스크린을 랜더링할 때 한 번만 실행됩니다.
-  }, [screen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <TutorialContext.Provider
       value={useMemo(
         () => ({
           completeActionWithId,
-          // completeActionWithStep,
+          completeActionWithStep,
           step: actionInfo?.step,
           screen,
         }),
-        [completeActionWithId, actionInfo, screen],
+        [completeActionWithId, completeActionWithStep, actionInfo, screen],
       )}>
       {children}
       {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
@@ -138,21 +141,25 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   );
 }
 
+// 완료한 튜토리얼 id를 전역 변수에 저장하는 함수입니다.
 const initCompletedTutorialIds = async () => {
   if (completedTutorialIds) return;
   completedTutorialIds = await restoreCompletedTutorialIds();
 };
 
+// 완료한 튜토리얼을 전역 변수에 추가하고, 진행중인 튜토리얼에서 삭제하는 함수입니다.
 const saveCompletedTutorial = async (id: string | number, screen: string) => {
   completedTutorialIds.push(id);
   saveCompletedTutorialId(id);
   delete tutorialsInProcess[screen];
 };
 
+// withTutorial로 래핑한 컴포넌트에서 튜토리얼 컨텍스트를 편하게 가져오기 위한 훅입니다.
 export function useTutorial() {
   return useContext(TutorialContext) as TutorialContextProps;
 }
 
+// 튜토리얼을 사용하고자 하는 스크린과 해당 스크린의 모든 하위 트리에 정보를 전달하기 위한 HOC입니다.
 export function withTutorial<T>(
   Element: (props: PropsWithChildren<T>) => JSX.Element,
   screen: string,
@@ -164,16 +171,20 @@ export function withTutorial<T>(
   };
 }
 
-export const TutorialWrapper = ({
+// 입력된 step과 튜토리얼의 step이 동일한 경우 child의 터치를 차단하는 HOC입니다.
+export const TutorialBlocker = ({
   children,
   step: stepFromProp,
-}: PropsWithChildren<{step: number | undefined}>) => {
+}: {
+  children: ReactElement;
+  step: number | undefined;
+}) => {
   const {step} = useTutorial();
 
   const child = useMemo(() => {
     const child = React.Children.only(children);
     if (!React.isValidElement(child)) return null;
-    const el = React.cloneElement(child);
+    const el = React.cloneElement(child) as ReactElement;
 
     return {
       el,
@@ -188,6 +199,42 @@ export const TutorialWrapper = ({
       pointerEvents={stepFromProp === step ? 'none' : 'auto'}
       style={child.el.props.style}>
       {child.el}
+    </View>
+  );
+};
+
+// 입력된 step이 튜토리얼의 step과 동일한 경우, 해당 step 완료 신호를 트리거하는 HOC입니다.
+export const TutorialTrigger = ({
+  children,
+  step: stepFromProp,
+}: {
+  children: ReactElement;
+  step: number | undefined;
+}) => {
+  const {step, completeActionWithStep} = useTutorial();
+
+  const onTouchEnd = useCallback(() => {
+    if (step !== stepFromProp) return;
+    completeActionWithStep(stepFromProp);
+  }, [completeActionWithStep, step, stepFromProp]);
+
+  const child = useMemo(() => {
+    const child = React.Children.only(children);
+
+    if (!React.isValidElement(child)) return null;
+    const el = React.cloneElement(child) as ReactElement;
+
+    return {
+      el,
+      style: el.props.style,
+    };
+  }, [children]);
+
+  if (!child) return null;
+
+  return (
+    <View onTouchEnd={onTouchEnd} style={child.style}>
+      {children}
     </View>
   );
 };
