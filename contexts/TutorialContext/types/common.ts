@@ -6,6 +6,13 @@ export enum State {
   Complete,
 }
 
+export interface Area {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 // width와 height는 비율(0~1) 또는 절대값(1~number)을 값으로 가질 수 있습니다.
 // 0인 경우 undefined로 설정됩니다.
 export interface Size {

@@ -18,7 +18,7 @@ import useLayout from '../../hooks/useLayout';
 import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
 import {isIOS} from '../../constants/index';
-import { withTutorial } from '../../contexts/TutorialContext';
+import {withTutorial} from '../../contexts/TutorialContext';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(
   FlatList,

@@ -7,6 +7,8 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
+  useState,
 } from 'react';
 import {restoreCompletedTutorialIds, saveCompletedTutorialId} from './store';
 import {TutorialContextProps} from './types';
@@ -23,6 +25,7 @@ import Modal from './components/Modal';
 import {Action} from './types/Action';
 import reducer from './reducer';
 import {View} from 'react-native';
+import {Area} from './types/common';
 // import useAutoVisible from './hooks/useAutoVisible';
 
 export interface ActionInfo {
@@ -47,6 +50,8 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
+  const [accessibleArea, setAccessibleArea] = useState<Area>();
+
   const hideAction = useCallback((delay = 0) => {
     setTimeout(() => {
       dispatchActionInfo({type: 'HIDE'});
@@ -59,6 +64,9 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // ID를 모른다면 completeActionWithStep 함수를 대신 사용할 수 있습니다.
   const completeActionWithId = useCallback(
     (id: string | number) => {
+      // 터치 제한 영역을 제거합니다.
+      setAccessibleArea(undefined);
+
       const tutorial = tutorialsInProcess[screen];
       if (!tutorial) return;
 
@@ -129,6 +137,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           completeActionWithStep,
           step: actionInfo?.step,
           screen,
+          setAccessibleArea,
         }),
         [completeActionWithId, completeActionWithStep, actionInfo, screen],
       )}>
@@ -207,11 +216,25 @@ export const TutorialBlocker = ({
 export const TutorialTrigger = ({
   children,
   step: stepFromProp,
+  blockOutside,
 }: {
   children: ReactElement;
   step: number | undefined;
+  blockOutside?: boolean;
 }) => {
-  const {step, completeActionWithStep} = useTutorial();
+  const ref = useRef<View>(null);
+  const {step, completeActionWithStep, setAccessibleArea} = useTutorial();
+
+  const onLayout = useCallback(() => {
+    ref.current?.measure((x, y, width, height, pageX, pageY) => {
+      setAccessibleArea({
+        x: x + pageX,
+        y: y + pageY,
+        width,
+        height,
+      });
+    });
+  }, [setAccessibleArea]);
 
   const onTouchEnd = useCallback(() => {
     if (step !== stepFromProp) return;
@@ -233,7 +256,11 @@ export const TutorialTrigger = ({
   if (!child) return null;
 
   return (
-    <View onTouchEnd={onTouchEnd} style={child.style}>
+    <View
+      ref={ref}
+      onLayout={blockOutside && step === stepFromProp ? onLayout : undefined}
+      onTouchEnd={onTouchEnd}
+      style={child.style}>
       {children}
     </View>
   );
