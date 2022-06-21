@@ -42,7 +42,7 @@ const actionAA: Action = {
 const actionAB: Action = {
   id: 1,
   type: ActionType.Manual,
-  duration: 3250,
+  // duration: 3250,
   modal: {
     size: {
       width: 0.9,
@@ -60,19 +60,19 @@ const actionAB: Action = {
     textStyle: {
       fontSize: 20,
     },
-    // button: {
-    //   text: '확인',
-    //   containerStyle: {
-    //     width: 'auto',
-    //     paddingHorizontal: 20,
-    //     borderRadius: 5,
-    //     backgroundColor: '#007FFF',
-    //     borderColor: '#007FFF',
-    //   },
-    //   textStyle: {
-    //     color: '#ffffff',
-    //   },
-    // },
+    button: {
+      text: '확인',
+      containerStyle: {
+        width: 'auto',
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        backgroundColor: '#007FFF',
+        borderColor: '#007FFF',
+      },
+      textStyle: {
+        color: '#ffffff',
+      },
+    },
   },
 };
 
