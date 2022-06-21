@@ -28,6 +28,7 @@ import {isIOS} from '../../constants';
 import useCovers from './hooks/useCovers';
 import styled from 'styled-components/native';
 import {FullCover} from './components/FullCover';
+import isEqual from 'react-fast-compare';
 
 export interface ActionInfo {
   action: Action;
@@ -203,92 +204,119 @@ export function withTutorial<T>(
 }
 
 // 입력된 step과 튜토리얼의 step이 동일한 경우 child의 터치를 차단하는 HOC입니다.
-export const TutorialBlocker = ({
-  children,
-  step: stepFromProp,
-  style,
-}: {
-  children: ReactElement;
-  step: number | undefined;
-  style?: StyleProp<ViewProps>;
-}) => {
-  const {actionInfo} = useTutorial();
+export const TutorialBlocker = React.memo(
+  ({
+    children,
+    step: stepFromProp,
+    style,
+  }: {
+    children: ReactElement;
+    step: number | undefined;
+    style?: StyleProp<ViewProps>;
+  }) => {
+    const {actionInfo} = useTutorial();
 
-  return (
-    <View
-      style={[children.props.style, style]}
-      pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
-      {children}
-    </View>
-  );
-};
+    return (
+      <View
+        style={[children.props.style, style]}
+        pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
+        {children}
+      </View>
+    );
+  },
+  isEqual,
+);
 
 /*
- * 입력된 step이 튜토리얼의 step과 동일한 경우, 해당 step 완료 신호를 트리거하는 HOC입니다.
+ * 입력된 id 또는 step이 현재 튜토링러의 현재 액션의 id 또는 step과 동일한 경우, 해당 액션의 완료 신호를 트리거하는 HOC입니다.
+ * id가
  * 래핑 대상의 position이 absolute이거나, 크기가 비율인 경우 직접 스타일링해 주어어야 합니다.
  * blockOutside 속성은 각 스탭당 단 하나의 컴포넌트만 래핑되어야 합니다.
  * 버튼이 없고 duration이 설정되어 있는 경우 (스크린에 접근할 수 있고, 모달이 자동으로 사라지는 경우) blockOutside는 작동하지 않습니다.
  */
-export const TutorialTrigger = ({
-  children,
-  step: stepFromProp,
-  blockOutside,
-  style,
-}: {
-  children: ReactElement;
-  step: number;
-  blockOutside?: boolean;
-  style?: StyleProp<ViewProps>;
-}) => {
-  const ref = useRef<View>(null);
-  const size = useRef<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>();
-  const {actionInfo, completeActionWithStep, setAccessibleArea} = useTutorial();
+export const TutorialTrigger = React.memo(
+  ({
+    children,
+    step: stepFromProp,
+    id: idFromProp,
+    blockOutside,
+    style,
+  }: {
+    children: ReactElement;
+    step?: number;
+    id?: string | number;
+    blockOutside?: boolean;
+    style?: StyleProp<ViewProps>;
+  }) => {
+    const ref = useRef<View>(null);
+    const size = useRef<{
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }>();
 
-  const onLayout = useCallback(() => {
-    ref.current?.measure((x, y, width, height, pageX, pageY) => {
-      size.current = {
-        // iOS는 튜닝이 필요
-        // eslint-disable-next-line prettier/prettier
+    const {
+      actionInfo,
+      completeActionWithStep,
+      completeActionWithId,
+      setAccessibleArea,
+    } = useTutorial();
+
+    const onLayout = useCallback(() => {
+      ref.current?.measure((x, y, width, height, pageX, pageY) => {
+        size.current = {
+          // iOS는 튜닝이 필요
+          // eslint-disable-next-line prettier/prettier
         x: (isIOS && x <= pageX ? pageX : x) + (isIOS && x <= pageX ? 0 : pageX),
-        y: pageY + (isIOS ? 0 : y),
-        width,
-        height,
-      };
-    });
-  }, []);
+          y: pageY + (isIOS ? 0 : y),
+          width,
+          height,
+        };
+      });
+    }, []);
 
-  useEffect(() => {
-    if (
-      actionInfo?.step !== stepFromProp ||
-      !blockOutside ||
-      !size.current ||
-      isAutoHide(actionInfo)
-    ) {
-      return;
-    }
-    setAccessibleArea(size.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionInfo]);
+    useEffect(() => {
+      if (
+        !actionInfo ||
+        actionInfo.step !== stepFromProp ||
+        isAutoHide(actionInfo) ||
+        !blockOutside ||
+        !size.current
+      ) {
+        return;
+      }
+      setAccessibleArea(size.current);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [actionInfo]);
 
-  const onTouchEnd = useCallback(() => {
-    if (actionInfo?.step !== stepFromProp) return;
-    completeActionWithStep(stepFromProp);
-  }, [completeActionWithStep, actionInfo, stepFromProp]);
+    const onTouchWithStep = useCallback(() => {
+      if (!actionInfo || actionInfo.step !== stepFromProp) return;
+      completeActionWithStep(stepFromProp);
+    }, [completeActionWithStep, actionInfo, stepFromProp]);
 
-  return (
-    <View
-      style={[children.props.style, style]}
-      ref={ref}
-      onLayout={blockOutside ? onLayout : undefined}
-      onTouchEnd={onTouchEnd}>
-      {children}
-    </View>
-  );
-};
+    const onTouchWithId = useCallback(() => {
+      if (!actionInfo || actionInfo.action.id !== idFromProp) return;
+      completeActionWithId(idFromProp);
+    }, [actionInfo, completeActionWithId, idFromProp]);
+
+    return (
+      <View
+        style={[children.props.style, style]}
+        ref={ref}
+        onLayout={blockOutside ? onLayout : undefined}
+        onTouchEnd={
+          idFromProp
+            ? onTouchWithId
+            : stepFromProp
+            ? onTouchWithStep
+            : undefined
+        }>
+        {children}
+      </View>
+    );
+  },
+  isEqual,
+);
 
 export default TutorialProvider;
