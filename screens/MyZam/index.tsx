@@ -1,4 +1,4 @@
-import React, {Suspense, useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import useSort from '../../hooks/useSort';
 import {Tab, tabs, tabLabels, tabHeight} from './config';
 import Animated, {
@@ -19,7 +19,7 @@ import FullScreenLoader from '../../components/Loader/FullScreenLoader';
 import SafeTopCover from './SafeTopCover';
 import {isIOS} from '../../constants/index';
 import {withTutorial} from '../../contexts/TutorialContext';
-import { withSuspense } from '../../hooks/withSuspense';
+import {withSuspense} from '../../hooks/withSuspense';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(
   FlatList,

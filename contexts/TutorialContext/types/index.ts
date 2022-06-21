@@ -1,9 +1,8 @@
+import {ActionInfo} from '..';
 import {Area} from './common';
 
 export interface TutorialContextProps {
-  step?: number | undefined;
-  scrollLockRecommended: boolean;
-  visibility: boolean;
+  actionInfo?: ActionInfo;
   screen: string;
   completeActionWithId: (id: string | number) => void;
   completeActionWithStep: (step: number) => void;

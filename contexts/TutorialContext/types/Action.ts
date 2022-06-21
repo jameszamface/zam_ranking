@@ -24,4 +24,9 @@ export interface Modal {
   topImage?: Image; // 텍스트 상단에 표시되는 이미지입니다. 이미지 사이즈는 모달 사이즈를 기준으로 합니다.
   bottomImage?: Image; // 텍스트 하단에 표시되는 이미지입니다.
   button?: Button;
+  // moveTo가 있으면 버튼을 눌렀을 때 moveTo에 지정된 스크린으로 props와 함께 이동합니다.
+  moveTo?: {
+    screen: string;
+    props: object;
+  };
 }

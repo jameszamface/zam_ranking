@@ -95,6 +95,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   );
 
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
+  // 실제 작업은 TutorialBlocker와 TutorialTrigger HOC에서 자동으로 처리합니다.
   const completeActionWithStep = useCallback(
     (step: number) => {
       if (!actionInfo || actionInfo.step !== step) return;
@@ -134,9 +135,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     <TutorialContext.Provider
       value={useMemo(
         () => ({
-          step: actionInfo?.step,
-          scrollLockRecommended: Boolean(actionInfo),
-          visibility: Boolean(actionInfo?.visible),
+          actionInfo,
           completeActionWithId,
           completeActionWithStep,
           screen,
@@ -213,20 +212,23 @@ export const TutorialBlocker = ({
   step: number | undefined;
   style?: StyleProp<ViewProps>;
 }) => {
-  const {step} = useTutorial();
+  const {actionInfo} = useTutorial();
 
   return (
     <View
       style={[children.props.style, style]}
-      pointerEvents={stepFromProp === step ? 'none' : 'auto'}>
+      pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
       {children}
     </View>
   );
 };
 
-// 입력된 step이 튜토리얼의 step과 동일한 경우, 해당 step 완료 신호를 트리거하는 HOC입니다.
-// 래핑 대상의 position이 absolute이거나, 크기가 비율인 경우 직접 스타일링해 주어어야 합니다.
-// blockOutside 속성은 각 스탭당 단 하나의 컴포넌트만 래핑되어야 합니다.
+/*
+ * 입력된 step이 튜토리얼의 step과 동일한 경우, 해당 step 완료 신호를 트리거하는 HOC입니다.
+ * 래핑 대상의 position이 absolute이거나, 크기가 비율인 경우 직접 스타일링해 주어어야 합니다.
+ * blockOutside 속성은 각 스탭당 단 하나의 컴포넌트만 래핑되어야 합니다.
+ * 버튼이 없고 duration이 설정되어 있는 경우 (스크린에 접근할 수 있고, 모달이 자동으로 사라지는 경우) blockOutside는 작동하지 않습니다.
+ */
 export const TutorialTrigger = ({
   children,
   step: stepFromProp,
@@ -245,12 +247,12 @@ export const TutorialTrigger = ({
     width: number;
     height: number;
   }>();
-  const {step, visibility, completeActionWithStep, setAccessibleArea} =
-    useTutorial();
+  const {actionInfo, completeActionWithStep, setAccessibleArea} = useTutorial();
 
   const onLayout = useCallback(() => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
       size.current = {
+        // iOS는 튜닝이 필요
         // eslint-disable-next-line prettier/prettier
         x: (isIOS && x <= pageX ? pageX : x) + (isIOS && x <= pageX ? 0 : pageX),
         y: pageY + (isIOS ? 0 : y),
@@ -261,15 +263,22 @@ export const TutorialTrigger = ({
   }, []);
 
   useEffect(() => {
-    if (step !== stepFromProp || !blockOutside || !size.current) return;
+    if (
+      actionInfo?.step !== stepFromProp ||
+      !blockOutside ||
+      !size.current ||
+      isAutoHide(actionInfo)
+    ) {
+      return;
+    }
     setAccessibleArea(size.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibility]);
+  }, [actionInfo]);
 
   const onTouchEnd = useCallback(() => {
-    if (step !== stepFromProp) return;
+    if (actionInfo?.step !== stepFromProp) return;
     completeActionWithStep(stepFromProp);
-  }, [completeActionWithStep, step, stepFromProp]);
+  }, [completeActionWithStep, actionInfo, stepFromProp]);
 
   return (
     <View
