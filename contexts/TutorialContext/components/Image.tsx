@@ -29,7 +29,6 @@ function TutorialImage({
 
     const top = area.y + area.height / 2;
     const leftOffset = horizontalAlign === 'right' ? size.width : 0;
-    console.log(leftOffset);
     const left = area.x + area.width / 2 - leftOffset;
 
     return {
