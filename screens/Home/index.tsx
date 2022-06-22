@@ -24,39 +24,38 @@ function Home() {
   }, [isFocused]);
 
   return null;
-
-  return (
-    <FlatList
-      removeClippedSubviews
-      style={{opacity: 0.99}}
-      data={['header', 'menu', 'webview']}
-      renderItem={({item}) => {
-        if (item === 'header') return <HeaderComponent />;
-        if (item === 'menu') return <Menu />;
-        return (
-          <AutoHeightWebView
-            // javaScriptEnabled={false}
-            scrollEnabled={false}
-            source={{
-              html,
-            }}
-            style={{
-              width,
-              opacity,
-              minHeight: 1,
-            }}
-            customStyle={`
-						* {
-							width: 100%;
-						}
-					`}
-            viewportContent="width=device-width, user-scalable=no"
-          />
-        );
-      }}
-      stickyHeaderIndices={[1]}
-    />
-  );
+  // return (
+  //   <FlatList
+  //     removeClippedSubviews
+  //     style={{opacity: 0.99}}
+  //     data={['header', 'menu', 'webview']}
+  //     renderItem={({item}) => {
+  //       if (item === 'header') return <HeaderComponent />;
+  //       if (item === 'menu') return <Menu />;
+  //       return (
+  //         <AutoHeightWebView
+  //           // javaScriptEnabled={false}
+  //           scrollEnabled={false}
+  //           source={{
+  //             html,
+  //           }}
+  //           style={{
+  //             width,
+  //             opacity,
+  //             minHeight: 1,
+  //           }}
+  //           customStyle={`
+	// 					* {
+	// 						width: 100%;
+	// 					}
+	// 				`}
+  //           viewportContent="width=device-width, user-scalable=no"
+  //         />
+  //       );
+  //     }}
+  //     stickyHeaderIndices={[1]}
+  //   />
+  // );
 }
 
 const Header = styled.View`

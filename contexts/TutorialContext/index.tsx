@@ -80,7 +80,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       // 다음 액션이 없다면 해당 튜토리얼은 완료된 것입니다.
       if (!nextActionInfo) {
-        saveCompletedTutorial(id, screen);
+        saveCompletedTutorial(tutorial.id, screen);
         dispatchActionInfo({type: 'REMOVE'});
         return;
       }
@@ -219,9 +219,13 @@ export const TutorialBlocker = React.memo(
     const {actionInfo} = useTutorial();
 
     const block = useMemo(() => {
-      if (!actionInfo || (!idFromProp && !stepFromProp)) return false;
-      if (idFromProp && idFromProp === actionInfo.action.id) return true;
-      if (stepFromProp && stepFromProp === actionInfo.step) return true;
+      if (
+        (idFromProp !== undefined && idFromProp === actionInfo?.action.id) ||
+        (stepFromProp !== undefined && stepFromProp === actionInfo?.step)
+      ) {
+        return true;
+      }
+      return false;
     }, [actionInfo, idFromProp, stepFromProp]);
 
     return (
@@ -309,14 +313,9 @@ export const TutorialTrigger = React.memo(
     }, [completeActionWithStep, actionInfo, stepFromProp]);
 
     const onTouchEvent = useMemo(() => {
-      if (!actionInfo || (!idFromProp && !stepFromProp)) return;
-      if (idFromProp && idFromProp === actionInfo.action.id) {
-        return onTouchWithId;
-      }
-      if (stepFromProp && stepFromProp === actionInfo.step) {
-        return onTouchWithStep;
-      }
-    }, [actionInfo, idFromProp, onTouchWithId, onTouchWithStep, stepFromProp]);
+      if (idFromProp !== undefined) return onTouchWithId;
+      if (stepFromProp !== undefined) return onTouchWithStep;
+    }, [idFromProp, onTouchWithId, onTouchWithStep, stepFromProp]);
 
     return (
       <View
