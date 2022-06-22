@@ -168,9 +168,11 @@ const Controls = () => {
       </TouchableWithoutFeedback>
 
       <RightControlsContiainer>
-        <BorderButton marginRight onPress={onEdit}>
-          수정
-        </BorderButton>
+        <TutorialTrigger id="[마이잼]수정">
+          <BorderButton marginRight onPress={onEdit}>
+            수정
+          </BorderButton>
+        </TutorialTrigger>
         <TouchableWithoutFeedback onPress={onAlarms}>
           <MaterialCommunityIcons
             name="bell-ring-outline"
