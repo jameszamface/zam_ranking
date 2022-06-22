@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useReducer,
   useRef,
+  useState,
 } from 'react';
 import {restoreCompletedTutorialIds, saveCompletedTutorialId} from './store';
 import {TutorialContextProps} from './types';
@@ -30,6 +31,7 @@ import styled from 'styled-components/native';
 import {FullCover} from './components/FullCover';
 import isEqual from 'react-fast-compare';
 import Image from './components/Image';
+import { isCoversVisible, isFullCoverVisible, isImageVisible, isModalVisible } from './visibles';
 
 export interface ActionInfo {
   action: Action;
@@ -60,7 +62,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     color: actionInfo?.action?.outside?.color,
   });
 
-  const hideAction = useCallback((delay = 0) => {
+  const hideAction = useCallback((delay = 3000) => {
     setTimeout(() => {
       dispatchActionInfo({type: 'HIDE'});
     }, delay);
@@ -166,16 +168,15 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       )}>
       <Container>
         {children}
-        {!actionInfo?.visible && Covers}
-        {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
-        {actionInfo?.visible && actionInfo.action.modal?.button && (
-          <FullCover color={actionInfo.action.modal.backgroundColor} />
+        {isCoversVisible(actionInfo) && Covers}
+        {isFullCoverVisible(actionInfo) && (
+          <FullCover color={actionInfo!.action.modal?.backgroundColor} />
         )}
-        {actionInfo?.visible && actionInfo?.action.modal && (
-          <Modal {...actionInfo.action.modal} actionInfo={actionInfo} />
+        {isModalVisible(actionInfo) && (
+          <Modal {...actionInfo!.action!.modal!} />
         )}
-        {!actionInfo?.visible && actionInfo?.action.image && area && (
-          <Image {...actionInfo.action.image} area={area} />
+        {isImageVisible(actionInfo, area) && (
+          <Image {...actionInfo!.action.image!} area={area!} />
         )}
       </Container>
     </TutorialContext.Provider>
@@ -274,7 +275,7 @@ export const TutorialTrigger = React.memo(
     style?: StyleProp<ViewProps>;
   }) => {
     const ref = useRef<View>(null);
-    const size = useRef<{
+    const [size, setSize] = useState<{
       x: number;
       y: number;
       width: number;
@@ -286,14 +287,14 @@ export const TutorialTrigger = React.memo(
 
     const onLayout = useCallback(() => {
       ref.current?.measure((x, y, width, height, pageX, pageY) => {
-        size.current = {
+        setSize({
           // iOS는 튜닝이 필요
           // eslint-disable-next-line prettier/prettier
         x: (isIOS && x <= pageX ? pageX : x) + (isIOS && x <= pageX ? 0 : pageX),
           y: pageY + (isIOS ? 0 : y),
           width,
           height,
-        };
+        });
       });
     }, []);
 
@@ -302,14 +303,14 @@ export const TutorialTrigger = React.memo(
         !actionInfo ||
         (stepFromProp !== undefined && actionInfo.step !== stepFromProp) ||
         (idFromProp !== undefined && actionInfo.action.id !== idFromProp) ||
-        isAutoHide(actionInfo) ||
-        !size.current
+        !size
       ) {
         return;
       }
-      setArea(size.current);
+
+      setArea(size);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [actionInfo]);
+    }, [actionInfo, size]);
 
     const onTouchWithId = useCallback(() => {
       if (!actionInfo || actionInfo.action.id !== idFromProp) return;

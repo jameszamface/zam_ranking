@@ -7,12 +7,11 @@ import Text from '../../../components/Text';
 import BorderButton from '../../../components/Button/BorderButton';
 import {Text as ModalText} from '../types/common';
 import {StyleProp, TextStyle} from 'react-native';
-import {ActionInfo, useTutorial} from '..';
+import {useTutorial} from '..';
 
-function Modal(props: ModaType & {actionInfo: ActionInfo}) {
-  const {completeActionWithId, hideAction} = useTutorial();
+function Modal(props: ModaType) {
+  const {actionInfo, completeActionWithId, hideAction} = useTutorial();
   const {
-    actionInfo,
     position: positionFromProp,
     size: sizeFromProp,
     topImage,
@@ -21,7 +20,6 @@ function Modal(props: ModaType & {actionInfo: ActionInfo}) {
     bottomImage,
     button,
   } = props;
-
   const size = useMemo(() => {
     if (!sizeFromProp) return;
     const {width, height} = sizeFromProp;

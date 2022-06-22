@@ -36,6 +36,7 @@ const actionAA: Action = {
         color: '#ffffff',
       },
     },
+    backgroundColor: 'rgba(0,0,0, 0.5)',
   },
   image: {
     size: {
@@ -69,19 +70,19 @@ const actionAB: Action = {
     textStyle: {
       fontSize: 20,
     },
-    button: {
-      text: '확인',
-      containerStyle: {
-        width: 'auto',
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        backgroundColor: '#007FFF',
-        borderColor: '#007FFF',
-      },
-      textStyle: {
-        color: '#ffffff',
-      },
-    },
+    // button: {
+    //   text: '확인',
+    //   containerStyle: {
+    //     width: 'auto',
+    //     paddingHorizontal: 20,
+    //     borderRadius: 5,
+    //     backgroundColor: '#007FFF',
+    //     borderColor: '#007FFF',
+    //   },
+    //   textStyle: {
+    //     color: '#ffffff',
+    //   },
+    // },
     backgroundColor: 'rgba(0,0,0, 0.5)',
   },
   image: {
