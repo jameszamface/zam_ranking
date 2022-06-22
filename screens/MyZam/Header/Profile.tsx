@@ -15,7 +15,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TouchableWithoutFeedback} from 'react-native';
-import { TutorialTrigger } from '../../../contexts/TutorialContext/index';
+import {TutorialTrigger} from '../../../contexts/TutorialContext/index';
 
 interface Props {
   scrollTop: SharedValue<number>;
@@ -131,10 +131,10 @@ const Foreground = ({
         <TextButton onPress={onStickers}>{`잼스티커 ${stickers}`}</TextButton>
       </RowContainer>
       <RowContainer marginTop={25}>
-        <TutorialTrigger step={1} blockOutside>
-        <BorderButton onPress={onMyPicks} marginRight>
-          나의 찜
-        </BorderButton>
+        <TutorialTrigger id="나의 찜" blockOutside>
+          <BorderButton onPress={onMyPicks} marginRight>
+            나의 찜
+          </BorderButton>
         </TutorialTrigger>
         <BorderButton onPress={onPercorMatching}>퍼컬 매칭</BorderButton>
       </RowContainer>

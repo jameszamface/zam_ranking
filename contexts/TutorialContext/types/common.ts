@@ -49,10 +49,9 @@ export type ImageType = 'image' | 'svg' | 'lottie';
 // 모달 안에서 표시되는 이미지와 모달과 같은 레벨로 모달보다 높은 z-index로 표시되는 이미지가 있을 수 있습니다.
 export interface Image {
   size: Size;
-  position: Position;
+  horizontalAlign?: 'left' | 'right';
   uri: string;
   type: ImageType;
-  duration: number; // millisecond
 }
 
 export interface Button {

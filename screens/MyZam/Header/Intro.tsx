@@ -28,7 +28,7 @@ function Intro({tags, intro}: Props) {
           <Text fontSize={14}>{intro}</Text>
         </TextContainer>
       )}
-      <TutorialTrigger step={0} blockOutside>
+      <TutorialTrigger id="프로필 공유" blockOutside>
         <BorderButton
           onPress={() => console.log('프로필 공유')}
           borderRadius={5}

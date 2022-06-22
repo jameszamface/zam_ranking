@@ -29,6 +29,8 @@ import useCovers from './hooks/useCovers';
 import styled from 'styled-components/native';
 import {FullCover} from './components/FullCover';
 import isEqual from 'react-fast-compare';
+import FastImage from 'react-native-fast-image';
+import Image from './components/Image';
 
 export interface ActionInfo {
   action: Action;
@@ -52,7 +54,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
-  const {setAccessibleArea, Covers} = useCovers();
+  const {area, setAreaInfo, Covers} = useCovers();
 
   const hideAction = useCallback((delay = 0) => {
     setTimeout(() => {
@@ -67,7 +69,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   const completeActionWithId = useCallback(
     (id: string | number) => {
       // 터치 제한 영역을 제거합니다.
-      setAccessibleArea(undefined);
+      setAreaInfo(undefined);
 
       const tutorial = tutorialsInProcess[screen];
       if (!tutorial) return;
@@ -92,7 +94,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         hideAction(nextActionInfo.action.duration);
       }
     },
-    [hideAction, screen, setAccessibleArea],
+    [hideAction, screen, setAreaInfo],
   );
 
   // deprecated
@@ -141,15 +143,15 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           completeActionWithId,
           completeActionWithStep,
           screen,
-          setAccessibleArea,
+          setAreaInfo,
           hideAction,
         }),
         [
+          actionInfo,
           completeActionWithId,
           completeActionWithStep,
-          actionInfo,
           screen,
-          setAccessibleArea,
+          setAreaInfo,
           hideAction,
         ],
       )}>
@@ -162,6 +164,9 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         )}
         {actionInfo?.visible && actionInfo?.action.modal && (
           <Modal {...actionInfo.action.modal} actionInfo={actionInfo} />
+        )}
+        {!actionInfo?.visible && actionInfo?.action.image && area && (
+          <Image {...actionInfo.action.image} area={area} />
         )}
       </Container>
     </TutorialContext.Provider>
@@ -273,7 +278,7 @@ export const TutorialTrigger = React.memo(
       actionInfo,
       completeActionWithStep,
       completeActionWithId,
-      setAccessibleArea,
+      setAreaInfo,
     } = useTutorial();
 
     const onLayout = useCallback(() => {
@@ -292,14 +297,17 @@ export const TutorialTrigger = React.memo(
     useEffect(() => {
       if (
         !actionInfo ||
-        actionInfo.step !== stepFromProp ||
+        (stepFromProp !== undefined && actionInfo.step !== stepFromProp) ||
+        (idFromProp !== undefined && actionInfo.action.id !== idFromProp) ||
         isAutoHide(actionInfo) ||
-        !blockOutside ||
         !size.current
       ) {
         return;
       }
-      setAccessibleArea(size.current);
+      setAreaInfo({
+        area: size.current,
+        block: !!blockOutside,
+      });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionInfo]);
 

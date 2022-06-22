@@ -2,7 +2,7 @@ import {Action, ActionType} from '../contexts/TutorialContext/types/Action';
 import {Tutorial} from '../contexts/TutorialContext/types/Tutorial';
 
 const actionAA: Action = {
-  id: 0,
+  id: '프로필 공유',
   type: ActionType.Manual,
   duration: 3000, // modal.button이 있기 때문에 무시됩니다.
   modal: {
@@ -37,10 +37,19 @@ const actionAA: Action = {
       },
     },
   },
+  image: {
+    size: {
+      width: 100,
+      height: 100,
+    },
+    horizontalAlign: 'right',
+    uri: 'https://jameszamface.github.io/zam_ranking/finger_right.png',
+    type: 'image',
+  },
 };
 
 const actionAB: Action = {
-  id: 1,
+  id: '나의 찜',
   type: ActionType.Manual,
   // duration: 3250,
   modal: {
@@ -73,6 +82,15 @@ const actionAB: Action = {
         color: '#ffffff',
       },
     },
+  },
+  image: {
+    size: {
+      width: 100,
+      height: 100,
+    },
+    horizontalAlign: 'left',
+    uri: 'https://jameszamface.github.io/zam_ranking/finger_left.png',
+    type: 'image',
   },
 };
 

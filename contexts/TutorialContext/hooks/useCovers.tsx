@@ -3,12 +3,17 @@ import styled from 'styled-components/native';
 import {Area} from '../types/common';
 import {width as screenWidth, height as screenHeight} from '../../../constants';
 
+export interface AreaInfo {
+  area: Area;
+  block: boolean;
+}
+
 function useCovers() {
-  const [accessibleArea, setAccessibleArea] = useState<Area>();
+  const [areaInfo, setAreaInfo] = useState<AreaInfo>();
 
   const Covers = useMemo(() => {
-    if (!accessibleArea) return;
-    const {x, y, width, height} = accessibleArea;
+    if (!areaInfo || !areaInfo.block) return null;
+    const {x, y, width, height} = areaInfo.area;
     const top = {
       width: screenWidth,
       height: y,
@@ -42,9 +47,9 @@ function useCovers() {
         <Cover {...bottom} />
       </>
     );
-  }, [accessibleArea]);
+  }, [areaInfo]);
 
-  return {accessibleArea, setAccessibleArea, Covers};
+  return {area: areaInfo?.area, setAreaInfo, Covers};
 }
 
 const Cover = styled.View<{
