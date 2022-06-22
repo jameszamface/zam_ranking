@@ -7,7 +7,7 @@ export enum ActionType {
 }
 
 // 2.22 기획서 p.14에 튜토리얼 이탈시 처음부터 다시 시작한다고 했으므로, state가 State.Pending인 튜토리얼은 state가 State.Complete인 Action도 다시 트리거시킵니다.
-// 액션의 ID는 특정 버튼과 매핑됩니다.
+// 액션의 ID는 특정 버튼과 매핑됩니다. (앱 내에서 고유해야 합니다!)
 export interface Action {
   id: string | number;
   type: ActionType;
