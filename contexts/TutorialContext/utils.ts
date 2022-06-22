@@ -93,10 +93,17 @@ export const completePendingActionInfo = (
 export const isAutoHide = (actionInfo: ActionInfo) => {
   const {action} = actionInfo;
   return Boolean(
-    (action.type === ActionType.Manual &&
+    action.type === ActionType.Manual &&
       !action.duration &&
-      !action.modal?.button) ||
-      (action.duration && !action.modal?.button),
+      !action.modal?.button,
+  );
+};
+
+export const isAutoComplete = (actionInfo: ActionInfo) => {
+  const {action} = actionInfo;
+
+  return Boolean(
+    action.type === ActionType.Auto && action.duration && !action.modal?.button,
   );
 };
 

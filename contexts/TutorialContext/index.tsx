@@ -18,6 +18,7 @@ import {
   completePendingActionInfo,
   findExcutableTutorial,
   getFirstPendingActionInfo,
+  isAutoComplete,
   isAutoHide,
 } from './utils';
 import Modal from './components/Modal';
@@ -37,8 +38,9 @@ import {
   isModalVisible,
 } from './visibles';
 import {tutorials} from '../../data/tutorials';
-import { useIsFocused } from '@react-navigation/native';
-import { State } from './types/common';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import {State} from './types/common';
+import {delay} from '../../utils/time';
 
 export interface ActionInfo {
   action: Action;
@@ -58,6 +60,8 @@ const tutorialsInProcess: Dictionary<Tutorial> = {};
 
 // 튜토리얼이 필요한 스크린을 withTutorial로 래핑하기 위해 사용됩니다.
 function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
+  const navigation = useNavigation<any>();
+
   // 튜토리얼에는 모달 내 확인 버튼을 터치하면 완료되는 액션(자동 액션)이 있는 반면, 화면 내 특정 동작을 수행해야 완료되는 액션(수동 액션)이 있습니다.
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
@@ -80,7 +84,11 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // children의 버튼 터치 핸들러는 액션 ID를 미리 알고 있어야 합니다.
   // ID를 모른다면 completeActionWithStep 함수를 대신 사용할 수 있습니다.
   const completeActionWithId = useCallback(
-    (id: string | number) => {
+    async (id: string | number, wait?: number) => {
+      if (wait) {
+        await delay(wait);
+      }
+
       // 터치 제한 영역을 제거합니다.
       setArea(undefined);
 
@@ -95,6 +103,14 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       // 다음 액션이 없다면 해당 튜토리얼은 완료된 것입니다.
       if (!nextActionInfo) {
+        const {
+          action: {moveTo},
+        } = actionInfo;
+
+        if (moveTo) {
+          navigation.navigate(moveTo.screen, moveTo.props);
+        }
+
         saveCompletedTutorial(tutorial, screen);
         dispatchActionInfo({type: 'REMOVE'});
         return;
@@ -103,11 +119,17 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       // 그렇지 않다면 다음 액션을 로드합니다.
       dispatchActionInfo({type: 'SET', actionInfo: nextActionInfo});
 
+      const {
+        action: {id: nextId, duration},
+      } = nextActionInfo;
+
       if (isAutoHide(nextActionInfo)) {
         hideAction(nextActionInfo.action.duration);
+      } else if (isAutoComplete(nextActionInfo)) {
+        completeActionWithId(nextId, duration);
       }
     },
-    [hideAction, screen, setArea],
+    [hideAction, navigation, screen, setArea],
   );
 
   // deprecated
@@ -143,8 +165,14 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       if (!actionInfo) return;
       dispatchActionInfo({type: 'SET', actionInfo});
 
+      const {
+        action: {id, duration},
+      } = actionInfo;
+
       if (isAutoHide(actionInfo)) {
-        hideAction(actionInfo.action.duration);
+        hideAction(duration);
+      } else if (isAutoComplete(actionInfo)) {
+        completeActionWithId(id, duration);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

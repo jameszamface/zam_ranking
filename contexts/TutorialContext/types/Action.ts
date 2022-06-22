@@ -19,6 +19,12 @@ export interface Action {
     block: boolean;
     color: string;
   };
+  // 액션이 완료되었을 때 이동할 스크린입니다.
+  // 튜토리얼의 마지막 액션에 입력하는 것을 추천합니다.
+  moveTo?: {
+    screen: string;
+    props?: object;
+  };
 }
 
 export interface Modal {
@@ -30,9 +36,5 @@ export interface Modal {
   bottomImage?: Image; // 텍스트 하단에 표시되는 이미지입니다.
   button?: Button;
   // moveTo가 있으면 버튼을 눌렀을 때 moveTo에 지정된 스크린으로 props와 함께 이동합니다.
-  moveTo?: {
-    screen: string;
-    props: object;
-  };
   backgroundColor?: string;
 }

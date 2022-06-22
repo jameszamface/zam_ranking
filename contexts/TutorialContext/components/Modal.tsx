@@ -24,12 +24,10 @@ function Modal(props: ModaType) {
   const size = useMemo(() => {
     if (!sizeFromProp) return;
     const {width, height} = sizeFromProp;
-    const result = {
+    return {
       width: convertAbsoluteValue(screenWidth, width),
       height: convertAbsoluteValue(screenHeight, height),
     };
-    console.log(result);
-    return result;
   }, [sizeFromProp]);
 
   const position = useMemo(() => {

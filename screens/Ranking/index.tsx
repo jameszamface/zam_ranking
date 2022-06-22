@@ -12,7 +12,7 @@ import Product from '../../components/Product/RankingProduct';
 import {Product as ProductType} from '../../data/products';
 import ListLoader from '../../components/Loader/ListLoader';
 import {generateCategoriesList} from './headerUtils';
-import {withTutorial} from '../../contexts/TutorialContext';
+import {TutorialTrigger, withTutorial} from '../../contexts/TutorialContext';
 
 const ITEM_GAP = 10;
 const ITEM_IMAGE_RATIO = 0.85;
@@ -49,7 +49,19 @@ function Ranking() {
     [changeCategory],
   );
 
-  const renderProduct: ListRenderItem<ProductType> = ({item}) => {
+  const renderProduct: ListRenderItem<ProductType> = ({item, index}) => {
+    if (index === 0) {
+      return (
+        <TutorialTrigger id="랭킹제품">
+          <Product
+            product={item}
+            width={ITEM_WIDTH}
+            imageHeight={ITEM_IMAGE_HEIGHT}
+            gap={ITEM_GAP}
+          />
+        </TutorialTrigger>
+      );
+    }
     return (
       <Product
         product={item}
