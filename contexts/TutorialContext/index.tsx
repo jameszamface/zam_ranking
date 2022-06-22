@@ -32,7 +32,7 @@ import isEqual from 'react-fast-compare';
 
 export interface ActionInfo {
   action: Action;
-  step: number; // actions에서 해당 action의 인덱스입니다.
+  step: number; // actions에서 해당 action의 인덱스입니다. (deprecated)
   visible?: boolean;
 }
 
@@ -95,6 +95,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     [hideAction, screen, setAccessibleArea],
   );
 
+  // deprecated
   // 수동 액션은 스크린 내부에서 액션 ID를 알고 있어야 하기 때문에, step을 이용해서 액션을 완료할 수 있는 함수도 추가했습니다.
   // 실제 작업은 TutorialBlocker와 TutorialTrigger HOC에서 자동으로 처리합니다.
   const completeActionWithStep = useCallback(
@@ -307,6 +308,7 @@ export const TutorialTrigger = React.memo(
       completeActionWithId(idFromProp);
     }, [actionInfo, completeActionWithId, idFromProp]);
 
+    // deprecated
     const onTouchWithStep = useCallback(() => {
       if (!actionInfo || actionInfo.step !== stepFromProp) return;
       completeActionWithStep(stepFromProp);
