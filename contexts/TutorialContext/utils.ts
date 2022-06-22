@@ -18,16 +18,18 @@ const checkParentTutorialCompleted = (
   tutorials: Tutorial[],
   id?: string | number,
 ) => {
-  if (!id) return true;
+  if (id === undefined) return true;
   const tutorial = findTutorialById(tutorials, id);
   return tutorial?.state === State.Complete;
 };
 
 const findExecutableTutorials = (
+  screen: string,
   tutorials: Tutorial[],
   completedTutorialIds: (string | number)[],
 ) => {
-  return tutorials.filter(
+  const screenTutorials = findScreenTutorials(tutorials, screen);
+  return screenTutorials.filter(
     tutorial =>
       !completedTutorialIds.includes(tutorial.id) &&
       checkParentTutorialCompleted(tutorials, tutorial.parentId),
@@ -41,9 +43,9 @@ export const findExcutableTutorial = (
   screen: string,
   completedTutorialIds: (string | number)[],
 ) => {
-  const screenTutorials = findScreenTutorials(tutorials, screen);
   const excutableTutorials = findExecutableTutorials(
-    screenTutorials,
+    screen,
+    tutorials,
     completedTutorialIds,
   );
 

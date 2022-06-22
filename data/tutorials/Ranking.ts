@@ -1,7 +1,7 @@
-import {Action, ActionType} from '../contexts/TutorialContext/types/Action';
-import {Tutorial} from '../contexts/TutorialContext/types/Tutorial';
+import {Action, ActionType} from '../../contexts/TutorialContext/types/Action';
+import {Tutorial} from '../../contexts/TutorialContext/types/Tutorial';
 
-const actionAA: Action = {
+const actionBA: Action = {
   id: '프로필 공유',
   type: ActionType.Manual,
   duration: 3000, // modal.button이 있기 때문에 무시됩니다.
@@ -49,7 +49,7 @@ const actionAA: Action = {
   },
 };
 
-const actionAB: Action = {
+const actionBB: Action = {
   id: '나의 찜',
   type: ActionType.Manual,
   // duration: 3250,
@@ -96,11 +96,10 @@ const actionAB: Action = {
   },
 };
 
-const tutorialA: Tutorial = {
-  id: 0,
-  screen: 'MyZam',
-  actions: [actionAA, actionAB],
-  description: '마이잼 튜토리얼입니다.',
+export const tutorialB: Tutorial = {
+  id: 1,
+  parentId: 0,
+  screen: 'Ranking',
+  actions: [actionBA, actionBB],
+  description: '랭킹 튜토리얼입니다.',
 };
-
-export const tutorials = [tutorialA];

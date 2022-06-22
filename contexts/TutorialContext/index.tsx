@@ -20,7 +20,6 @@ import {
   getFirstPendingActionInfo,
   isAutoHide,
 } from './utils';
-import {tutorials} from '../../data/turoials';
 import Modal from './components/Modal';
 import {Action} from './types/Action';
 import reducer from './reducer';
@@ -37,6 +36,9 @@ import {
   isImageVisible,
   isModalVisible,
 } from './visibles';
+import {tutorials} from '../../data/tutorials';
+import { useIsFocused } from '@react-navigation/native';
+import { State } from './types/common';
 
 export interface ActionInfo {
   action: Action;
@@ -93,7 +95,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
 
       // 다음 액션이 없다면 해당 튜토리얼은 완료된 것입니다.
       if (!nextActionInfo) {
-        saveCompletedTutorial(tutorial.id, screen);
+        saveCompletedTutorial(tutorial, screen);
         dispatchActionInfo({type: 'REMOVE'});
         return;
       }
@@ -119,7 +121,9 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
     [actionInfo, completeActionWithId],
   );
 
+  const isFocused = useIsFocused();
   useEffect(() => {
+    if (!isFocused) return;
     (async () => {
       await initCompletedTutorialIds();
 
@@ -144,7 +148,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFocused]);
 
   return (
     <TutorialContext.Provider
@@ -201,9 +205,10 @@ const initCompletedTutorialIds = async () => {
 };
 
 // 완료한 튜토리얼을 전역 변수에 추가하고, 진행중인 튜토리얼에서 삭제하는 함수입니다.
-const saveCompletedTutorial = async (id: string | number, screen: string) => {
-  completedTutorialIds.push(id);
-  saveCompletedTutorialId(id);
+const saveCompletedTutorial = async (tutorial: Tutorial, screen: string) => {
+  completedTutorialIds.push(tutorial.id);
+  saveCompletedTutorialId(tutorial.id);
+  tutorial.state = State.Complete;
   delete tutorialsInProcess[screen];
 };
 
