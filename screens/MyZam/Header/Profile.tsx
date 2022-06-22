@@ -131,7 +131,7 @@ const Foreground = ({
         <TextButton onPress={onStickers}>{`잼스티커 ${stickers}`}</TextButton>
       </RowContainer>
       <RowContainer marginTop={25}>
-        <TutorialTrigger id="나의 찜" blockOutside>
+        <TutorialTrigger id="나의 찜">
           <BorderButton onPress={onMyPicks} marginRight>
             나의 찜
           </BorderButton>

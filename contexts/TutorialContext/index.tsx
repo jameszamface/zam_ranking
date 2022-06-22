@@ -53,7 +53,12 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   // 액션이 있다는 것은 튜토리얼이 스크린에 표시되고 있다는 의미입니다. 수동 액션인 경우(튜토리얼이 사라지고 사용자의 동작이 요구되는 경우), undefined가 됩니다.
   const [actionInfo, dispatchActionInfo] = useReducer(reducer, undefined);
 
-  const {area, setAreaInfo, Covers} = useCovers();
+  const {area, setArea, Covers} = useCovers({
+    blockOutside: Boolean(
+      actionInfo?.action?.outside?.block || actionInfo?.action.image,
+    ),
+    color: actionInfo?.action?.outside?.color,
+  });
 
   const hideAction = useCallback((delay = 0) => {
     setTimeout(() => {
@@ -68,7 +73,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
   const completeActionWithId = useCallback(
     (id: string | number) => {
       // 터치 제한 영역을 제거합니다.
-      setAreaInfo(undefined);
+      setArea(undefined);
 
       const tutorial = tutorialsInProcess[screen];
       if (!tutorial) return;
@@ -93,7 +98,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         hideAction(nextActionInfo.action.duration);
       }
     },
-    [hideAction, screen, setAreaInfo],
+    [hideAction, screen, setArea],
   );
 
   // deprecated
@@ -139,11 +144,15 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       value={useMemo(
         () => ({
           actionInfo,
-          scrollLockRecommended: Boolean(actionInfo),
+          scrollLockRecommended: Boolean(
+            actionInfo?.action.image ||
+              !actionInfo?.visible ||
+              actionInfo?.action.outside?.block,
+          ),
           completeActionWithId,
           completeActionWithStep,
           screen,
-          setAreaInfo,
+          setArea,
           hideAction,
         }),
         [
@@ -151,7 +160,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
           completeActionWithId,
           completeActionWithStep,
           screen,
-          setAreaInfo,
+          setArea,
           hideAction,
         ],
       )}>
@@ -160,7 +169,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
         {!actionInfo?.visible && Covers}
         {/* TODO: action를 모달, 이미지, 커버 컴포넌트에 전송 */}
         {actionInfo?.visible && actionInfo.action.modal?.button && (
-          <FullCover />
+          <FullCover color={actionInfo.action.modal.backgroundColor} />
         )}
         {actionInfo?.visible && actionInfo?.action.modal && (
           <Modal {...actionInfo.action.modal} actionInfo={actionInfo} />
@@ -257,13 +266,11 @@ export const TutorialTrigger = React.memo(
     children,
     step: stepFromProp,
     id: idFromProp,
-    blockOutside,
     style,
   }: {
     children: ReactElement;
     step?: number;
     id?: string | number;
-    blockOutside?: boolean;
     style?: StyleProp<ViewProps>;
   }) => {
     const ref = useRef<View>(null);
@@ -274,12 +281,8 @@ export const TutorialTrigger = React.memo(
       height: number;
     }>();
 
-    const {
-      actionInfo,
-      completeActionWithStep,
-      completeActionWithId,
-      setAreaInfo,
-    } = useTutorial();
+    const {actionInfo, completeActionWithStep, completeActionWithId, setArea} =
+      useTutorial();
 
     const onLayout = useCallback(() => {
       ref.current?.measure((x, y, width, height, pageX, pageY) => {
@@ -304,10 +307,7 @@ export const TutorialTrigger = React.memo(
       ) {
         return;
       }
-      setAreaInfo({
-        area: size.current,
-        block: !!blockOutside,
-      });
+      setArea(size.current);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionInfo]);
 
@@ -331,7 +331,7 @@ export const TutorialTrigger = React.memo(
       <View
         style={[children.props.style, style]}
         ref={ref}
-        onLayout={blockOutside ? onLayout : undefined}
+        onLayout={onLayout}
         onTouchEnd={onTouchEvent}>
         {children}
       </View>

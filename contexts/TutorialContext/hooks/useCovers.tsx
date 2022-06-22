@@ -3,17 +3,16 @@ import styled from 'styled-components/native';
 import {Area} from '../types/common';
 import {width as screenWidth, height as screenHeight} from '../../../constants';
 
-export interface AreaInfo {
-  area: Area;
-  block: boolean;
+interface Props {
+  blockOutside?: boolean;
+  color?: string
 }
-
-function useCovers() {
-  const [areaInfo, setAreaInfo] = useState<AreaInfo>();
+function useCovers({blockOutside, color = 'transparent'}: Props) {
+  const [area, setArea] = useState<Area>();
 
   const Covers = useMemo(() => {
-    if (!areaInfo || !areaInfo.block) return null;
-    const {x, y, width, height} = areaInfo.area;
+    if (!area || !blockOutside) return null;
+    const {x, y, width, height} = area;
     const top = {
       width: screenWidth,
       height: y,
@@ -41,15 +40,15 @@ function useCovers() {
 
     return (
       <>
-        <Cover {...top} />
-        <Cover {...left} />
-        <Cover {...right} />
-        <Cover {...bottom} />
+        <Cover {...top} color={color} />
+        <Cover {...left} color={color} />
+        <Cover {...right} color={color} />
+        <Cover {...bottom} color={color} />
       </>
     );
-  }, [areaInfo]);
+  }, [area, blockOutside, color]);
 
-  return {area: areaInfo?.area, setAreaInfo, Covers};
+  return {area, setArea, Covers};
 }
 
 const Cover = styled.View<{
@@ -57,14 +56,14 @@ const Cover = styled.View<{
   height: number;
   top: number;
   left: number;
+  color: string;
 }>`
   position: absolute;
   width: ${props => props.width}px;
   height: ${props => props.height}px;
   top: ${props => props.top}px;
   left: ${props => props.left}px;
-  background-color: yellow;
-  opacity: 0.5;
+  background-color: ${props => props.color};
 `;
 
 export default useCovers;

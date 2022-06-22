@@ -82,6 +82,7 @@ const actionAB: Action = {
         color: '#ffffff',
       },
     },
+    backgroundColor: 'rgba(0,0,0, 0.5)',
   },
   image: {
     size: {

@@ -15,6 +15,10 @@ export interface Action {
   duration?: number; // millisecond 단위이고, 타입이 Auto이거나 modal.button이 존재하는 경우 무시됩니다.
   modal?: Modal;
   image?: Image;
+  outside?: {
+    block: boolean;
+    color: string;
+  };
 }
 
 export interface Modal {
@@ -30,4 +34,5 @@ export interface Modal {
     screen: string;
     props: object;
   };
+  backgroundColor?: string;
 }
