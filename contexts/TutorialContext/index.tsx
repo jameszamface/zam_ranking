@@ -306,9 +306,9 @@ export const TutorialTrigger = React.memo(
         ref={ref}
         onLayout={blockOutside ? onLayout : undefined}
         onTouchEnd={
-          idFromProp
+          idFromProp !== undefined
             ? onTouchWithId
-            : stepFromProp
+            : stepFromProp !== undefined
             ? onTouchWithStep
             : undefined
         }>

@@ -29,7 +29,10 @@ function Intro({tags, intro}: Props) {
         </TextContainer>
       )}
       <TutorialTrigger step={0} blockOutside>
-        <BorderButton onPress={() => console.log('프로필 공유')} borderRadius={5} color="#000000">
+        <BorderButton
+          onPress={() => console.log('프로필 공유')}
+          borderRadius={5}
+          color="#000000">
           프로필 공유
         </BorderButton>
       </TutorialTrigger>

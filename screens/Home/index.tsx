@@ -1,12 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import AutoHeightWebView from 'react-native-autoheight-webview';
 import {html} from './data';
 import {FlatList, TouchableWithoutFeedback} from 'react-native';
-import { width } from '../../constants';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
+import {width} from '../../constants';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useEffect} from 'react';
 
 function Home() {
   const [opacity, setOpacity] = useState(0.99);
@@ -18,12 +18,12 @@ function Home() {
         setOpacity(1);
       }, 750);
     }
-    console.log('여기1', isFocused);
     return () => {
-      console.log('여기2', isFocused);
       if (isFocused) setOpacity(0.99);
     };
   }, [isFocused]);
+
+  return null;
 
   return (
     <FlatList
