@@ -207,19 +207,27 @@ export function withTutorial<T>(
 export const TutorialBlocker = React.memo(
   ({
     children,
+    id: idFromProp,
     step: stepFromProp,
     style,
   }: {
     children: ReactElement;
-    step: number | undefined;
+    id?: string | number;
+    step?: number;
     style?: StyleProp<ViewProps>;
   }) => {
     const {actionInfo} = useTutorial();
 
+    const block = useMemo(() => {
+      if (!actionInfo || (!idFromProp && !stepFromProp)) return false;
+      if (idFromProp && idFromProp === actionInfo.action.id) return true;
+      if (stepFromProp && stepFromProp === actionInfo.step) return true;
+    }, [actionInfo, idFromProp, stepFromProp]);
+
     return (
       <View
         style={[children.props.style, style]}
-        pointerEvents={stepFromProp === actionInfo?.step ? 'none' : 'auto'}>
+        pointerEvents={block ? 'none' : 'auto'}>
         {children}
       </View>
     );
@@ -290,28 +298,32 @@ export const TutorialTrigger = React.memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actionInfo]);
 
+    const onTouchWithId = useCallback(() => {
+      if (!actionInfo || actionInfo.action.id !== idFromProp) return;
+      completeActionWithId(idFromProp);
+    }, [actionInfo, completeActionWithId, idFromProp]);
+
     const onTouchWithStep = useCallback(() => {
       if (!actionInfo || actionInfo.step !== stepFromProp) return;
       completeActionWithStep(stepFromProp);
     }, [completeActionWithStep, actionInfo, stepFromProp]);
 
-    const onTouchWithId = useCallback(() => {
-      if (!actionInfo || actionInfo.action.id !== idFromProp) return;
-      completeActionWithId(idFromProp);
-    }, [actionInfo, completeActionWithId, idFromProp]);
+    const onTouchEvent = useMemo(() => {
+      if (!actionInfo || (!idFromProp && !stepFromProp)) return;
+      if (idFromProp && idFromProp === actionInfo.action.id) {
+        return onTouchWithId;
+      }
+      if (stepFromProp && stepFromProp === actionInfo.step) {
+        return onTouchWithStep;
+      }
+    }, [actionInfo, idFromProp, onTouchWithId, onTouchWithStep, stepFromProp]);
 
     return (
       <View
         style={[children.props.style, style]}
         ref={ref}
         onLayout={blockOutside ? onLayout : undefined}
-        onTouchEnd={
-          idFromProp !== undefined
-            ? onTouchWithId
-            : stepFromProp !== undefined
-            ? onTouchWithStep
-            : undefined
-        }>
+        onTouchEnd={onTouchEvent}>
         {children}
       </View>
     );
