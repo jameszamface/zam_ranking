@@ -29,7 +29,6 @@ import useCovers from './hooks/useCovers';
 import styled from 'styled-components/native';
 import {FullCover} from './components/FullCover';
 import isEqual from 'react-fast-compare';
-import FastImage from 'react-native-fast-image';
 import Image from './components/Image';
 
 export interface ActionInfo {
@@ -140,6 +139,7 @@ function TutorialProvider({children, screen}: PropsWithChildren<Props>) {
       value={useMemo(
         () => ({
           actionInfo,
+          scrollLockRecommended: Boolean(actionInfo),
           completeActionWithId,
           completeActionWithStep,
           screen,
