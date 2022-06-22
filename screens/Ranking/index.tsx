@@ -129,6 +129,7 @@ function Ranking() {
 }
 
 const Container = styled.View<{paddingTop: number}>`
+  width: 100%;
   padding-top: ${props => props.paddingTop}px;
   background-color: #ffffff;
   flex: 1;

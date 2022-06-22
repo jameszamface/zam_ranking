@@ -26,5 +26,3 @@ const addItemWithoutDuplications = <T extends string | number>(
   set.add(item);
   return [...set];
 };
-
-AsyncStorage.removeItem(key);
