@@ -97,3 +97,11 @@ export const isAutoHide = (actionInfo: ActionInfo) => {
       (action.duration && !action.modal?.button),
   );
 };
+
+export const convertAbsoluteValue = (
+  maxAbsoluteValue: number,
+  value?: number,
+) => {
+  if (value === undefined) return;
+  return value <= 1 ? maxAbsoluteValue * value : value;
+};

@@ -3,6 +3,7 @@ import FastImage from 'react-native-fast-image';
 import {Area, Image as ImageType} from '../types/common';
 import styled from 'styled-components/native';
 import {width as screenWidth, height as screenHeight} from '../../../constants';
+import {convertAbsoluteValue} from '../utils';
 
 interface Props extends ImageType {
   area: Area;
@@ -19,13 +20,13 @@ function TutorialImage({
     if (!sizeFromProp) return;
     const {width, height} = sizeFromProp;
     return {
-      width: width && width <= 1 ? screenWidth * width : width,
-      height: height && height <= 1 ? screenHeight * height : height,
+      width: convertAbsoluteValue(screenWidth, width),
+      height: convertAbsoluteValue(screenHeight, height),
     };
   }, [sizeFromProp]);
 
   const position = useMemo(() => {
-    if (!size) return;
+    if (!size?.width) return;
 
     const top = area.y + area.height / 2;
     const leftOffset = horizontalAlign === 'right' ? size.width : 0;

@@ -31,7 +31,12 @@ import styled from 'styled-components/native';
 import {FullCover} from './components/FullCover';
 import isEqual from 'react-fast-compare';
 import Image from './components/Image';
-import { isCoversVisible, isFullCoverVisible, isImageVisible, isModalVisible } from './visibles';
+import {
+  isCoversVisible,
+  isFullCoverVisible,
+  isImageVisible,
+  isModalVisible,
+} from './visibles';
 
 export interface ActionInfo {
   action: Action;

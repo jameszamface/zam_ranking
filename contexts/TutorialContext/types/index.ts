@@ -8,5 +8,5 @@ export interface TutorialContextProps {
   completeActionWithId: (id: string | number) => void;
   completeActionWithStep: (step: number) => void;
   setArea: (area: Area) => void;
-  hideAction: () => void;
+  hideAction: (delay?: number) => void;
 }
