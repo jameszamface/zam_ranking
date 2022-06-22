@@ -40,10 +40,14 @@ function TutorialImage({
   if (type !== 'image') return null;
   if (!size || !position) return null;
 
-  return <Image {...position} {...size} source={{uri}} pointerEvents="none" />;
+  return (
+    <Container {...position} {...size} pointerEvents="none">
+      <Image {...size} source={{uri}} />
+    </Container>
+  );
 }
 
-const Image = styled(FastImage)<{
+const Container = styled.View<{
   top: number;
   left: number;
   width: number;
@@ -54,6 +58,14 @@ const Image = styled(FastImage)<{
   height: ${props => props.height}px;
   top: ${props => props.top}px;
   left: ${props => props.left}px;
+`;
+
+const Image = styled(FastImage)<{
+  width: number;
+  height: number;
+}>`
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
 `;
 
 export default TutorialImage;
